@@ -505,8 +505,10 @@ function updateStreak(){
 
 /* ================= REPETICIÓN ESPACIADA (SRS) ================= */
 const STAGE_DAYS = [0,1,3,7];
+const MAX_SESSION_REPEATS = 3;
 let sessionCounter = 0;
 let sessionRepeatQueue = [];
+let sessionRepeatCounts = {};
 function scheduleSRS(exId, correct){
   const today = todayISO();
   let entry = state.srs[exId];
@@ -519,7 +521,14 @@ function scheduleSRS(exId, correct){
     entry.stage = 0;
     entry.lapses++;
     entry.due = today;
-    sessionRepeatQueue.push({id:exId, availableAfter: sessionCounter + 3});
+    sessionRepeatQueue = sessionRepeatQueue.filter(item => item.id !== exId);
+    const timesQueued = sessionRepeatCounts[exId] || 0;
+    if(timesQueued < MAX_SESSION_REPEATS){
+      sessionRepeatCounts[exId] = timesQueued + 1;
+      sessionRepeatQueue.push({id:exId, availableAfter: sessionCounter + 3});
+    }
+    // Si ya se ha repasado varias veces en esta sesión y sigue fallando,
+    // se deja de insistir hoy: reaparecerá mañana vía el repaso entre días.
   }
   state.srs[exId] = entry;
 }
@@ -547,16 +556,25 @@ function recordAnswer(ex, correct){
 let lastExerciseId = null;
 function pickNextGeneral(){
   const today = todayISO();
-  let due = GENERAL_EXERCISES.filter(e => state.srs[e.id] && state.srs[e.id].stage>=1 && state.srs[e.id].due<=today && e.id!==lastExerciseId);
-  if(due.length) return pick(due);
 
+  // Repasos de días anteriores: prioridad alta pero no absoluta, para que la
+  // sesión siga sintiéndose variada aunque haya muchos repasos pendientes.
+  const due = GENERAL_EXERCISES.filter(e => state.srs[e.id] && state.srs[e.id].stage>=1 && state.srs[e.id].due<=today && e.id!==lastExerciseId);
+  if(due.length && Math.random() < 0.35) return pick(due);
+
+  // Fallos de esta misma sesión: se re-sirven pronto, pero compitiendo con
+  // material nuevo (no monopolizan la sesión si el usuario falla varias veces).
+  const repeatIdxs = [];
   for(let i=0;i<sessionRepeatQueue.length;i++){
     const item = sessionRepeatQueue[i];
-    if(item.availableAfter <= sessionCounter && item.id !== lastExerciseId){
-      sessionRepeatQueue.splice(i,1);
-      const found = ALL_EX_BY_ID[item.id];
-      if(found) return found;
-    }
+    if(item.availableAfter <= sessionCounter && item.id !== lastExerciseId) repeatIdxs.push(i);
+  }
+  if(repeatIdxs.length && Math.random() < 0.35){
+    const chosenIdx = pick(repeatIdxs);
+    const item = sessionRepeatQueue[chosenIdx];
+    sessionRepeatQueue.splice(chosenIdx, 1);
+    const found = ALL_EX_BY_ID[item.id];
+    if(found) return found;
   }
 
   const cats = ["tiempo","lugar","expresiones"];
@@ -872,6 +890,7 @@ function renderDiagnostico(){
 function renderPractica(){
   sessionCounter = 0;
   sessionRepeatQueue = [];
+  sessionRepeatCounts = {};
   lastExerciseId = null;
   const mount = document.getElementById("view-practica");
   mount.innerHTML = '<h2 class="title">🎯 Práctica adaptativa</h2><p class="subtitle">Verás más ejercicios de las categorías donde fallas.</p><div class="card" id="exMountPractica"></div>';
