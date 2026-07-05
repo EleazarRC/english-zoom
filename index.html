@@ -147,6 +147,16 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 .lessonItem:last-child{border-bottom:none;}
 .lessonSentence{font-size:15px; font-weight:650; margin-bottom:3px;}
 .lessonNote{font-size:13px; color:var(--muted);}
+.filterRow{display:flex; gap:8px; margin-bottom:12px;}
+.chip{flex:1; padding:9px 4px; border-radius:999px; border:2px solid var(--border); background:#fff; font-weight:800; font-size:12.5px; color:var(--muted); min-height:38px;}
+.chip.active{border-color:var(--text); color:var(--text); background:#eef2f7;}
+.cheatBlock{border-left:4px solid var(--border); padding:9px 12px; margin-bottom:10px; border-radius:10px;}
+.cheatBlock.b-in{border-color:var(--in); background:var(--in-bg);}
+.cheatBlock.b-on{border-color:var(--on); background:var(--on-bg);}
+.cheatBlock.b-at{border-color:var(--at); background:var(--at-bg);}
+.cheatBlock.b-none{border-color:var(--muted); background:#f8fafc;}
+.cheatHead{font-weight:800; margin-bottom:4px; font-size:14.5px;}
+.cheatBody{font-size:13.5px; line-height:1.6;}
 </style>
 </head>
 <body>
@@ -162,8 +172,52 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     <section id="view-inicio" class="view active"></section>
 
     <section id="view-historias" class="view">
-      <h2 class="title">📖 Historias</h2>
-      <p class="subtitle">Toca cualquier palabra coloreada para ver el porqué.</p>
+      <h2 class="title">📖 Aprender</h2>
+      <p class="subtitle">La chuleta, los contrastes que separan a un experto, y mini-historias. Toca cualquier palabra coloreada para ver el porqué.</p>
+
+      <div class="card">
+        <h3 class="subtitle2">🧭 La chuleta del zoom</h3>
+        <div class="cheatBlock b-in">
+          <div class="cheatHead"><span class="prep in">IN</span> · Plano general (contenedores)</div>
+          <div class="cheatBody">
+            <b>Tiempo:</b> años y meses (in 2026, in July), estaciones (in summer), décadas y siglos (in the 1990s), partes del día (in the morning), plazos = "dentro de" (in ten minutes).<br>
+            <b>Lugar:</b> países y ciudades (in Spain), habitaciones y espacios cerrados (in the kitchen, in the car, in bed), zonas (in the mountains, in the countryside), papel e imágenes (in the newspaper, in a photo).
+          </div>
+        </div>
+        <div class="cheatBlock b-on">
+          <div class="cheatHead"><span class="prep on">ON</span> · Plano medio (superficies y líneas)</div>
+          <div class="cheatBody">
+            <b>Tiempo:</b> días (on Monday), fechas (on July 5th), días señalados (on my birthday, on Christmas Day), día + parte (on Monday mornings).<br>
+            <b>Lugar:</b> calles y carreteras (on Calle Mayor, on the motorway), superficies (on the table, on the wall, on the roof), plantas (on the second floor), transporte grande o que se monta (on the bus, on a bike, on foot), islas y costas (on an island, on the coast), pantallas y listas (on TV, on the internet, on the list, on page 12).
+          </div>
+        </div>
+        <div class="cheatBlock b-at">
+          <div class="cheatHead"><span class="prep at">AT</span> · Primer plano (puntos exactos)</div>
+          <div class="cheatBody">
+            <b>Tiempo:</b> horas (at 9pm), instantes (at noon, at midnight, at dawn), fijas (at night, at the weekend, at Christmas, at the age of 17).<br>
+            <b>Lugar:</b> puntos exactos (at the bus stop, at number 25, at the door, at the traffic lights), actividades (at work, at home, at school, at university), eventos (at a party, at a concert), servicios (at reception).
+          </div>
+        </div>
+        <div class="cheatBlock b-none">
+          <div class="cheatHead"><span class="prep none">Ø</span> · Sin preposición</div>
+          <div class="cheatBody">Con <b>next / last / this / every</b> y con <b>today / tomorrow / yesterday</b> no se usa preposición: see you next Monday, I saw her last night, call me tomorrow morning.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="subtitle2">⚔️ Contrastes letales (donde caen hasta los avanzados)</h3>
+        <div class="lessonItem"><div class="lessonSentence"><span class="prep in">in</span> time ≠ <span class="prep on">on</span> time</div><div class="lessonNote">'In time' = a tiempo, antes de que sea tarde. 'On time' = puntual, a la hora exacta.</div></div>
+        <div class="lessonItem"><div class="lessonSentence"><span class="prep in">in</span> the end ≠ <span class="prep at">at</span> the end (of)</div><div class="lessonNote">'In the end' = finalmente, después de todo. 'At the end of X' = en el punto final de algo concreto.</div></div>
+        <div class="lessonItem"><div class="lessonSentence"><span class="prep at">at</span> the moment ≠ <span class="prep in">in</span> a moment</div><div class="lessonNote">'At the moment' = ahora mismo. 'In a moment' = dentro de un momento.</div></div>
+        <div class="lessonItem"><div class="lessonSentence"><span class="prep in">in</span> the corner ≠ <span class="prep on">on</span> the corner</div><div class="lessonNote">IN = el rincón interior de una habitación. ON/AT = la esquina exterior de la calle.</div></div>
+        <div class="lessonItem"><div class="lessonSentence"><span class="prep in">in</span> the back of the car ≠ <span class="prep at">at</span> the back of the room</div><div class="lessonNote">Dentro de un vehículo: IN. Parte trasera de una sala o espacio: AT.</div></div>
+        <div class="lessonItem"><div class="lessonSentence">arrive <span class="prep in">in</span> Madrid ≠ arrive <span class="prep at">at</span> the hotel</div><div class="lessonNote">Llegar a ciudades y países: IN. Llegar a edificios y puntos: AT.</div></div>
+        <div class="lessonItem"><div class="lessonSentence"><span class="prep in">in</span> the morning ≠ <span class="prep at">at</span> night ≠ <span class="prep on">on</span> Monday morning</div><div class="lessonNote">Partes del día: IN. 'Night' es excepción fija: AT. Y si nombras el día, el día manda: ON.</div></div>
+        <div class="lessonItem"><div class="lessonSentence"><span class="prep in">in</span> the newspaper ≠ <span class="prep on">on</span> the internet</div><div class="lessonNote">Papel impreso: IN. Pantallas y emisiones: ON (on TV, on the radio, on a website).</div></div>
+        <div class="lessonItem"><div class="lessonSentence">you look great <span class="prep in">in</span> this photo</div><div class="lessonNote">Las personas salen DENTRO de la imagen: IN, aunque la foto parezca una superficie.</div></div>
+      </div>
+
+      <h2 class="title" style="font-size:17px;">📖 Mini-historias de un día real</h2>
 
       <div class="card">
         <h3 class="subtitle2">Un lunes cualquiera de María</h3>
@@ -175,7 +229,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
       <div class="card">
         <h3 class="subtitle2">El fin de semana de Carlos (lugar y transporte)</h3>
         <div class="storyText">
-          Carlos lives <span class="prep in">in</span><small class="mnemo">IN Vila-real → una ciudad es un contenedor: zoom general.</small> Vila-real but his parents live <span class="prep in">in</span><small class="mnemo">Un país entero: el contenedor más grande posible.</small> Portugal, so on Saturday he travels <span class="prep on">on</span><small class="mnemo">ON a train → vehículo grande donde puedes caminar: plataforma, ON.</small> a train and then <span class="prep on">on</span><small class="mnemo">ON a bus → mismo caso: transporte grande y compartido.</small> a bus. He always sits <span class="prep in">in</span><small class="mnemo">IN the car park → el aparcamiento como espacio cerrado que rodea el coche.</small> the car park first, waiting <span class="prep in">in</span><small class="mnemo">IN his car → un coche es pequeño, pero sigue siendo un contenedor cerrado.</small> his car for his cousin, who arrives <span class="prep on">on</span><small class="mnemo">ON a bicycle → los vehículos que se 'montan' (bici, moto, caballo) usan ON.</small> a bicycle. They meet <span class="prep at">at</span><small class="mnemo">AT the bus stop → punto exacto de encuentro.</small> the bus stop and walk to grandma's house, which is <span class="prep on">on</span><small class="mnemo">ON Fifth Avenue → la avenida es una línea del mapa.</small> Fifth Avenue, <span class="prep at">at</span><small class="mnemo">AT number 25 → el número exacto del portal, zoom máximo.</small> number 25. Grandma is always <span class="prep in">in</span><small class="mnemo">La cocina como contenedor.</small> the kitchen when they arrive. Later they relax <span class="prep on">on</span><small class="mnemo">ON the beach → la playa es una superficie extensa: zoom medio.</small> the beach and watch the sunset <span class="prep at">at</span><small class="mnemo">AT the end of the street → el punto final concreto.</small> the end of the street.
+          Carlos lives <span class="prep in">in</span><small class="mnemo">IN Vila-real → una ciudad es un contenedor: zoom general.</small> Vila-real but his parents live <span class="prep in">in</span><small class="mnemo">Un país entero: el contenedor más grande posible.</small> Portugal, so <span class="prep on">on</span><small class="mnemo">ON Saturday → un día concreto es una línea del calendario: ON.</small> Saturday he travels <span class="prep on">on</span><small class="mnemo">ON a train → vehículo grande donde puedes caminar: plataforma, ON.</small> a train and then <span class="prep on">on</span><small class="mnemo">ON a bus → mismo caso: transporte grande y compartido.</small> a bus. His uncle offers to pick him up <span class="prep in">in</span><small class="mnemo">IN his car → un coche es pequeño, pero sigue siendo un contenedor cerrado (compara con ON the bus).</small> his car, but Carlos prefers to wait for his cousin, who arrives <span class="prep on">on</span><small class="mnemo">ON a bicycle → los vehículos que se 'montan' (bici, moto, caballo) usan ON.</small> a bicycle. They meet <span class="prep at">at</span><small class="mnemo">AT the bus stop → punto exacto de encuentro.</small> the bus stop and walk to grandma's house, which is <span class="prep on">on</span><small class="mnemo">ON Fifth Avenue → la avenida es una línea del mapa.</small> Fifth Avenue, <span class="prep at">at</span><small class="mnemo">AT number 25 → el número exacto del portal, zoom máximo.</small> number 25. Grandma is always <span class="prep in">in</span><small class="mnemo">La cocina como contenedor.</small> the kitchen when they arrive. Later they relax <span class="prep on">on</span><small class="mnemo">ON the beach → la playa es una superficie extensa: zoom medio.</small> the beach and watch the sunset <span class="prep at">at</span><small class="mnemo">AT the end of the street → el punto final concreto.</small> the end of the street.
         </div>
       </div>
 
@@ -204,7 +258,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 
   <nav class="bottomnav">
     <button data-view="inicio"><span class="ic">🏠</span><span>Inicio</span></button>
-    <button data-view="historias"><span class="ic">📖</span><span>Historias</span></button>
+    <button data-view="historias"><span class="ic">📖</span><span>Aprender</span></button>
     <button data-view="practica"><span class="ic">🎯</span><span>Práctica</span></button>
     <button data-view="trampa"><span class="ic">⚠️</span><span>Trampa</span></button>
     <button data-view="jefe"><span class="ic">👑</span><span>Jefe</span></button>
@@ -255,7 +309,7 @@ const PHRASES = [
   {id:"p7", cat:"tiempo", prep:"in", frame:"It gets dark early ___ winter.", note:"Otra estación: contenedor amplio."},
   {id:"p8", cat:"tiempo", prep:"in", frame:"Flowers bloom ___ spring.", note:"La primavera entera es un contenedor de tiempo."},
   {id:"p9", cat:"tiempo", prep:"in", frame:"Leaves fall ___ autumn.", note:"El otoño como bloque contenedor."},
-  {id:"p10", cat:"tiempo", prep:"in", frame:"I always check my email ___ the morning.", note:"'The morning' es un tramo amplio del día: contenedor, aunque a las 7 en punto sea AT.", errorProne:true},
+  {id:"p10", cat:"tiempo", prep:"in", frame:"I always check my email ___ the morning.", note:"'The morning' es un tramo amplio del día: contenedor, aunque a las 7 en punto sea AT.", errorProne:true, vs:{at:"AT night es una excepción fija. Las demás partes del día (morning, afternoon, evening) usan IN.", on:"ON solo cuando nombras el día: on Monday morning. Sin día, la parte del día usa IN."}},
   {id:"p11", cat:"tiempo", prep:"in", frame:"We usually relax ___ the afternoon.", note:"Otro tramo amplio del día: contenedor."},
   {id:"p12", cat:"tiempo", prep:"in", frame:"I like reading ___ the evening.", note:"La tarde-noche como bloque contenedor del día."},
   {id:"p13", cat:"tiempo", prep:"in", frame:"Computers changed everything ___ the 21st century.", note:"Un siglo es un contenedor gigantesco de tiempo."},
@@ -276,11 +330,11 @@ const PHRASES = [
   {id:"p26", cat:"tiempo", prep:"at", frame:"I finish work ___ 9pm.", note:"Hora exacta: punto en el reloj."},
   {id:"p27", cat:"tiempo", prep:"at", frame:"Let's meet ___ noon.", note:"'Noon' es un punto exacto del día."},
   {id:"p28", cat:"tiempo", prep:"at", frame:"The shop closes ___ midnight.", note:"'Midnight' también es un punto exacto."},
-  {id:"p29", cat:"tiempo", prep:"at", frame:"I'm busy ___ the moment.", note:"'The moment' señala un instante preciso: AT."},
+  {id:"p29", cat:"tiempo", prep:"at", frame:"I'm busy ___ the moment.", note:"'At the moment' = ahora mismo: un instante preciso.", vs:{in:"'In a moment' = dentro de un momento (futuro cercano). Para 'ahora mismo' se usa AT the moment."}},
   {id:"p30", cat:"tiempo", prep:"at", frame:"Prices are high ___ present.", note:"'At present' = ahora mismo, un punto concreto en el tiempo."},
   // ---- TIEMPO · AT (excepciones) ----
-  {id:"p31", cat:"tiempo", prep:"at", frame:"Owls are awake ___ night.", note:"Excepción fija: aunque 'night' parece un bloque largo (contenedor), la expresión usa AT.", errorProne:true},
-  {id:"p32", cat:"tiempo", prep:"at", frame:"We usually travel ___ the weekend.", note:"Excepción fija (inglés británico): 'at the weekend' trata ese tramo como un bloque puntual de descanso, no como contenedor.", errorProne:true},
+  {id:"p31", cat:"tiempo", prep:"at", frame:"Owls are awake ___ night.", note:"Excepción fija: aunque 'night' parece un bloque largo (contenedor), la expresión usa AT.", errorProne:true, vs:{in:"'In the night' existe pero es raro y literario. La forma normal es AT night."}},
+  {id:"p32", cat:"tiempo", prep:"at", frame:"We usually travel ___ the weekend.", note:"Excepción fija (inglés británico): 'at the weekend'. En inglés americano se dice 'on the weekend' (también válido).", errorProne:true, alt:["on"]},
   {id:"p33", cat:"tiempo", prep:"at", frame:"Families get together ___ Christmas.", note:"Excepción: 'at Christmas' se refiere al periodo festivo completo, con AT fijo por costumbre.", errorProne:true},
   {id:"p34", cat:"tiempo", prep:"at", frame:"We visit grandma ___ Easter.", note:"Igual que Christmas: periodo festivo con AT fijo.", errorProne:true},
   {id:"p35", cat:"tiempo", prep:"at", frame:"Everyone arrived ___ the same time.", note:"'The same time' es un punto temporal preciso y compartido: AT."},
@@ -317,15 +371,15 @@ const PHRASES = [
   {id:"p63", cat:"lugar", prep:"on", frame:"Put the keys ___ the table.", note:"Una mesa es una superficie: ON."},
   {id:"p64", cat:"lugar", prep:"on", frame:"There's water ___ the floor.", note:"El suelo también es una superficie."},
   {id:"p65", cat:"lugar", prep:"on", frame:"Our flat is ___ the second floor.", note:"Un piso o planta funciona como una 'balda' horizontal: superficie, ON."},
-  {id:"p66", cat:"lugar", prep:"on", frame:"Turn ___ the left.", note:"'The left/right' se tratan como puntos de referencia sobre una línea: ON."},
+  {id:"p66", cat:"lugar", prep:"on", frame:"The bathroom is ___ the left.", note:"'The left/right' se tratan como puntos de referencia sobre una línea: ON."},
   {id:"p67", cat:"lugar", prep:"on", frame:"The shop is ___ the right.", note:"Mismo caso: referencia direccional con ON."},
   {id:"p68", cat:"lugar", prep:"on", frame:"We relaxed ___ the beach.", note:"La playa es una superficie extensa (arena): ON."},
-  {id:"p69", cat:"lugar", prep:"on", frame:"The bank is ___ the corner.", note:"La esquina es un punto de la línea de la calle: ON."},
+  {id:"p69", cat:"lugar", prep:"on", frame:"The bank is ___ the corner.", note:"La esquina exterior de la calle: ON (también se acepta AT).", alt:["at"], vs:{in:"'In the corner' es el rincón INTERIOR de una habitación. La esquina exterior de la calle usa ON/AT."}},
   {id:"p70", cat:"lugar", prep:"on", frame:"The captain stood ___ the ship.", note:"La cubierta de un barco se trata como superficie: ON."},
   // ---- LUGAR · AT ----
   {id:"p71", cat:"lugar", prep:"at", frame:"I live ___ number 25.", note:"Un número de portal es el punto exacto de la calle: AT."},
   {id:"p72", cat:"lugar", prep:"at", frame:"Wait for me ___ the bus stop.", note:"Un punto concreto de espera: AT."},
-  {id:"p73", cat:"lugar", prep:"at", frame:"Someone is knocking ___ the door.", note:"La puerta como punto exacto de contacto: AT."},
+  {id:"p73", cat:"lugar", prep:"at", frame:"Someone is knocking ___ the door.", note:"La puerta como punto exacto de contacto: AT. Con 'knock', ON también es correcto (knock on the door) e incluso más frecuente.", alt:["on"]},
   {id:"p74", cat:"lugar", prep:"at", frame:"Nobody is ___ home.", note:"'Home' como punto de actividad (no como espacio físico) usa AT."},
   {id:"p75", cat:"lugar", prep:"at", frame:"She's still ___ work.", note:"'Work' como actividad, un punto en el día: AT."},
   {id:"p76", cat:"lugar", prep:"at", frame:"The children are ___ school.", note:"'School' como punto de actividad: AT."},
@@ -338,7 +392,7 @@ const PHRASES = [
   {id:"p83", cat:"lugar", prep:"at", frame:"Turn left ___ the end of the street.", note:"'The end of the street' es un punto final concreto: AT."},
   {id:"p84", cat:"lugar", prep:"at", frame:"She studies chemistry ___ university.", note:"Excepción (inglés británico): 'at university' trata la institución como punto de actividad, no como contenedor.", errorProne:true},
   {id:"p85", cat:"lugar", prep:"at", frame:"We always stop ___ the traffic lights.", note:"Un semáforo es un punto exacto de la calle: AT."},
-  {id:"p86", cat:"lugar", prep:"at", frame:"I need eggs from ___ the supermarket.", note:"Un punto concreto donde ocurre la actividad de comprar: AT."},
+  {id:"p86", cat:"lugar", prep:"at", frame:"You can buy fresh bread ___ the supermarket.", note:"Un punto concreto donde ocurre la actividad de comprar: AT. También se oye 'in' (el edificio), pero AT es lo habitual.", alt:["in"]},
   // ---- EXPRESIONES FIJAS ----
   {id:"p87", cat:"expresiones", prep:"on", frame:"I can't talk now, I'm ___ the phone.", note:"Expresión fija: 'on the phone', como si la conversación fuera 'sobre' la línea telefónica.", errorProne:true},
   {id:"p88", cat:"expresiones", prep:"on", frame:"There's a good documentary ___ TV tonight.", note:"Fija: 'on TV' / 'on the radio', como contenido que va 'sobre' la pantalla o la onda.", errorProne:true},
@@ -352,21 +406,67 @@ const PHRASES = [
   {id:"p96", cat:"expresiones", prep:"in", frame:"Sorry, I'm ___ a hurry!", note:"Fija: 'in a hurry' = con prisa.", errorProne:true},
   {id:"p97", cat:"expresiones", prep:"in", frame:"He's ___ trouble with his boss.", note:"Fija: 'in trouble' = en problemas.", errorProne:true},
   {id:"p98", cat:"expresiones", prep:"in", frame:"___ fact, I've never been to London.", note:"Fija: 'in fact' = de hecho.", errorProne:true},
-  {id:"p99", cat:"expresiones", prep:"in", frame:"___ the end, everything worked out fine.", note:"Fija: 'in the end' = finalmente. No confundir con 'at the end (of)' = en el punto final de algo.", errorProne:true},
-  {id:"p100", cat:"expresiones", prep:"in", frame:"We arrived just ___ time for the flight.", note:"Fija: 'in time' = a tiempo, antes del límite. Distinto de 'on time' = puntual.", errorProne:true},
+  {id:"p99", cat:"expresiones", prep:"in", frame:"___ the end, everything worked out fine.", note:"Fija: 'in the end' = finalmente. No confundir con 'at the end (of)' = en el punto final de algo.", errorProne:true, vs:{at:"'At the end' necesita 'of + algo' y señala un punto final concreto (at the end of the film). 'Finalmente, después de todo' es IN the end."}},
+  {id:"p100", cat:"expresiones", prep:"in", frame:"We arrived just ___ time for the flight.", note:"Fija: 'in time' = a tiempo, antes del límite. Distinto de 'on time' = puntual.", errorProne:true, vs:{on:"'On time' = puntual, a la hora exacta prevista. 'A tiempo, antes de que sea tarde' es IN time."}},
   {id:"p101", cat:"expresiones", prep:"in", frame:"Please don't discuss this ___ public.", note:"Fija: 'in public' = en público.", errorProne:true},
   {id:"p102", cat:"expresiones", prep:"at", frame:"___ first, I didn't understand the accent.", note:"Fija: 'at first' = al principio.", errorProne:true},
   {id:"p103", cat:"expresiones", prep:"at", frame:"___ last, the bus arrived!", note:"Fija: 'at last' = por fin.", errorProne:true},
   {id:"p104", cat:"expresiones", prep:"at", frame:"It costs ___ least twenty euros.", note:"Fija: 'at least' = como mínimo.", errorProne:true},
-  {id:"p105", cat:"expresiones", prep:"at", frame:"I cried ___ the end of the movie.", note:"Fija: 'at the end (of)' = en el punto final concreto de algo. Compara con 'in the end' (finalmente).", errorProne:true},
-  {id:"p106", cat:"expresiones", prep:"on", frame:"The train arrived ___ time.", note:"Fija: 'on time' = puntual, ni antes ni después. Compara con 'in time' = a tiempo/antes del límite.", errorProne:true},
+  {id:"p105", cat:"expresiones", prep:"at", frame:"I cried ___ the end of the movie.", note:"Fija: 'at the end (of)' = en el punto final concreto de algo. Compara con 'in the end' (finalmente).", errorProne:true, vs:{in:"'In the end' = finalmente, después de todo (sin 'of'). El punto final de algo concreto usa AT the end of."}},
+  {id:"p106", cat:"expresiones", prep:"on", frame:"The train arrived ___ time.", note:"Fija: 'on time' = puntual, ni antes ni después. Compara con 'in time' = a tiempo/antes del límite.", errorProne:true, vs:{in:"'In time' = a tiempo, antes del límite. 'Puntual, a la hora exacta prevista' es ON time."}},
   {id:"p107", cat:"expresiones", prep:"on", frame:"___ average, I sleep 7 hours.", note:"Fija: 'on average' = de media.", errorProne:true},
   {id:"p108", cat:"expresiones", prep:"on", frame:"She's travelling ___ business this week.", note:"Fija: 'on business' = por motivos de trabajo.", errorProne:true},
   // ---- NIVEL B2: excepciones adicionales ----
   {id:"p109", cat:"lugar", prep:"on", frame:"It's faster to go there ___ foot than by car.", note:"Excepción de transporte: 'on foot' (a pie) es fija, aunque caminar no es un vehículo.", errorProne:true},
   {id:"p110", cat:"expresiones", prep:"in", frame:"I read about it ___ a magazine.", note:"Los medios impresos ('in a magazine/newspaper/book') usan IN, a diferencia de 'on TV' o 'on the radio'.", errorProne:true},
   {id:"p111", cat:"expresiones", prep:"on", frame:"I found the recipe ___ the internet.", note:"Los medios de pantalla ('on the internet/on a website') usan ON, igual que 'on TV'.", errorProne:true},
-  {id:"p112", cat:"tiempo", prep:"at", frame:"She started university ___ the age of 17.", note:"Fija: 'at the age of' = a la edad de, un punto exacto en la línea de la vida.", errorProne:true}
+  {id:"p112", cat:"tiempo", prep:"at", frame:"She started university ___ the age of 17.", note:"Fija: 'at the age of' = a la edad de, un punto exacto en la línea de la vida.", errorProne:true},
+  // ---- NIVEL EXPERTO · TIEMPO ----
+  {id:"p113", cat:"tiempo", prep:"in", frame:"The company was founded ___ the 1990s.", note:"Una década es un contenedor de diez años: IN."},
+  {id:"p114", cat:"tiempo", prep:"in", frame:"Don't worry, I'll be ready ___ ten minutes.", note:"IN + duración = 'dentro de': el tiempo que falta para que algo ocurra.", errorProne:true},
+  {id:"p115", cat:"tiempo", prep:"at", frame:"We left the campsite ___ dawn.", note:"'Dawn', 'sunrise' y 'sunset' son instantes del día: puntos exactos, AT."},
+  {id:"p116", cat:"tiempo", prep:"at", frame:"The ferry departs ___ sunset.", note:"Otro instante puntual del día: AT."},
+  {id:"p117", cat:"tiempo", prep:"at", frame:"We can talk ___ lunchtime.", note:"'At lunchtime / at breakfast' tratan la comida como un punto de la agenda: AT."},
+  {id:"p118", cat:"tiempo", prep:"on", frame:"I have class ___ Monday mornings.", note:"Regla clave: si nombras el día, el día manda. 'In the morning' pero 'ON Monday morning(s)'.", errorProne:true, vs:{in:"'In the morning' vale solo cuando NO dices qué día. En cuanto aparece el día (Monday), gana ON."}},
+  {id:"p119", cat:"tiempo", prep:"at", frame:"___ the beginning of the course, everything was easy.", note:"'At the beginning OF algo' = el punto inicial concreto de esa cosa: AT.", errorProne:true, trapWrong:"in", vs:{in:"'In the beginning' (sin 'of') significa 'al principio, en los primeros tiempos'. Con 'of + algo' se usa AT."}},
+  {id:"p120", cat:"tiempo", prep:"in", frame:"___ the beginning, nobody believed her.", note:"'In the beginning' (sin 'of') = al principio, en los primeros tiempos.", errorProne:true, trapWrong:"at", vs:{at:"'At the beginning' necesita 'of + algo' (at the beginning of the film). Sin 'of', la expresión fija es IN the beginning."}},
+  {id:"p121", cat:"tiempo", prep:"in", frame:"See you ___ a moment!", note:"'In a moment' = dentro de un momento (futuro cercano). Compara con 'at the moment' = ahora mismo.", errorProne:true, trapWrong:"at", vs:{at:"'At the moment' = ahora mismo (presente). Para 'dentro de un momento' (futuro) se usa IN a moment."}},
+  {id:"p122", cat:"tiempo", prep:"none", frame:"I'll send you the photos ___ tomorrow morning.", note:"'Today', 'tomorrow' y 'yesterday' nunca llevan preposición.", errorProne:true},
+  {id:"p123", cat:"tiempo", prep:"none", frame:"We can finish the project ___ today.", note:"'Today' ya sitúa el momento por sí solo: sin preposición.", errorProne:true},
+  // ---- NIVEL EXPERTO · LUGAR ----
+  {id:"p124", cat:"lugar", prep:"in", frame:"There's a spider ___ the corner of my room.", note:"El rincón INTERIOR de una habitación te rodea: IN. La esquina exterior de la calle es ON/AT.", errorProne:true, vs:{on:"'On the corner' es la esquina exterior de la calle. El rincón interior de una habitación usa IN.", at:"'At the corner' es la esquina de la calle. El rincón interior de una habitación usa IN."}},
+  {id:"p125", cat:"lugar", prep:"on", frame:"They live ___ a small island.", note:"Las islas se tratan como superficies rodeadas de mar: ON an island.", errorProne:true},
+  {id:"p126", cat:"lugar", prep:"on", frame:"Valencia is ___ the east coast of Spain.", note:"La costa es la línea donde la tierra toca el mar: ON, como una calle del mapa."},
+  {id:"p127", cat:"lugar", prep:"in", frame:"They have a wooden cabin ___ the mountains.", note:"'The mountains' como zona que te rodea: contenedor, IN."},
+  {id:"p128", cat:"lugar", prep:"on", frame:"The map is ___ page 12.", note:"Una página es una superficie: lo impreso va ON page 12.", errorProne:true},
+  {id:"p129", cat:"lugar", prep:"in", frame:"The answer is ___ chapter 3.", note:"Un capítulo es un contenedor de texto: IN."},
+  {id:"p130", cat:"lugar", prep:"in", frame:"We waited ___ the queue for an hour.", note:"Una cola de gente te 'mete' dentro de la fila: IN the queue.", errorProne:true},
+  {id:"p131", cat:"lugar", prep:"on", frame:"Is my name ___ the list?", note:"Una lista es una superficie escrita: ON the list.", errorProne:true},
+  {id:"p132", cat:"lugar", prep:"on", frame:"There's fresh fish ___ the menu today.", note:"El menú funciona como la lista: ON the menu.", errorProne:true},
+  {id:"p133", cat:"lugar", prep:"in", frame:"You look great ___ this photo.", note:"Las personas 'salen' DENTRO de la imagen: IN a photo/picture.", errorProne:true, vs:{on:"'On the photo' sería algo físicamente encima del papel (una mancha, una mosca). Las personas aparecen dentro de la imagen: IN."}},
+  {id:"p134", cat:"lugar", prep:"on", frame:"The cat loves sleeping ___ the roof.", note:"El tejado es una superficie exterior: ON."},
+  {id:"p135", cat:"lugar", prep:"in", frame:"The birds are singing ___ the tree.", note:"Las ramas envuelven al pájaro: IN the tree (la fruta, en cambio, crece pegada a la rama: ON the tree).", errorProne:true},
+  {id:"p136", cat:"lugar", prep:"at", frame:"Leave your keys ___ reception.", note:"La recepción es un punto de servicio concreto: AT."},
+  {id:"p137", cat:"lugar", prep:"at", frame:"We met ___ a concert two years ago.", note:"Los eventos (concert, party, meeting, wedding) son puntos de la agenda: AT."},
+  {id:"p138", cat:"lugar", prep:"in", frame:"Don't stay ___ the sun too long.", note:"'In the sun / in the rain / in the shade': el ambiente te envuelve, IN.", errorProne:true},
+  {id:"p139", cat:"lugar", prep:"in", frame:"The kids always sit ___ the back of the car.", note:"Dentro de un vehículo cerrado: IN the back of the car.", errorProne:true, trapWrong:"at", vs:{at:"'At the back of' se usa para la parte trasera de salas y espacios (at the back of the room). Dentro del coche: IN."}},
+  {id:"p140", cat:"lugar", prep:"at", frame:"The toilets are ___ the back of the restaurant.", note:"La parte trasera de una sala o espacio abierto: AT the back of.", errorProne:true, trapWrong:"in", vs:{in:"'In the back of' es para el interior de un vehículo (in the back of the car). En salas y espacios: AT the back of."}},
+  {id:"p141", cat:"lugar", prep:"in", frame:"My grandparents live ___ the countryside.", note:"El campo como zona que te rodea: contenedor, IN."},
+  {id:"p142", cat:"lugar", prep:"at", frame:"We arrived ___ the hotel just before midnight.", note:"'Arrive AT' + edificios y puntos concretos (hotel, airport, station).", errorProne:true, trapWrong:"in", vs:{in:"'Arrive IN' se usa con ciudades y países (arrive in Madrid). Con edificios y puntos: arrive AT."}},
+  {id:"p143", cat:"lugar", prep:"in", frame:"The train arrives ___ Madrid at nine.", note:"'Arrive IN' + ciudades y países. Con edificios y puntos: arrive AT.", errorProne:true, trapWrong:"at", vs:{at:"'Arrive AT' es para edificios y puntos (arrive at the hotel). Con ciudades y países: arrive IN."}},
+  {id:"p144", cat:"lugar", prep:"on", frame:"He spent the summer working ___ a farm.", note:"Las granjas se tratan como terreno abierto: ON a farm.", errorProne:true},
+  {id:"p145", cat:"lugar", prep:"on", frame:"There was an accident ___ the motorway.", note:"Carreteras y autopistas son líneas del mapa, como las calles: ON."},
+  {id:"p146", cat:"lugar", prep:"in", frame:"I read an interesting article ___ the newspaper.", note:"Los medios impresos usan IN (in the newspaper, in a magazine). Las pantallas usan ON (on TV, on the internet).", errorProne:true, vs:{on:"ON es para pantallas y emisiones (on TV, on the internet, on the radio). El papel impreso usa IN."}},
+  // ---- NIVEL EXPERTO · EXPRESIONES ----
+  {id:"p147", cat:"expresiones", prep:"on", frame:"We stopped for coffee ___ the way home.", note:"Fija: 'on the way (to)' = de camino.", errorProne:true},
+  {id:"p148", cat:"expresiones", prep:"in", frame:"He's ___ a very good mood today.", note:"Fija: 'in a good/bad mood' = de buen/mal humor.", errorProne:true},
+  {id:"p149", cat:"expresiones", prep:"on", frame:"The train drivers are ___ strike again.", note:"Fija: 'on strike' = en huelga.", errorProne:true},
+  {id:"p150", cat:"expresiones", prep:"on", frame:"These boots were ___ sale, so I bought two pairs.", note:"Fija: 'on sale' = en oferta/rebajas.", errorProne:true},
+  {id:"p151", cat:"expresiones", prep:"at", frame:"She's really good ___ explaining difficult things.", note:"Fija: 'good/bad AT' + habilidad: el punto exacto donde destacas.", errorProne:true},
+  {id:"p152", cat:"expresiones", prep:"in", frame:"Who's ___ charge of the project?", note:"Fija: 'in charge (of)' = al mando, encargado.", errorProne:true},
+  {id:"p153", cat:"expresiones", prep:"in", frame:"___ my opinion, the ending was perfect.", note:"Fija: 'in my opinion' = en mi opinión.", errorProne:true},
+  {id:"p154", cat:"expresiones", prep:"on", frame:"Please fill in this form ___ arrival.", note:"Fija: 'on arrival' = al llegar, en el momento de llegar.", errorProne:true},
+  {id:"p155", cat:"expresiones", prep:"at", frame:"It was love ___ first sight.", note:"Fija: 'at first sight' = a primera vista.", errorProne:true}
 ];
 
 /* ================= LA TRAMPA DEL EN ================= */
@@ -390,40 +490,59 @@ const TRAMPA = [
   {id:"tr17", es:"Charlamos en el autobús.", answer:"on", en:"We chatted on the bus.", note:"Trampa: 'en el autobús' pero los vehículos grandes donde te mueves usan ON."},
   {id:"tr18", es:"Leí un libro en el tren.", answer:"on", en:"I read a book on the train.", note:"Mismo caso que el autobús: ON."},
   {id:"tr19", es:"Nos relajamos en la playa.", answer:"on", en:"We relaxed on the beach.", note:"Trampa: 'en la playa' pero la arena es una superficie extensa: ON."},
-  {id:"tr20", es:"El banco está en la esquina.", answer:"on", en:"The bank is on the corner.", note:"Trampa: 'en la esquina' pero es un punto de la línea de la calle: ON."},
-  {id:"tr21", es:"Trabajo en la tele.", answer:"on", en:"I work on TV.", note:"Expresión fija: 'on TV', no IN."},
+  {id:"tr20", es:"El banco está en la esquina.", answer:"on", en:"The bank is on the corner.", note:"Trampa: 'en la esquina' pero es un punto de la línea de la calle: ON (también se acepta AT).", alt:["at"]},
+  {id:"tr21", es:"Lo vi en la tele.", answer:"on", en:"I saw it on TV.", note:"Expresión fija: 'on TV', no IN."},
   {id:"tr22", es:"Lo escuché en la radio.", answer:"on", en:"I heard it on the radio.", note:"Expresión fija: 'on the radio'."},
   {id:"tr23", es:"No puedo hablar, estoy en el teléfono.", answer:"on", en:"I can't talk, I'm on the phone.", note:"Expresión fija: 'on the phone'."},
   {id:"tr24", es:"Estoy en el trabajo.", answer:"at", en:"I'm at work.", note:"Trampa: 'en el trabajo' pero como actividad/punto del día usa AT."},
   {id:"tr25", es:"No hay nadie en casa.", answer:"at", en:"There's nobody at home.", note:"Trampa: 'en casa' como punto de actividad usa AT."},
   {id:"tr26", es:"Espérame en la parada del autobús.", answer:"at", en:"Wait for me at the bus stop.", note:"Trampa: 'en la parada' es un punto exacto: AT."},
-  {id:"tr27", es:"Alguien llama en la puerta.", answer:"at", en:"Someone is knocking at the door.", note:"Trampa: 'en la puerta' es el punto exacto de contacto: AT."},
+  {id:"tr27", es:"Hay alguien en la puerta.", answer:"at", en:"There's someone at the door.", note:"Trampa: 'en la puerta' es el punto exacto de la casa donde está la persona: AT."},
   {id:"tr28", es:"Nos vemos en el aeropuerto.", answer:"at", en:"See you at the airport.", note:"Trampa: 'en el aeropuerto' como punto de encuentro: AT."},
   {id:"tr29", es:"Había 50 personas en la fiesta.", answer:"at", en:"There were 50 people at the party.", note:"Trampa: un evento se trata como un punto: AT."},
   {id:"tr30", es:"Estudia en la universidad.", answer:"at", en:"She studies at university.", note:"Trampa: excepción británica, 'at university' trata la institución como punto de actividad."},
   {id:"tr31", es:"Vivo en el número 25.", answer:"at", en:"I live at number 25.", note:"Trampa: un número de portal es el punto exacto: AT."},
   {id:"tr32", es:"Nos vemos en Navidad.", answer:"at", en:"See you at Christmas.", note:"Trampa: el periodo festivo completo usa AT, no IN ni ON."},
   {id:"tr33", es:"Vamos a visitar a la abuela en Semana Santa.", answer:"at", en:"We're visiting grandma at Easter.", note:"Igual que Christmas: periodo festivo con AT fijo."},
-  {id:"tr34", es:"Descansamos en el fin de semana.", answer:"at", en:"We rest at the weekend.", note:"Trampa: excepción británica, 'at the weekend' usa AT, no IN ni ON."},
+  {id:"tr34", es:"Descansamos en el fin de semana.", answer:"at", en:"We rest at the weekend.", note:"Trampa: excepción británica, 'at the weekend'. En inglés americano se dice 'on the weekend' (también válido).", alt:["on"]},
   {id:"tr35", es:"Está en problemas con su jefe.", answer:"in", en:"He's in trouble with his boss.", note:"Expresión fija: 'in trouble', aunque no sea un lugar físico."},
   {id:"tr36", es:"En realidad, nunca he estado en Londres.", answer:"in", en:"In fact, I've never been to London.", note:"Expresión fija: 'in fact' = de hecho."},
-  {id:"tr37", es:"Búhos están despiertos en la noche.", answer:"at", en:"Owls are awake at night.", note:"Trampa: aunque 'la noche' parece un bloque largo, la expresión fija usa AT."}
+  {id:"tr37", es:"Los búhos están despiertos en la noche.", answer:"at", en:"Owls are awake at night.", note:"Trampa: aunque 'la noche' parece un bloque largo, la expresión fija usa AT."},
+  {id:"tr38", es:"Te espero en el semáforo.", answer:"at", en:"I'll wait for you at the traffic lights.", note:"Un semáforo es un punto exacto de la calle: AT."},
+  {id:"tr39", es:"Salgo fatal en esta foto.", answer:"in", en:"I look terrible in this photo.", note:"Las personas salen DENTRO de la imagen: IN, aunque la foto parezca una superficie."},
+  {id:"tr40", es:"El gato duerme en el tejado.", answer:"on", en:"The cat sleeps on the roof.", note:"El tejado es una superficie exterior: ON."},
+  {id:"tr41", es:"¿Está mi nombre en la lista?", answer:"on", en:"Is my name on the list?", note:"Una lista es una superficie escrita: ON."},
+  {id:"tr42", es:"Hoy hay paella en el menú.", answer:"on", en:"There's paella on the menu today.", note:"El menú funciona como una lista: ON."},
+  {id:"tr43", es:"La foto está en la página 12.", answer:"on", en:"The photo is on page 12.", note:"Una página es una superficie: ON page 12."},
+  {id:"tr44", es:"Viven en una isla pequeña.", answer:"on", en:"They live on a small island.", note:"Las islas se tratan como superficies rodeadas de mar: ON."},
+  {id:"tr45", es:"Esperamos una hora en la cola.", answer:"in", en:"We waited in the queue for an hour.", note:"La fila te 'mete' dentro: IN the queue."},
+  {id:"tr46", es:"Los pájaros cantan en el árbol.", answer:"in", en:"The birds are singing in the tree.", note:"Las ramas envuelven al pájaro: IN the tree."},
+  {id:"tr47", es:"Nos conocimos en un concierto.", answer:"at", en:"We met at a concert.", note:"Los eventos (conciertos, fiestas, bodas) son puntos de la agenda: AT."},
+  {id:"tr48", es:"Estaré listo en diez minutos.", answer:"in", en:"I'll be ready in ten minutes.", note:"IN + duración = 'dentro de'. Aquí el español y el inglés coinciden, pero mucha gente duda."},
+  {id:"tr49", es:"Lo leí en el periódico.", answer:"in", en:"I read it in the newspaper.", note:"Medios impresos: IN. Pantallas y emisiones: ON."},
+  {id:"tr50", es:"Lo encontré en internet.", answer:"on", en:"I found it on the internet.", note:"Pantallas: ON the internet, igual que on TV."},
+  {id:"tr51", es:"Los niños van en la parte de atrás del coche.", answer:"in", en:"The kids sit in the back of the car.", note:"Dentro de un vehículo cerrado: IN the back of the car."},
+  {id:"tr52", es:"Deja las llaves en recepción.", answer:"at", en:"Leave the keys at reception.", note:"Un punto de servicio concreto: AT."},
+  {id:"tr53", es:"Mi hermano trabaja en una granja.", answer:"on", en:"My brother works on a farm.", note:"Las granjas se tratan como terreno abierto: ON a farm."},
+  {id:"tr54", es:"Los conductores están en huelga.", answer:"on", en:"The drivers are on strike.", note:"Expresión fija: 'on strike' = en huelga."},
+  {id:"tr55", es:"Estas botas están en oferta.", answer:"on", en:"These boots are on sale.", note:"Expresión fija: 'on sale' = en oferta/rebajas."},
+  {id:"tr56", es:"En mi opinión, es demasiado caro.", answer:"in", en:"In my opinion, it's too expensive.", note:"Expresión fija: 'in my opinion' = en mi opinión."}
 ];
 
 /* ================= CONSTRUCCIÓN DE EJERCICIOS ================= */
 function buildGap(p){
-  return {id:p.id+"g", type:"gap", cat:p.cat, prompt:p.frame, answer:p.prep, note:p.note, errorProne:!!p.errorProne};
+  return {id:p.id+"g", type:"gap", cat:p.cat, prompt:p.frame, answer:p.prep, note:p.note, alt:p.alt||null, vs:p.vs||null, hasNone:p.prep==="none", errorProne:!!p.errorProne};
 }
 function buildMC(p){
   const opts = shuffle(["in","on","at"]).map(pr => ({prep:pr, text: fillFrame(p.frame, pr)}));
-  return {id:p.id+"m", type:"mc", cat:p.cat, prompt:p.frame, answer:p.prep, options:opts, note:p.note, errorProne:!!p.errorProne};
+  return {id:p.id+"m", type:"mc", cat:p.cat, prompt:p.frame, answer:p.prep, options:opts, note:p.note, alt:p.alt||null, vs:p.vs||null, errorProne:!!p.errorProne};
 }
 function buildEC(p){
-  const wrong = mistakeFor(p.prep);
+  const wrong = p.trapWrong || mistakeFor(p.prep);
   const atStart = p.frame.indexOf("___") === 0;
   const wrongWordDisplay = atStart ? capitalizeFirst(wrong) : wrong;
   const wrongDisplay = p.frame.replace("___", "<u>"+wrongWordDisplay+"</u>");
-  return {id:p.id+"e", type:"ec", cat:p.cat, prompt:p.frame, answer:p.prep, note:p.note, wrongDisplay:wrongDisplay, hasNone:p.prep==="none", errorProne:true};
+  return {id:p.id+"e", type:"ec", cat:p.cat, prompt:p.frame, answer:p.prep, note:p.note, alt:p.alt||null, vs:p.vs||null, wrongDisplay:wrongDisplay, hasNone:p.prep==="none", errorProne:true};
 }
 function buildExercises(phrases){
   const out = [];
@@ -431,6 +550,8 @@ function buildExercises(phrases){
     if(p.prep !== "none"){
       out.push(buildGap(p));
       out.push(buildMC(p));
+    } else {
+      out.push(buildGap(p)); // hueco con cuarta opción "sin preposición"
     }
     if(p.errorProne){
       out.push(buildEC(p));
@@ -460,6 +581,7 @@ const DEFAULT_STATE = {
   srs: {},
   diagnostic: {done:false, results:null},
   jefe: {examResults:[]},
+  practiceFilter: "todo",
   totalAnswered: 0,
   totalCorrect: 0
 };
@@ -536,6 +658,17 @@ function dueReviewCount(){
   const today = todayISO();
   return Object.keys(state.srs).filter(id => state.srs[id].stage>=1 && state.srs[id].due<=today).length;
 }
+function masteryStats(){
+  const best = {};
+  Object.keys(state.srs).forEach(id => {
+    const b = baseIdOf(id);
+    const st = state.srs[id].stage || 0;
+    if(!(b in best) || st > best[b]) best[b] = st;
+  });
+  let mastered = 0;
+  Object.keys(best).forEach(b => { if(best[b] >= 2) mastered++; });
+  return {mastered: mastered, total: PHRASES.length + TRAMPA.length};
+}
 
 /* ================= REGISTRO CENTRAL DE RESPUESTAS ================= */
 function recordAnswer(ex, correct){
@@ -554,12 +687,17 @@ function recordAnswer(ex, correct){
 
 /* ================= SELECCIÓN ADAPTATIVA (PRÁCTICA) ================= */
 let lastExerciseId = null;
+let lastBaseId = null;
+function baseIdOf(exId){ const m = /^(p\d+)[gme]$/.exec(exId); return m ? m[1] : exId; }
 function pickNextGeneral(){
   const today = todayISO();
+  const f = state.practiceFilter || "todo";
+  const pool = f === "todo" ? GENERAL_EXERCISES : GENERAL_EXERCISES.filter(e => e.cat === f);
+  const notJustSeen = e => e.id !== lastExerciseId && baseIdOf(e.id) !== lastBaseId;
 
   // Repasos de días anteriores: prioridad alta pero no absoluta, para que la
   // sesión siga sintiéndose variada aunque haya muchos repasos pendientes.
-  const due = GENERAL_EXERCISES.filter(e => state.srs[e.id] && state.srs[e.id].stage>=1 && state.srs[e.id].due<=today && e.id!==lastExerciseId);
+  const due = pool.filter(e => state.srs[e.id] && state.srs[e.id].stage>=1 && state.srs[e.id].due<=today && notJustSeen(e));
   if(due.length && Math.random() < 0.35) return pick(due);
 
   // Fallos de esta misma sesión: se re-sirven pronto, pero compitiendo con
@@ -567,27 +705,35 @@ function pickNextGeneral(){
   const repeatIdxs = [];
   for(let i=0;i<sessionRepeatQueue.length;i++){
     const item = sessionRepeatQueue[i];
-    if(item.availableAfter <= sessionCounter && item.id !== lastExerciseId) repeatIdxs.push(i);
+    const it = ALL_EX_BY_ID[item.id];
+    if(!it) continue;
+    if(f !== "todo" && it.cat !== f) continue;
+    if(item.availableAfter <= sessionCounter && notJustSeen(it)) repeatIdxs.push(i);
   }
   if(repeatIdxs.length && Math.random() < 0.35){
     const chosenIdx = pick(repeatIdxs);
     const item = sessionRepeatQueue[chosenIdx];
     sessionRepeatQueue.splice(chosenIdx, 1);
-    const found = ALL_EX_BY_ID[item.id];
-    if(found) return found;
+    return ALL_EX_BY_ID[item.id];
   }
 
-  const cats = ["tiempo","lugar","expresiones"];
-  const weighted = cats.map(c => {
-    const s = state.categories[c];
-    const acc = s.total ? s.correct/s.total : 0.5;
-    return {c:c, w:(1-acc)+0.2};
-  });
-  const totalW = weighted.reduce((a,b)=>a+b.w,0);
-  let r = Math.random()*totalW, chosenCat = weighted[0].c;
-  for(const w of weighted){ if(r<=w.w){ chosenCat = w.c; break; } r -= w.w; }
-  let candidates = GENERAL_EXERCISES.filter(e => e.cat===chosenCat && e.id!==lastExerciseId);
-  if(!candidates.length) candidates = GENERAL_EXERCISES.filter(e => e.id!==lastExerciseId);
+  let candidates;
+  if(f === "todo"){
+    const cats = ["tiempo","lugar","expresiones"];
+    const weighted = cats.map(c => {
+      const s = state.categories[c];
+      const acc = s.total ? s.correct/s.total : 0.5;
+      return {c:c, w:(1-acc)+0.2};
+    });
+    const totalW = weighted.reduce((a,b)=>a+b.w,0);
+    let r = Math.random()*totalW, chosenCat = weighted[0].c;
+    for(const w of weighted){ if(r<=w.w){ chosenCat = w.c; break; } r -= w.w; }
+    candidates = GENERAL_EXERCISES.filter(e => e.cat===chosenCat && notJustSeen(e));
+  } else {
+    candidates = pool.filter(notJustSeen);
+  }
+  if(!candidates.length) candidates = pool.filter(e => e.id !== lastExerciseId);
+  if(!candidates.length) candidates = pool;
   return pick(candidates);
 }
 
@@ -620,20 +766,24 @@ function renderExercise(mount, ex, handlers){
   if(ex.type === "mc"){
     html += '<p class="smallMuted" style="margin:0 0 8px;">¿Cuál es la frase correcta?</p>';
     html += '<div class="sentence">'+ ex.prompt.replace("___", '<span class="blank">___</span>') +'</div>';
-    html += '<div id="answerWrap">' + ex.options.map((o,i) => '<button class="optionCard" data-idx="'+i+'">'+o.text+'</button>').join("") + '</div>';
+    html += '<div>' + ex.options.map((o,i) => '<button class="optionCard" data-idx="'+i+'">'+o.text+'</button>').join("") + '</div>';
   } else if(ex.type === "ec"){
     html += '<p class="smallMuted" style="margin:0 0 8px;">Esta frase tiene un error. ¿Cuál es la preposición correcta?</p>';
     html += '<div class="sentence">'+ ex.wrongDisplay +'</div>';
-    html += '<div class="prepRow'+(ex.hasNone?' four':'')+'" id="answerWrap">' + prepButtonsHtml(ex.hasNone) + '</div>';
+    html += '<div class="prepRow'+(ex.hasNone?' four':'')+'">' + prepButtonsHtml(ex.hasNone) + '</div>';
   } else if(ex.type === "trampa"){
     html += '<div class="esQuote">"'+ ex.es +'"</div>';
-    html += '<div class="prepRow" id="answerWrap">' + prepButtonsHtml(false) + '</div>';
+    html += '<div class="prepRow">' + prepButtonsHtml(false) + '</div>';
   } else {
     html += '<div class="sentence">'+ ex.prompt.replace("___", '<span class="blank">___</span>') +'</div>';
-    html += '<div class="prepRow" id="answerWrap">' + prepButtonsHtml(false) + '</div>';
+    html += '<div class="prepRow'+(ex.hasNone?' four':'')+'">' + prepButtonsHtml(ex.hasNone) + '</div>';
   }
   html += '<div class="fbArea"></div>';
   mount.innerHTML = html;
+
+  function isAccepted(prep){
+    return prep === ex.answer || (ex.alt && ex.alt.indexOf(prep) >= 0);
+  }
 
   let answered = false;
   function finish(correct, chosenPrep){
@@ -647,13 +797,20 @@ function renderExercise(mount, ex, handlers){
     else if(ex.type === "mc") correctText = ex.options.find(o => o.prep === ex.answer).text;
     else correctText = fillFrame(ex.prompt, ex.answer);
 
+    const altUsed = correct && chosenPrep && chosenPrep !== ex.answer;
+    const vsLine = (!correct && ex.vs && ex.vs[chosenPrep])
+      ? '<div class="fbNote">🔍 '+ex.vs[chosenPrep]+'</div>' : "";
+    const altLine = altUsed
+      ? '<div class="fbNote">💡 Tu opción también es correcta en inglés real; la de arriba es la forma más habitual (y la que suelen pedir los exámenes).</div>' : "";
     const fb = mount.querySelector(".fbArea");
     fb.innerHTML =
       '<div class="feedback '+(correct?"correct":"wrong")+'">' +
         '<div class="fbTitle">'+(correct ? "✅ ¡Correcto!" : "❌ No exactamente")+'</div>' +
         '<div class="fbAnswer">'+ correctText +'</div>' +
         '<div class="fbMeta">'+ METAPHOR[ex.answer] +'</div>' +
+        vsLine +
         (ex.note ? '<div class="fbNote">'+ ex.note +'</div>' : "") +
+        altLine +
         '<div class="nextBtnWrap"><button class="btn btn-primary nextBtn">Siguiente →</button></div>' +
       '</div>';
     mount.querySelector(".nextBtn").addEventListener("click", () => handlers.onNext());
@@ -666,7 +823,7 @@ function renderExercise(mount, ex, handlers){
         if(answered) return;
         const idx = parseInt(btn.dataset.idx,10);
         const chosen = ex.options[idx];
-        const correct = chosen.prep === ex.answer;
+        const correct = isAccepted(chosen.prep);
         mount.querySelectorAll(".optionCard").forEach((b,i) => {
           if(i===idx) b.classList.add("selected", correct?"correct":"wrong");
           if(!correct && ex.options[i].prep === ex.answer) b.classList.add("reveal-correct");
@@ -679,7 +836,7 @@ function renderExercise(mount, ex, handlers){
       btn.addEventListener("click", () => {
         if(answered) return;
         const chosenPrep = btn.dataset.p;
-        const correct = chosenPrep === ex.answer;
+        const correct = isAccepted(chosenPrep);
         mount.querySelectorAll(".prepBtn").forEach(b => {
           if(b === btn) b.classList.add("selected", correct?"correct":"wrong");
           if(!correct && b.dataset.p === ex.answer) b.classList.add("reveal-correct");
@@ -774,7 +931,7 @@ function renderHome(){
     diagCta +
     exceptionsCta +
     dailyHtml +
-    '<div class="card"><h3 class="subtitle2">📊 Tu dominio</h3>' + domBars + '<button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="showView(\'stats\')">Ver estadísticas completas</button></div>';
+    '<div class="card"><h3 class="subtitle2">📊 Tu dominio</h3>' + domBars + '<p class="smallMuted" style="margin:2px 0 8px;">🎓 Frases dominadas: <b>'+masteryStats().mastered+' / '+masteryStats().total+'</b></p><button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="showView(\'stats\')">Ver estadísticas completas</button></div>';
 
   initZoomSlider();
 }
@@ -892,8 +1049,19 @@ function renderPractica(){
   sessionRepeatQueue = [];
   sessionRepeatCounts = {};
   lastExerciseId = null;
+  lastBaseId = null;
   const mount = document.getElementById("view-practica");
-  mount.innerHTML = '<h2 class="title">🎯 Práctica adaptativa</h2><p class="subtitle">Verás más ejercicios de las categorías donde fallas.</p><div class="card" id="exMountPractica"></div>';
+  const f = state.practiceFilter || "todo";
+  const chips = [["todo","Todo"],["tiempo","Tiempo"],["lugar","Lugar"],["expresiones","Expresiones"]]
+    .map(c => '<button class="chip'+(f===c[0]?' active':'')+'" data-f="'+c[0]+'">'+c[1]+'</button>').join("");
+  mount.innerHTML = '<h2 class="title">🎯 Práctica adaptativa</h2><p class="subtitle">Verás más ejercicios de las categorías donde fallas. Filtra si quieres machacar una sola.</p><div class="filterRow">'+chips+'</div><div class="card" id="exMountPractica"></div>';
+  mount.querySelectorAll(".chip").forEach(ch => {
+    ch.addEventListener("click", () => {
+      state.practiceFilter = ch.dataset.f;
+      saveState();
+      renderPractica();
+    });
+  });
   loadNextPracticeExercise();
 }
 function loadNextPracticeExercise(){
@@ -902,6 +1070,7 @@ function loadNextPracticeExercise(){
   const ex = pickNextGeneral();
   if(!ex){ mount.innerHTML = "<p>No hay ejercicios disponibles.</p>"; return; }
   lastExerciseId = ex.id;
+  lastBaseId = baseIdOf(ex.id);
   sessionCounter++;
   renderExercise(mount, ex, {
     onAnswer:(correct) => recordAnswer(ex, correct),
@@ -930,6 +1099,18 @@ function loadNextTrampa(){
 const JEFE_UNLOCK_ANSWERED = 50;
 function isJefeUnlocked(){ return state.diagnostic.done && state.totalAnswered >= JEFE_UNLOCK_ANSWERED; }
 let jefeState = {phase:"lessons", queue:null, idx:0, score:0};
+function buildExamQueue(){
+  const seen = {};
+  const q = [];
+  for(const e of shuffle(EXCEPTIONS_POOL)){
+    const b = baseIdOf(e.id);
+    if(seen[b]) continue;
+    seen[b] = true;
+    q.push(e);
+    if(q.length === 25) break;
+  }
+  return q;
+}
 
 function renderJefe(){
   const mount = document.getElementById("view-jefe");
@@ -976,7 +1157,7 @@ function renderJefeLessons(mount, unlocked){
   const startBtn = document.getElementById("startExamBtn");
   if(startBtn){
     startBtn.addEventListener("click", () => {
-      jefeState.queue = shuffle(EXCEPTIONS_POOL).slice(0,25);
+      jefeState.queue = buildExamQueue();
       jefeState.idx = 0;
       jefeState.score = 0;
       jefeState.phase = "exam";
@@ -1015,7 +1196,7 @@ function renderJefeResult(mount){
     '</div>';
   document.getElementById("retryLessonsBtn").addEventListener("click", () => { jefeState.phase="lessons"; renderJefe(); });
   document.getElementById("retryExamBtn").addEventListener("click", () => {
-    jefeState.queue = shuffle(EXCEPTIONS_POOL).slice(0,25);
+    jefeState.queue = buildExamQueue();
     jefeState.idx = 0; jefeState.score = 0; jefeState.phase = "exam";
     renderJefe();
   });
@@ -1048,6 +1229,7 @@ function renderStats(){
       '<p class="smallMuted">Racha actual: <b>'+state.streak.count+' días</b> · Récord: <b>'+(state.streak.best||0)+' días</b></p>' +
       '<p class="smallMuted">Ejercicios respondidos: <b>'+state.totalAnswered+'</b> · Aciertos: <b>'+state.totalCorrect+'</b></p>' +
       '<p class="smallMuted">Repasos pendientes hoy: <b>'+dueReviewCount()+'</b></p>' +
+      '<p class="smallMuted">🎓 Frases dominadas: <b>'+masteryStats().mastered+' / '+masteryStats().total+'</b> (dominada = acertada en dos repasos espaciados)</p>' +
       '<p class="smallMuted">Banco de ejercicios: <b>'+(GENERAL_EXERCISES.length + TRAMPA_EXERCISES.length)+'</b> (general + trampa del EN)</p>' +
     '</div>' +
     '<div class="card"><h3 class="subtitle2">👑 Historial del examen final</h3>' + examHistory + '</div>' +
