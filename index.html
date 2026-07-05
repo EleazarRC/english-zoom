@@ -1,0 +1,1045 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>El Zoom del Inglés — Domina IN / ON / AT</title>
+<meta name="description" content="Aprende a usar in, on y at con la metáfora del zoom fotográfico.">
+<style>
+:root{
+  --in:#2563eb; --in-bg:#eff6ff; --in-soft:#dbeafe; --in-dark:#1e3a8a;
+  --on:#16a34a; --on-bg:#f0fdf4; --on-soft:#dcfce7; --on-dark:#14532d;
+  --at:#dc2626; --at-bg:#fef2f2; --at-soft:#fee2e2; --at-dark:#7f1d1d;
+  --bg:#f4f6fb; --surface:#ffffff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
+  --accent:#f59e0b; --accent-bg:#fff7ed; --accent-dark:#c2410c;
+  --radius:16px; --shadow:0 2px 10px rgba(15,23,42,.06);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--text); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button, input{font-family:inherit;}
+#app{max-width:480px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; background:var(--bg); position:relative; box-shadow:0 0 40px rgba(0,0,0,.04);}
+
+.topbar{position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:rgba(255,255,255,.92); backdrop-filter:blur(6px); border-bottom:1px solid var(--border);}
+.brand{font-weight:800; font-size:16px; display:flex; align-items:center; gap:6px;}
+.streakChip{font-weight:800; background:var(--accent-bg); color:var(--accent-dark); padding:6px 12px; border-radius:999px; font-size:14px; display:flex; align-items:center; gap:4px;}
+
+main#views{flex:1; padding:16px 16px 96px;}
+.view{display:none;}
+.view.active{display:block; animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+.bottomnav{position:sticky; bottom:0; z-index:20; display:flex; background:var(--surface); border-top:1px solid var(--border); padding:4px 2px calc(4px + env(safe-area-inset-bottom));}
+.bottomnav button{flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 2px; font-size:10.5px; color:var(--muted); font-weight:700; border-radius:12px; min-height:52px; justify-content:center;}
+.bottomnav button.active{color:var(--in); background:var(--in-bg);}
+.bottomnav button .ic{font-size:20px; line-height:1;}
+
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:14px; box-shadow:var(--shadow);}
+h2.title{font-size:21px; margin:2px 0 4px; font-weight:800;}
+h3.subtitle2{font-size:15px; margin:0 0 10px; font-weight:700; color:var(--muted);}
+p.subtitle{color:var(--muted); margin:0 0 14px; font-size:14px;}
+
+.btn{display:flex; align-items:center; justify-content:center; min-height:50px; padding:10px 16px; border-radius:14px; border:none; font-weight:800; font-size:15px; cursor:pointer; width:100%; gap:6px;}
+.btn-primary{background:var(--text); color:#fff;}
+.btn-outline{background:#fff; border:2px solid var(--border); color:var(--text);}
+.btn-accent{background:var(--accent); color:#fff;}
+.btn-sm{min-height:40px; font-size:13.5px; padding:8px 12px;}
+.btn:disabled{opacity:.5;}
+.stack>*{margin-bottom:10px;}
+.stack>*:last-child{margin-bottom:0;}
+
+.pill{display:inline-block; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; letter-spacing:.02em;}
+.pill.tiempo{background:#eef2ff; color:#4338ca;}
+.pill.lugar{background:#ecfeff; color:#0e7490;}
+.pill.expresiones{background:#fdf4ff; color:#a21caf;}
+.pill.trampa{background:var(--accent-bg); color:var(--accent-dark);}
+.pill.excepciones{background:#111827; color:#fff;}
+
+.prep{font-weight:800; padding:1px 4px; border-radius:5px; cursor:pointer; white-space:nowrap;}
+.prep.in{color:var(--in-dark); background:var(--in-soft);}
+.prep.on{color:var(--on-dark); background:var(--on-soft);}
+.prep.at{color:var(--at-dark); background:var(--at-soft);}
+.mnemo{display:none; font-size:12.5px; color:var(--muted); background:#f8fafc; border-left:3px solid var(--border); padding:7px 10px; margin:6px 0 10px; border-radius:8px;}
+.mnemo.open{display:block;}
+.storyText{font-size:16.5px; line-height:1.75;}
+
+.zoomHero{background:linear-gradient(180deg,#ffffff,#f8fafc); border:1px solid var(--border); border-radius:20px; padding:18px; text-align:center; margin-bottom:16px;}
+.cameraWrap{height:110px; display:flex; align-items:center; justify-content:center; margin-bottom:6px;}
+.camera{width:96px; height:96px; border-radius:50%; border:7px solid var(--on); display:flex; align-items:center; justify-content:center; transition:transform .18s ease, border-color .18s ease; position:relative;}
+.camera .cross{position:absolute; width:100%; height:100%; opacity:0; transition:opacity .18s ease;}
+.camera .cross::before,.camera .cross::after{content:""; position:absolute; background:var(--at); }
+.camera .cross::before{left:50%; top:0; width:2px; height:100%; transform:translateX(-1px);}
+.camera .cross::after{top:50%; left:0; height:2px; width:100%; transform:translateY(-1px);}
+.camera .lens{width:34px; height:34px; border-radius:50%; background:var(--on); opacity:.3; transition:background .18s ease, transform .18s ease;}
+.zoomLabel{font-weight:800; font-size:15px; margin-bottom:2px;}
+.zoomHint{font-size:12.5px; color:var(--muted); margin-bottom:8px;}
+input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-color:var(--on);}
+.zoomExamples{display:flex; flex-direction:column; gap:6px; margin-top:10px; font-size:15px;}
+.exRow{display:flex; align-items:center; gap:8px; justify-content:center;}
+.exRow .tag{font-size:10.5px; font-weight:800; color:var(--muted); background:#eef2f7; padding:3px 9px; border-radius:999px; min-width:58px;}
+.exRow b{font-weight:800;}
+
+.exBadgeWrap{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+.sentence{font-size:19px; font-weight:650; line-height:1.55; margin:4px 0 18px;}
+.blank{display:inline-block; min-width:50px; border-bottom:3px dashed var(--muted); text-align:center; color:transparent;}
+.esQuote{font-size:19px; font-weight:650; line-height:1.5; margin:4px 0 18px; font-style:italic;}
+
+.prepRow{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:4px;}
+.prepRow.four{grid-template-columns:repeat(2,1fr);}
+.prepBtn{min-height:54px; border-radius:14px; border:2px solid var(--border); font-weight:800; font-size:16px; background:#fff; text-transform:uppercase; letter-spacing:.03em;}
+.prepBtn.in{color:var(--in);}
+.prepBtn.on{color:var(--on);}
+.prepBtn.at{color:var(--at);}
+.prepBtn.none{color:var(--muted); font-size:12px; text-transform:none;}
+.prepBtn.selected.correct{background:var(--on-soft); border-color:var(--on); color:var(--on-dark);}
+.prepBtn.selected.wrong{background:var(--at-soft); border-color:var(--at); color:var(--at-dark);}
+.prepBtn.reveal-correct{background:var(--on-soft); border-color:var(--on); color:var(--on-dark);}
+.prepBtn:disabled{opacity:.6;}
+
+.optionCard{display:block; width:100%; text-align:left; background:#fff; border:2px solid var(--border); border-radius:14px; padding:13px 14px; margin-bottom:10px; font-size:15.5px; font-weight:650; min-height:48px;}
+.optionCard.selected.correct{border-color:var(--on); background:var(--on-bg);}
+.optionCard.selected.wrong{border-color:var(--at); background:var(--at-bg);}
+.optionCard.reveal-correct{border-color:var(--on); background:var(--on-bg);}
+.optionCard:disabled{opacity:.85;}
+
+.feedback{margin-top:12px; padding:14px; border-radius:14px; font-size:14px;}
+.feedback.correct{background:var(--on-bg); border:1px solid var(--on-soft);}
+.feedback.wrong{background:var(--at-bg); border:1px solid var(--at-soft);}
+.fbTitle{font-weight:800; margin-bottom:5px; font-size:15.5px;}
+.fbAnswer{font-weight:700; margin:4px 0 8px;}
+.fbMeta{color:var(--text); opacity:.85;}
+.fbNote{margin-top:6px; font-weight:600;}
+.nextBtnWrap{margin-top:12px;}
+
+.domRow{margin-bottom:12px;}
+.domTop{display:flex; justify-content:space-between; font-size:13px; font-weight:700; margin-bottom:5px;}
+.domBar{height:11px; background:#eef1f6; border-radius:999px; overflow:hidden;}
+.domFill{height:100%; border-radius:999px; transition:width .3s ease;}
+.domFill.tiempo{background:var(--in);}
+.domFill.lugar{background:var(--on);}
+.domFill.expresiones{background:var(--at);}
+.domFill.trampa{background:var(--accent);}
+.domFill.excepciones{background:#111827;}
+
+.bannerReview{display:flex; align-items:center; gap:12px; background:var(--in-bg); border:1px solid var(--in-soft); border-radius:16px; padding:14px; margin-bottom:14px;}
+.bannerReview .num{font-size:26px; font-weight:800; color:var(--in);}
+
+.lockBox{text-align:center; padding:30px 16px; color:var(--muted);}
+.lockBox .big{font-size:44px; margin-bottom:8px;}
+.progWrap{background:#eef1f6; border-radius:999px; height:12px; overflow:hidden; margin:14px 0;}
+.progFill{background:var(--in); height:100%; border-radius:999px; transition:width .3s ease;}
+
+.modalOverlay{position:fixed; inset:0; background:rgba(15,23,42,.55); display:flex; align-items:flex-end; justify-content:center; z-index:100; padding:0;}
+.modalCard{background:#fff; border-radius:20px 20px 0 0; padding:22px 20px; width:100%; max-width:480px;}
+@media(min-width:520px){.modalOverlay{align-items:center;} .modalCard{border-radius:20px;}}
+
+.smallMuted{font-size:12.5px; color:var(--muted);}
+.center{text-align:center;}
+.flexBetween{display:flex; justify-content:space-between; align-items:center;}
+.tag-count{font-size:12px; color:var(--muted); font-weight:700;}
+.errList div{padding:8px 0; border-bottom:1px solid var(--border); font-size:13.5px;}
+.errList div:last-child{border-bottom:none;}
+.lessonItem{padding:10px 0; border-bottom:1px solid var(--border);}
+.lessonItem:last-child{border-bottom:none;}
+.lessonSentence{font-size:15px; font-weight:650; margin-bottom:3px;}
+.lessonNote{font-size:13px; color:var(--muted);}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header class="topbar">
+    <div class="brand">🔎 El Zoom del Inglés</div>
+    <div class="streakChip" id="streakChip">🔥 0 días</div>
+  </header>
+
+  <main id="views">
+
+    <section id="view-inicio" class="view active"></section>
+
+    <section id="view-historias" class="view">
+      <h2 class="title">📖 Historias</h2>
+      <p class="subtitle">Toca cualquier palabra coloreada para ver el porqué.</p>
+
+      <div class="card">
+        <h3 class="subtitle2">Un lunes cualquiera de María</h3>
+        <div class="storyText">
+          María wakes up <span class="prep at">at</span><small class="mnemo">AT 7 o'clock → zoom máximo: un punto exacto del reloj.</small> 7 o'clock <span class="prep in">in</span><small class="mnemo">IN the morning → el bloque entero de la mañana es un contenedor amplio.</small> the morning. She has breakfast <span class="prep in">in</span><small class="mnemo">IN the kitchen → la cocina te rodea por todos lados: contenedor, zoom general.</small> the kitchen and leaves <span class="prep at">at</span><small class="mnemo">AT 8:15 → otra vez un punto exacto en el reloj.</small> 8:15. She lives <span class="prep on">on</span><small class="mnemo">ON Calle Mayor → una calle es una línea del mapa: zoom medio, superficie.</small> Calle Mayor, <span class="prep at">at</span><small class="mnemo">AT number 12 → el número de portal es el punto exacto: zoom máximo.</small> number 12, so she walks to the corner and waits <span class="prep at">at</span><small class="mnemo">AT the bus stop → un punto concreto de espera.</small> the bus stop. She gets <span class="prep on">on</span><small class="mnemo">ON the bus → en vehículos grandes donde puedes moverte, usamos ON, como si fuera una plataforma.</small> the bus <span class="prep on">on</span><small class="mnemo">ON Monday → un día es una línea del calendario: zoom medio.</small> Monday mornings and reads the news <span class="prep on">on</span><small class="mnemo">ON her phone → superficie de la pantalla, expresión fija.</small> her phone. She works <span class="prep at">at</span><small class="mnemo">AT the office → aquí 'the office' es el punto de la agenda donde ocurre algo, no el edificio en sí.</small> the office and has a meeting <span class="prep in">in</span><small class="mnemo">IN the main room → la sala como contenedor físico.</small> the main room. Lunch is <span class="prep at">at</span><small class="mnemo">AT 2pm → hora exacta, punto en el reloj.</small> 2pm, always <span class="prep in">in</span><small class="mnemo">IN a small café → el café como espacio que la envuelve.</small> a small café <span class="prep on">on</span><small class="mnemo">ON the corner → la esquina es un punto de la línea de la calle.</small> the corner. She's usually home <span class="prep in">in</span><small class="mnemo">IN the evening → otro bloque amplio del día, contenedor.</small> the evening, and relaxes watching something <span class="prep on">on</span><small class="mnemo">ON TV → expresión fija, como si el programa estuviera 'sobre' la pantalla.</small> TV.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="subtitle2">El fin de semana de Carlos (lugar y transporte)</h3>
+        <div class="storyText">
+          Carlos lives <span class="prep in">in</span><small class="mnemo">IN Vila-real → una ciudad es un contenedor: zoom general.</small> Vila-real but his parents live <span class="prep in">in</span><small class="mnemo">Un país entero: el contenedor más grande posible.</small> Portugal, so on Saturday he travels <span class="prep on">on</span><small class="mnemo">ON a train → vehículo grande donde puedes caminar: plataforma, ON.</small> a train and then <span class="prep on">on</span><small class="mnemo">ON a bus → mismo caso: transporte grande y compartido.</small> a bus. He always sits <span class="prep in">in</span><small class="mnemo">IN the car park → el aparcamiento como espacio cerrado que rodea el coche.</small> the car park first, waiting <span class="prep in">in</span><small class="mnemo">IN his car → un coche es pequeño, pero sigue siendo un contenedor cerrado.</small> his car for his cousin, who arrives <span class="prep on">on</span><small class="mnemo">ON a bicycle → los vehículos que se 'montan' (bici, moto, caballo) usan ON.</small> a bicycle. They meet <span class="prep at">at</span><small class="mnemo">AT the bus stop → punto exacto de encuentro.</small> the bus stop and walk to grandma's house, which is <span class="prep on">on</span><small class="mnemo">ON Fifth Avenue → la avenida es una línea del mapa.</small> Fifth Avenue, <span class="prep at">at</span><small class="mnemo">AT number 25 → el número exacto del portal, zoom máximo.</small> number 25. Grandma is always <span class="prep in">in</span><small class="mnemo">La cocina como contenedor.</small> the kitchen when they arrive. Later they relax <span class="prep on">on</span><small class="mnemo">ON the beach → la playa es una superficie extensa: zoom medio.</small> the beach and watch the sunset <span class="prep at">at</span><small class="mnemo">AT the end of the street → el punto final concreto.</small> the end of the street.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="subtitle2">La agenda de Ana (tiempo)</h3>
+        <div class="storyText">
+          Ana was born <span class="prep in">in</span><small class="mnemo">Un año es un contenedor temporal enorme.</small> 1998, <span class="prep in">in</span><small class="mnemo">Un mes cabe muchas cosas dentro: contenedor.</small> July. Every year, <span class="prep in">in</span><small class="mnemo">Una estación entera: bloque largo, contenedor.</small> summer, she visits her family, but this year she has an exam <span class="prep on">on</span><small class="mnemo">Una fecha exacta es un punto de la línea del calendario.</small> July 5th. She studies every day <span class="prep in">in</span><small class="mnemo">Bloque amplio del día.</small> the morning and reviews again <span class="prep in">in</span><small class="mnemo">Otro bloque amplio.</small> the evening. She never studies <span class="prep at">at</span><small class="mnemo">Excepción fija: 'at night' usa AT aunque parezca un bloque largo.</small> night — she prefers to sleep! Her classes start <span class="prep at">at</span><small class="mnemo">Hora exacta: punto en el reloj.</small> 9 o'clock and finish <span class="prep at">at</span><small class="mnemo">Otra hora exacta.</small> 1pm. She always relaxes <span class="prep at">at</span><small class="mnemo">Excepción británica: 'at the weekend' es fija.</small> the weekend, and the whole family gets together <span class="prep at">at</span><small class="mnemo">Excepción: periodos festivos como Christmas y Easter usan AT.</small> Christmas.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="subtitle2">Expresiones que salvan conversaciones</h3>
+        <div class="storyText">
+          "Sorry, I can't talk now, I'm <span class="prep on">on</span><small class="mnemo">Expresión fija: 'on the phone'.</small> the phone!" "No problem, call me back — <span class="prep at">at</span><small class="mnemo">Expresión fija: 'at least' = como mínimo.</small> least tell me if you saw the news <span class="prep on">on</span><small class="mnemo">Expresión fija: 'on TV'.</small> TV." "Yes! <span class="prep in">in</span><small class="mnemo">Expresión fija: 'in fact' = de hecho.</small> fact, I was <span class="prep in">in</span><small class="mnemo">Expresión fija: 'in a hurry' = con prisa.</small> a hurry so I only saw it <span class="prep at">at</span><small class="mnemo">Expresión fija: 'at first' = al principio.</small> first, but <span class="prep at">at</span><small class="mnemo">Expresión fija: 'at last' = por fin/finalmente.</small> last I sat down to watch it properly." "Well, <span class="prep in">in</span><small class="mnemo">Expresión fija: 'in the end' = finalmente, tras un proceso.</small> the end, it was good news. We're going <span class="prep on">on</span><small class="mnemo">Expresión fija: 'on holiday' = de vacaciones.</small> holiday next month!"
+        </div>
+      </div>
+    </section>
+
+    <section id="view-diagnostico" class="view"></section>
+    <section id="view-practica" class="view"></section>
+    <section id="view-trampa" class="view"></section>
+    <section id="view-jefe" class="view"></section>
+    <section id="view-stats" class="view"></section>
+
+  </main>
+
+  <nav class="bottomnav">
+    <button data-view="inicio"><span class="ic">🏠</span><span>Inicio</span></button>
+    <button data-view="historias"><span class="ic">📖</span><span>Historias</span></button>
+    <button data-view="practica"><span class="ic">🎯</span><span>Práctica</span></button>
+    <button data-view="trampa"><span class="ic">⚠️</span><span>Trampa</span></button>
+    <button data-view="jefe"><span class="ic">👑</span><span>Jefe</span></button>
+    <button data-view="stats"><span class="ic">📊</span><span>Stats</span></button>
+  </nav>
+
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ================= UTILIDADES ================= */
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function addDaysISO(base, days){ const d = new Date(base + "T00:00:00"); d.setDate(d.getDate() + days); return d.toISOString().slice(0,10); }
+function dayOfYear(){ const d = new Date(); const start = new Date(d.getFullYear(),0,0); return Math.floor((d - start) / 86400000); }
+function shuffle(arr){ const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function clone(x){ return JSON.parse(JSON.stringify(x)); }
+function fillFrame(frame, prep){
+  if(prep === "none"){
+    return frame.replace("___ ", "").replace(" ___", "").replace("___", "").replace(/\s+/g," ").trim();
+  }
+  return frame.replace("___", prep);
+}
+function mistakeFor(prep){
+  if(prep === "in") return "on";
+  if(prep === "on") return "in";
+  if(prep === "at") return "in";
+  return "in";
+}
+
+/* ================= BANCO DE FRASES (base) ================= */
+const PHRASES = [
+  // ---- TIEMPO · IN ----
+  {id:"p1", cat:"tiempo", prep:"in", frame:"They got married ___ 2026.", note:"Un año entero es un contenedor temporal enorme."},
+  {id:"p2", cat:"tiempo", prep:"in", frame:"She was born ___ 1999.", note:"Un año es un contenedor grande de tiempo."},
+  {id:"p3", cat:"tiempo", prep:"in", frame:"The exam is ___ July.", note:"Un mes completo es un contenedor: caben muchos días dentro."},
+  {id:"p4", cat:"tiempo", prep:"in", frame:"It's very cold ___ December.", note:"Otro mes: contenedor amplio de tiempo."},
+  {id:"p5", cat:"tiempo", prep:"in", frame:"New classes start ___ January.", note:"Un mes vuelve a ser un bloque contenedor."},
+  {id:"p6", cat:"tiempo", prep:"in", frame:"We go to the beach ___ summer.", note:"Una estación es un bloque largo de tiempo: contenedor."},
+  {id:"p7", cat:"tiempo", prep:"in", frame:"It gets dark early ___ winter.", note:"Otra estación: contenedor amplio."},
+  {id:"p8", cat:"tiempo", prep:"in", frame:"Flowers bloom ___ spring.", note:"La primavera entera es un contenedor de tiempo."},
+  {id:"p9", cat:"tiempo", prep:"in", frame:"Leaves fall ___ autumn.", note:"El otoño como bloque contenedor."},
+  {id:"p10", cat:"tiempo", prep:"in", frame:"I always check my email ___ the morning.", note:"'The morning' es un tramo amplio del día: contenedor, aunque a las 7 en punto sea AT.", errorProne:true},
+  {id:"p11", cat:"tiempo", prep:"in", frame:"We usually relax ___ the afternoon.", note:"Otro tramo amplio del día: contenedor."},
+  {id:"p12", cat:"tiempo", prep:"in", frame:"I like reading ___ the evening.", note:"La tarde-noche como bloque contenedor del día."},
+  {id:"p13", cat:"tiempo", prep:"in", frame:"Computers changed everything ___ the 21st century.", note:"Un siglo es un contenedor gigantesco de tiempo."},
+  {id:"p14", cat:"tiempo", prep:"in", frame:"People wrote letters ___ the past.", note:"'The past' es un contenedor amplio sin límites precisos."},
+  {id:"p15", cat:"tiempo", prep:"in", frame:"Robots will help us ___ the future.", note:"'The future' funciona igual: contenedor amplio."},
+  // ---- TIEMPO · ON ----
+  {id:"p16", cat:"tiempo", prep:"on", frame:"I have yoga ___ Monday.", note:"Un día es una línea concreta del calendario: superficie, no contenedor."},
+  {id:"p17", cat:"tiempo", prep:"on", frame:"We go out ___ Friday nights.", note:"El día sigue marcando la línea del calendario, aunque hablemos de la noche."},
+  {id:"p18", cat:"tiempo", prep:"on", frame:"Shops are closed ___ Sunday.", note:"Otra vez: un día concreto es un punto de la línea semanal."},
+  {id:"p19", cat:"tiempo", prep:"on", frame:"I get presents ___ my birthday.", note:"Un día especial sigue siendo un 'día' sobre la línea del calendario."},
+  {id:"p20", cat:"tiempo", prep:"on", frame:"We open presents ___ Christmas Day.", note:"'Christmas Day' es un día concreto (distinto del periodo 'Christmas')."},
+  {id:"p21", cat:"tiempo", prep:"on", frame:"The party is ___ New Year's Day.", note:"Día concreto: punto de la línea del calendario."},
+  {id:"p22", cat:"tiempo", prep:"on", frame:"The meeting is ___ July 5th.", note:"Una fecha exacta (día + mes) es un punto sobre la línea del calendario."},
+  {id:"p23", cat:"tiempo", prep:"on", frame:"I work from home ___ weekdays.", note:"Los días laborables siguen siendo días: ON."},
+  {id:"p24", cat:"tiempo", prep:"on", frame:"Couples go out for dinner ___ Valentine's Day.", note:"Un día señalado sigue siendo un día concreto: ON."},
+  // ---- TIEMPO · AT (horas) ----
+  {id:"p25", cat:"tiempo", prep:"at", frame:"The film starts ___ 7 o'clock.", note:"Una hora concreta es el zoom máximo: un punto exacto en el reloj."},
+  {id:"p26", cat:"tiempo", prep:"at", frame:"I finish work ___ 9pm.", note:"Hora exacta: punto en el reloj."},
+  {id:"p27", cat:"tiempo", prep:"at", frame:"Let's meet ___ noon.", note:"'Noon' es un punto exacto del día."},
+  {id:"p28", cat:"tiempo", prep:"at", frame:"The shop closes ___ midnight.", note:"'Midnight' también es un punto exacto."},
+  {id:"p29", cat:"tiempo", prep:"at", frame:"I'm busy ___ the moment.", note:"'The moment' señala un instante preciso: AT."},
+  {id:"p30", cat:"tiempo", prep:"at", frame:"Prices are high ___ present.", note:"'At present' = ahora mismo, un punto concreto en el tiempo."},
+  // ---- TIEMPO · AT (excepciones) ----
+  {id:"p31", cat:"tiempo", prep:"at", frame:"Owls are awake ___ night.", note:"Excepción fija: aunque 'night' parece un bloque largo (contenedor), la expresión usa AT.", errorProne:true},
+  {id:"p32", cat:"tiempo", prep:"at", frame:"We usually travel ___ the weekend.", note:"Excepción fija (inglés británico): 'at the weekend' trata ese tramo como un bloque puntual de descanso, no como contenedor.", errorProne:true},
+  {id:"p33", cat:"tiempo", prep:"at", frame:"Families get together ___ Christmas.", note:"Excepción: 'at Christmas' se refiere al periodo festivo completo, con AT fijo por costumbre.", errorProne:true},
+  {id:"p34", cat:"tiempo", prep:"at", frame:"We visit grandma ___ Easter.", note:"Igual que Christmas: periodo festivo con AT fijo.", errorProne:true},
+  {id:"p35", cat:"tiempo", prep:"at", frame:"Everyone arrived ___ the same time.", note:"'The same time' es un punto temporal preciso y compartido: AT."},
+  // ---- TIEMPO · sin preposición ----
+  {id:"p36", cat:"tiempo", prep:"none", frame:"I'll call you ___ next Monday.", note:"Con 'next / last / this / every' no se usa preposición: la propia palabra ya sitúa el zoom.", errorProne:true},
+  {id:"p37", cat:"tiempo", prep:"none", frame:"I saw her ___ last night.", note:"'Last' ya indica el momento: no hace falta preposición.", errorProne:true},
+  {id:"p38", cat:"tiempo", prep:"none", frame:"Let's meet ___ this Friday.", note:"'This' ya sitúa el momento exacto: sin preposición.", errorProne:true},
+  {id:"p39", cat:"tiempo", prep:"none", frame:"I go running ___ every morning.", note:"'Every' ya marca la repetición: sin preposición.", errorProne:true},
+  // ---- LUGAR · IN ----
+  {id:"p40", cat:"lugar", prep:"in", frame:"I was born ___ Spain.", note:"Un país es el contenedor más grande: plano general."},
+  {id:"p41", cat:"lugar", prep:"in", frame:"She lives ___ Madrid.", note:"Una ciudad es un contenedor: zoom general."},
+  {id:"p42", cat:"lugar", prep:"in", frame:"My grandparents live ___ Vila-real.", note:"Un pueblo o ciudad sigue siendo un contenedor."},
+  {id:"p43", cat:"lugar", prep:"in", frame:"Dinner is ready ___ the kitchen.", note:"Una habitación es un contenedor cerrado: plano general dentro de la casa."},
+  {id:"p44", cat:"lugar", prep:"in", frame:"All the files are ___ the office.", note:"Cuando 'the office' es el espacio físico que te rodea, es un contenedor: IN."},
+  {id:"p45", cat:"lugar", prep:"in", frame:"We were stuck ___ the car for two hours.", note:"Un coche es pequeño y cerrado, pero sigue siendo un contenedor: te mete dentro."},
+  {id:"p46", cat:"lugar", prep:"in", frame:"I left my phone ___ a taxi.", note:"Otro vehículo pequeño y cerrado: contenedor."},
+  {id:"p47", cat:"lugar", prep:"in", frame:"I stayed ___ bed all morning.", note:"'Bed' como espacio que te envuelve: contenedor."},
+  {id:"p48", cat:"lugar", prep:"in", frame:"The toys are ___ the box.", note:"Una caja es un contenedor por definición."},
+  {id:"p49", cat:"lugar", prep:"in", frame:"The kids are playing ___ the garden.", note:"Un jardín delimitado funciona como contenedor."},
+  {id:"p50", cat:"lugar", prep:"in", frame:"This is the tallest building ___ the world.", note:"Contenedor máximo posible: todo el planeta."},
+  {id:"p51", cat:"lugar", prep:"in", frame:"Big Ben is ___ London.", note:"Una ciudad como contenedor: zoom general."},
+  {id:"p52", cat:"lugar", prep:"in", frame:"Bilbao is ___ the north of Spain.", note:"Una región amplia sigue siendo un contenedor."},
+  {id:"p53", cat:"lugar", prep:"in", frame:"The students are ___ the classroom.", note:"Un aula es un contenedor cerrado."},
+  {id:"p54", cat:"lugar", prep:"in", frame:"The fish swims ___ the water.", note:"El agua como medio que rodea: contenedor."},
+  {id:"p55", cat:"lugar", prep:"in", frame:"The birds fly ___ the sky.", note:"El cielo como espacio enorme que envuelve: contenedor."},
+  // ---- LUGAR · ON ----
+  {id:"p56", cat:"lugar", prep:"on", frame:"The bakery is ___ Calle Mayor.", note:"Una calle es una línea del mapa: superficie, zoom medio."},
+  {id:"p57", cat:"lugar", prep:"on", frame:"The office is ___ Fifth Avenue.", note:"Otra calle: línea del mapa."},
+  {id:"p58", cat:"lugar", prep:"on", frame:"We chatted ___ the bus.", note:"Excepción de transporte: en vehículos grandes donde puedes moverte (bus, tren, avión) usamos ON, como si fueran una plataforma.", errorProne:true},
+  {id:"p59", cat:"lugar", prep:"on", frame:"I read a book ___ the train.", note:"Mismo caso que el bus: vehículo grande, plataforma.", errorProne:true},
+  {id:"p60", cat:"lugar", prep:"on", frame:"She fell asleep ___ the plane.", note:"Vehículo grande donde te mueves: ON.", errorProne:true},
+  {id:"p61", cat:"lugar", prep:"on", frame:"He goes to work ___ a bicycle.", note:"Excepción de transporte: en vehículos que se 'montan' (bici, moto, caballo) se usa ON.", errorProne:true},
+  {id:"p62", cat:"lugar", prep:"on", frame:"There's a poster ___ the wall.", note:"Una pared es una superficie: algo pegado sobre ella usa ON."},
+  {id:"p63", cat:"lugar", prep:"on", frame:"Put the keys ___ the table.", note:"Una mesa es una superficie: ON."},
+  {id:"p64", cat:"lugar", prep:"on", frame:"There's water ___ the floor.", note:"El suelo también es una superficie."},
+  {id:"p65", cat:"lugar", prep:"on", frame:"Our flat is ___ the second floor.", note:"Un piso o planta funciona como una 'balda' horizontal: superficie, ON."},
+  {id:"p66", cat:"lugar", prep:"on", frame:"Turn ___ the left.", note:"'The left/right' se tratan como puntos de referencia sobre una línea: ON."},
+  {id:"p67", cat:"lugar", prep:"on", frame:"The shop is ___ the right.", note:"Mismo caso: referencia direccional con ON."},
+  {id:"p68", cat:"lugar", prep:"on", frame:"We relaxed ___ the beach.", note:"La playa es una superficie extensa (arena): ON."},
+  {id:"p69", cat:"lugar", prep:"on", frame:"The bank is ___ the corner.", note:"La esquina es un punto de la línea de la calle: ON."},
+  {id:"p70", cat:"lugar", prep:"on", frame:"The captain stood ___ the ship.", note:"La cubierta de un barco se trata como superficie: ON."},
+  // ---- LUGAR · AT ----
+  {id:"p71", cat:"lugar", prep:"at", frame:"I live ___ number 25.", note:"Un número de portal es el punto exacto de la calle: AT."},
+  {id:"p72", cat:"lugar", prep:"at", frame:"Wait for me ___ the bus stop.", note:"Un punto concreto de espera: AT."},
+  {id:"p73", cat:"lugar", prep:"at", frame:"Someone is knocking ___ the door.", note:"La puerta como punto exacto de contacto: AT."},
+  {id:"p74", cat:"lugar", prep:"at", frame:"Nobody is ___ home.", note:"'Home' como punto de actividad (no como espacio físico) usa AT."},
+  {id:"p75", cat:"lugar", prep:"at", frame:"She's still ___ work.", note:"'Work' como actividad, un punto en el día: AT."},
+  {id:"p76", cat:"lugar", prep:"at", frame:"The children are ___ school.", note:"'School' como punto de actividad: AT."},
+  {id:"p77", cat:"lugar", prep:"at", frame:"I have a meeting ___ the office.", note:"Cuando 'the office' es el punto de una agenda, usamos AT (compara con IN cuando hablamos del espacio físico)."},
+  {id:"p78", cat:"lugar", prep:"at", frame:"Let's meet ___ the airport.", note:"Un punto de encuentro concreto: AT."},
+  {id:"p79", cat:"lugar", prep:"at", frame:"The train arrives ___ the station.", note:"La estación como punto exacto de llegada: AT."},
+  {id:"p80", cat:"lugar", prep:"at", frame:"There were 50 people ___ the party.", note:"Un evento se trata como un punto: AT."},
+  {id:"p81", cat:"lugar", prep:"at", frame:"The flag is ___ the top of the mountain.", note:"'The top' es un punto exacto: AT."},
+  {id:"p82", cat:"lugar", prep:"at", frame:"The treasure is ___ the bottom of the sea.", note:"'The bottom' también es un punto exacto: AT."},
+  {id:"p83", cat:"lugar", prep:"at", frame:"Turn left ___ the end of the street.", note:"'The end of the street' es un punto final concreto: AT."},
+  {id:"p84", cat:"lugar", prep:"at", frame:"She studies chemistry ___ university.", note:"Excepción (inglés británico): 'at university' trata la institución como punto de actividad, no como contenedor.", errorProne:true},
+  {id:"p85", cat:"lugar", prep:"at", frame:"We always stop ___ the traffic lights.", note:"Un semáforo es un punto exacto de la calle: AT."},
+  {id:"p86", cat:"lugar", prep:"at", frame:"I need eggs from ___ the supermarket.", note:"Un punto concreto donde ocurre la actividad de comprar: AT."},
+  // ---- EXPRESIONES FIJAS ----
+  {id:"p87", cat:"expresiones", prep:"on", frame:"I can't talk now, I'm ___ the phone.", note:"Expresión fija: 'on the phone', como si la conversación fuera 'sobre' la línea telefónica.", errorProne:true},
+  {id:"p88", cat:"expresiones", prep:"on", frame:"There's a good documentary ___ TV tonight.", note:"Fija: 'on TV' / 'on the radio', como contenido que va 'sobre' la pantalla o la onda.", errorProne:true},
+  {id:"p89", cat:"expresiones", prep:"on", frame:"I heard the news ___ the radio.", note:"Misma familia fija que 'on TV'.", errorProne:true},
+  {id:"p90", cat:"expresiones", prep:"on", frame:"We're going ___ holiday in August.", note:"Fija: 'on holiday' / 'on vacation'.", errorProne:true},
+  {id:"p91", cat:"expresiones", prep:"on", frame:"He's ___ a diet before summer.", note:"Fija: 'on a diet'.", errorProne:true},
+  {id:"p92", cat:"expresiones", prep:"on", frame:"She did it ___ purpose.", note:"Fija: 'on purpose' = a propósito.", errorProne:true},
+  {id:"p93", cat:"expresiones", prep:"on", frame:"The building was ___ fire.", note:"Fija: 'on fire' = en llamas.", errorProne:true},
+  {id:"p94", cat:"expresiones", prep:"on", frame:"We're ___ a trip to Italy next month.", note:"Fija: 'on a trip'.", errorProne:true},
+  {id:"p95", cat:"expresiones", prep:"in", frame:"They fell ___ love in Paris.", note:"Fija: 'in love', 'in a hurry', 'in trouble' usan IN aunque no sean lugares físicos.", errorProne:true},
+  {id:"p96", cat:"expresiones", prep:"in", frame:"Sorry, I'm ___ a hurry!", note:"Fija: 'in a hurry' = con prisa.", errorProne:true},
+  {id:"p97", cat:"expresiones", prep:"in", frame:"He's ___ trouble with his boss.", note:"Fija: 'in trouble' = en problemas.", errorProne:true},
+  {id:"p98", cat:"expresiones", prep:"in", frame:"___ fact, I've never been to London.", note:"Fija: 'in fact' = de hecho.", errorProne:true},
+  {id:"p99", cat:"expresiones", prep:"in", frame:"___ the end, everything worked out fine.", note:"Fija: 'in the end' = finalmente. No confundir con 'at the end (of)' = en el punto final de algo.", errorProne:true},
+  {id:"p100", cat:"expresiones", prep:"in", frame:"We arrived just ___ time for the flight.", note:"Fija: 'in time' = a tiempo, antes del límite. Distinto de 'on time' = puntual.", errorProne:true},
+  {id:"p101", cat:"expresiones", prep:"in", frame:"Please don't discuss this ___ public.", note:"Fija: 'in public' = en público.", errorProne:true},
+  {id:"p102", cat:"expresiones", prep:"at", frame:"___ first, I didn't understand the accent.", note:"Fija: 'at first' = al principio.", errorProne:true},
+  {id:"p103", cat:"expresiones", prep:"at", frame:"___ last, the bus arrived!", note:"Fija: 'at last' = por fin.", errorProne:true},
+  {id:"p104", cat:"expresiones", prep:"at", frame:"It costs ___ least twenty euros.", note:"Fija: 'at least' = como mínimo.", errorProne:true},
+  {id:"p105", cat:"expresiones", prep:"at", frame:"I cried ___ the end of the movie.", note:"Fija: 'at the end (of)' = en el punto final concreto de algo. Compara con 'in the end' (finalmente).", errorProne:true},
+  {id:"p106", cat:"expresiones", prep:"on", frame:"The train arrived ___ time.", note:"Fija: 'on time' = puntual, ni antes ni después. Compara con 'in time' = a tiempo/antes del límite.", errorProne:true},
+  {id:"p107", cat:"expresiones", prep:"on", frame:"___ average, I sleep 7 hours.", note:"Fija: 'on average' = de media.", errorProne:true},
+  {id:"p108", cat:"expresiones", prep:"on", frame:"She's travelling ___ business this week.", note:"Fija: 'on business' = por motivos de trabajo.", errorProne:true}
+];
+
+/* ================= LA TRAMPA DEL EN ================= */
+const TRAMPA = [
+  {id:"tr1", es:"Nací en España.", answer:"in", en:"I was born in Spain.", note:"Un país es un contenedor enorme: IN."},
+  {id:"tr2", es:"Vivo en Madrid.", answer:"in", en:"I live in Madrid.", note:"Una ciudad es un contenedor: IN."},
+  {id:"tr3", es:"Mis abuelos viven en Vila-real.", answer:"in", en:"My grandparents live in Vila-real.", note:"Otro contenedor de lugar: IN."},
+  {id:"tr4", es:"La cena está en la cocina.", answer:"in", en:"Dinner is in the kitchen.", note:"Una habitación es un contenedor cerrado: IN."},
+  {id:"tr5", es:"Nos quedamos atrapados en el coche.", answer:"in", en:"We got stuck in the car.", note:"El coche te envuelve como un contenedor: IN."},
+  {id:"tr6", es:"Dejé el móvil en un taxi.", answer:"in", en:"I left my phone in a taxi.", note:"Otro vehículo pequeño y cerrado: IN."},
+  {id:"tr7", es:"Los niños juegan en el jardín.", answer:"in", en:"The kids are playing in the garden.", note:"Espacio delimitado: contenedor, IN."},
+  {id:"tr8", es:"Nos vemos en julio.", answer:"in", en:"See you in July.", note:"Un mes es un contenedor de tiempo: IN."},
+  {id:"tr9", es:"Nací en 2026.", answer:"in", en:"I was born in 2026.", note:"Un año es un contenedor temporal enorme: IN."},
+  {id:"tr10", es:"Vamos a la playa en verano.", answer:"in", en:"We go to the beach in summer.", note:"Una estación es un bloque largo: contenedor, IN."},
+  {id:"tr11", es:"Siempre reviso el correo en la mañana.", answer:"in", en:"I always check my email in the morning.", note:"'La mañana' es un tramo amplio: contenedor, IN."},
+  {id:"tr12", es:"Este es el edificio más alto en el mundo.", answer:"in", en:"This is the tallest building in the world.", note:"Contenedor máximo: todo el planeta, IN."},
+  {id:"tr13", es:"La panadería está en la calle Mayor.", answer:"on", en:"The bakery is on Calle Mayor.", note:"Trampa: en español decimos 'en la calle', pero en inglés una calle es una línea del mapa: ON."},
+  {id:"tr14", es:"Pon las llaves en la mesa.", answer:"on", en:"Put the keys on the table.", note:"Trampa: 'en la mesa' pero en inglés una superficie usa ON."},
+  {id:"tr15", es:"Hay un póster en la pared.", answer:"on", en:"There's a poster on the wall.", note:"Trampa: 'en la pared' pero es una superficie: ON."},
+  {id:"tr16", es:"Vivimos en el segundo piso.", answer:"on", en:"We live on the second floor.", note:"Trampa: 'en el piso' pero una planta es como una balda horizontal: ON."},
+  {id:"tr17", es:"Charlamos en el autobús.", answer:"on", en:"We chatted on the bus.", note:"Trampa: 'en el autobús' pero los vehículos grandes donde te mueves usan ON."},
+  {id:"tr18", es:"Leí un libro en el tren.", answer:"on", en:"I read a book on the train.", note:"Mismo caso que el autobús: ON."},
+  {id:"tr19", es:"Nos relajamos en la playa.", answer:"on", en:"We relaxed on the beach.", note:"Trampa: 'en la playa' pero la arena es una superficie extensa: ON."},
+  {id:"tr20", es:"El banco está en la esquina.", answer:"on", en:"The bank is on the corner.", note:"Trampa: 'en la esquina' pero es un punto de la línea de la calle: ON."},
+  {id:"tr21", es:"Trabajo en la tele.", answer:"on", en:"I work on TV.", note:"Expresión fija: 'on TV', no IN."},
+  {id:"tr22", es:"Lo escuché en la radio.", answer:"on", en:"I heard it on the radio.", note:"Expresión fija: 'on the radio'."},
+  {id:"tr23", es:"No puedo hablar, estoy en el teléfono.", answer:"on", en:"I can't talk, I'm on the phone.", note:"Expresión fija: 'on the phone'."},
+  {id:"tr24", es:"Estoy en el trabajo.", answer:"at", en:"I'm at work.", note:"Trampa: 'en el trabajo' pero como actividad/punto del día usa AT."},
+  {id:"tr25", es:"No hay nadie en casa.", answer:"at", en:"There's nobody at home.", note:"Trampa: 'en casa' como punto de actividad usa AT."},
+  {id:"tr26", es:"Espérame en la parada del autobús.", answer:"at", en:"Wait for me at the bus stop.", note:"Trampa: 'en la parada' es un punto exacto: AT."},
+  {id:"tr27", es:"Alguien llama en la puerta.", answer:"at", en:"Someone is knocking at the door.", note:"Trampa: 'en la puerta' es el punto exacto de contacto: AT."},
+  {id:"tr28", es:"Nos vemos en el aeropuerto.", answer:"at", en:"See you at the airport.", note:"Trampa: 'en el aeropuerto' como punto de encuentro: AT."},
+  {id:"tr29", es:"Había 50 personas en la fiesta.", answer:"at", en:"There were 50 people at the party.", note:"Trampa: un evento se trata como un punto: AT."},
+  {id:"tr30", es:"Estudia en la universidad.", answer:"at", en:"She studies at university.", note:"Trampa: excepción británica, 'at university' trata la institución como punto de actividad."},
+  {id:"tr31", es:"Vivo en el número 25.", answer:"at", en:"I live at number 25.", note:"Trampa: un número de portal es el punto exacto: AT."},
+  {id:"tr32", es:"Nos vemos en Navidad.", answer:"at", en:"See you at Christmas.", note:"Trampa: el periodo festivo completo usa AT, no IN ni ON."},
+  {id:"tr33", es:"Vamos a visitar a la abuela en Semana Santa.", answer:"at", en:"We're visiting grandma at Easter.", note:"Igual que Christmas: periodo festivo con AT fijo."},
+  {id:"tr34", es:"Descansamos en el fin de semana.", answer:"at", en:"We rest at the weekend.", note:"Trampa: excepción británica, 'at the weekend' usa AT, no IN ni ON."},
+  {id:"tr35", es:"Está en problemas con su jefe.", answer:"in", en:"He's in trouble with his boss.", note:"Expresión fija: 'in trouble', aunque no sea un lugar físico."},
+  {id:"tr36", es:"En realidad, nunca he estado en Londres.", answer:"in", en:"In fact, I've never been to London.", note:"Expresión fija: 'in fact' = de hecho."},
+  {id:"tr37", es:"Búhos están despiertos en la noche.", answer:"at", en:"Owls are awake at night.", note:"Trampa: aunque 'la noche' parece un bloque largo, la expresión fija usa AT."}
+];
+
+/* ================= CONSTRUCCIÓN DE EJERCICIOS ================= */
+function buildGap(p){
+  return {id:p.id+"g", type:"gap", cat:p.cat, prompt:p.frame, answer:p.prep, note:p.note, errorProne:!!p.errorProne};
+}
+function buildMC(p){
+  const opts = shuffle(["in","on","at"]).map(pr => ({prep:pr, text: fillFrame(p.frame, pr)}));
+  return {id:p.id+"m", type:"mc", cat:p.cat, prompt:p.frame, answer:p.prep, options:opts, note:p.note, errorProne:!!p.errorProne};
+}
+function buildEC(p){
+  const wrong = mistakeFor(p.prep);
+  const wrongDisplay = p.frame.replace("___", "<u>"+wrong+"</u>");
+  return {id:p.id+"e", type:"ec", cat:p.cat, prompt:p.frame, answer:p.prep, note:p.note, wrongDisplay:wrongDisplay, hasNone:p.prep==="none", errorProne:true};
+}
+function buildExercises(phrases){
+  const out = [];
+  phrases.forEach(p => {
+    if(p.prep !== "none"){
+      out.push(buildGap(p));
+      out.push(buildMC(p));
+    }
+    if(p.errorProne){
+      out.push(buildEC(p));
+    }
+  });
+  return out;
+}
+const GENERAL_EXERCISES = buildExercises(PHRASES);
+const EXCEPTIONS_POOL = GENERAL_EXERCISES.filter(e => e.errorProne);
+const TRAMPA_EXERCISES = TRAMPA.map(t => ({id:t.id, type:"trampa", cat:"trampa", es:t.es, answer:t.answer, en:t.en, note:t.note}));
+
+const ALL_EX_BY_ID = {};
+GENERAL_EXERCISES.forEach(e => ALL_EX_BY_ID[e.id] = e);
+TRAMPA_EXERCISES.forEach(e => ALL_EX_BY_ID[e.id] = e);
+
+/* ================= ESTADO / PERSISTENCIA ================= */
+const STORAGE_KEY = "zoomInglesState_v1";
+const DEFAULT_STATE = {
+  version: 1,
+  streak: {count:0, best:0, lastDate:null},
+  dailyChallenge: {date:null, done:false, correct:null},
+  categories: {
+    tiempo:{correct:0,total:0}, lugar:{correct:0,total:0}, expresiones:{correct:0,total:0},
+    trampa:{correct:0,total:0}, excepciones:{correct:0,total:0}
+  },
+  history: [],
+  srs: {},
+  diagnostic: {done:false, results:null},
+  jefe: {examResults:[]},
+  totalAnswered: 0,
+  totalCorrect: 0
+};
+function mergeDefaults(base, incoming){
+  const out = clone(base);
+  if(incoming && typeof incoming === "object"){
+    Object.keys(base).forEach(k => {
+      if(incoming[k] === undefined) return;
+      if(typeof base[k] === "object" && base[k] !== null && !Array.isArray(base[k])){
+        out[k] = mergeDefaults(base[k], incoming[k]);
+      } else {
+        out[k] = incoming[k];
+      }
+    });
+  }
+  return out;
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return clone(DEFAULT_STATE);
+    const parsed = JSON.parse(raw);
+    return mergeDefaults(DEFAULT_STATE, parsed);
+  }catch(e){
+    return clone(DEFAULT_STATE);
+  }
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){/* almacenamiento lleno o bloqueado */}
+}
+let state = loadState();
+
+/* ================= LÓGICA DE RACHA ================= */
+function updateStreak(){
+  const today = todayISO();
+  if(state.streak.lastDate === today) return;
+  const yesterday = addDaysISO(today, -1);
+  if(state.streak.lastDate === yesterday){ state.streak.count++; }
+  else { state.streak.count = 1; }
+  state.streak.lastDate = today;
+  if(state.streak.count > (state.streak.best||0)) state.streak.best = state.streak.count;
+}
+
+/* ================= REPETICIÓN ESPACIADA (SRS) ================= */
+const STAGE_DAYS = [0,1,3,7];
+let sessionCounter = 0;
+let sessionRepeatQueue = [];
+function scheduleSRS(exId, correct){
+  const today = todayISO();
+  let entry = state.srs[exId];
+  if(!entry) entry = {stage:0, due:today, reps:0, lapses:0};
+  if(correct){
+    entry.stage = Math.min(entry.stage + 1, STAGE_DAYS.length - 1);
+    entry.reps++;
+    entry.due = addDaysISO(today, STAGE_DAYS[entry.stage]);
+  } else {
+    entry.stage = 0;
+    entry.lapses++;
+    entry.due = today;
+    sessionRepeatQueue.push({id:exId, availableAfter: sessionCounter + 3});
+  }
+  state.srs[exId] = entry;
+}
+function dueReviewCount(){
+  const today = todayISO();
+  return Object.keys(state.srs).filter(id => state.srs[id].stage>=1 && state.srs[id].due<=today).length;
+}
+
+/* ================= REGISTRO CENTRAL DE RESPUESTAS ================= */
+function recordAnswer(ex, correct){
+  const cat = ex.cat;
+  if(!state.categories[cat]) state.categories[cat] = {correct:0,total:0};
+  state.categories[cat].total++;
+  if(correct) state.categories[cat].correct++;
+  state.totalAnswered++;
+  if(correct) state.totalCorrect++;
+  state.history.push({id: ex.id, cat: cat, date: todayISO(), correct: correct});
+  if(state.history.length > 500) state.history.splice(0, state.history.length - 500);
+  scheduleSRS(ex.id, correct);
+  updateStreak();
+  saveState();
+}
+
+/* ================= SELECCIÓN ADAPTATIVA (PRÁCTICA) ================= */
+let lastExerciseId = null;
+function pickNextGeneral(){
+  const today = todayISO();
+  let due = GENERAL_EXERCISES.filter(e => state.srs[e.id] && state.srs[e.id].stage>=1 && state.srs[e.id].due<=today && e.id!==lastExerciseId);
+  if(due.length) return pick(due);
+
+  for(let i=0;i<sessionRepeatQueue.length;i++){
+    const item = sessionRepeatQueue[i];
+    if(item.availableAfter <= sessionCounter && item.id !== lastExerciseId){
+      sessionRepeatQueue.splice(i,1);
+      const found = ALL_EX_BY_ID[item.id];
+      if(found) return found;
+    }
+  }
+
+  const cats = ["tiempo","lugar","expresiones"];
+  const weighted = cats.map(c => {
+    const s = state.categories[c];
+    const acc = s.total ? s.correct/s.total : 0.5;
+    return {c:c, w:(1-acc)+0.2};
+  });
+  const totalW = weighted.reduce((a,b)=>a+b.w,0);
+  let r = Math.random()*totalW, chosenCat = weighted[0].c;
+  for(const w of weighted){ if(r<=w.w){ chosenCat = w.c; break; } r -= w.w; }
+  let candidates = GENERAL_EXERCISES.filter(e => e.cat===chosenCat && e.id!==lastExerciseId);
+  if(!candidates.length) candidates = GENERAL_EXERCISES.filter(e => e.id!==lastExerciseId);
+  return pick(candidates);
+}
+
+let lastTrampaId = null;
+function pickNextTrampa(){
+  const candidates = TRAMPA_EXERCISES.filter(t => t.id !== lastTrampaId);
+  return pick(candidates.length ? candidates : TRAMPA_EXERCISES);
+}
+
+/* ================= RENDER DE UN EJERCICIO (compartido) ================= */
+const CAT_LABEL = {tiempo:"TIEMPO", lugar:"LUGAR", expresiones:"EXPRESIÓN", trampa:"TRAMPA DEL EN", excepciones:"EXCEPCIÓN"};
+const METAPHOR = {
+  in: "🔵 IN = plano general: mete la escena en un contenedor grande (país, año, habitación...).",
+  on: "🟢 ON = plano medio: coloca algo sobre una superficie o una línea (día, calle, pared...).",
+  at: "🔴 AT = primer plano: un punto exacto (hora, dirección concreta, punto de actividad...).",
+  none: "⚪ Aquí no hace falta preposición: 'next / last / this / every' ya sitúan el momento exacto por sí solos."
+};
+
+function prepButtonsHtml(hasNone){
+  let s = ["in","on","at"].map(p => '<button class="prepBtn '+p+'" data-p="'+p+'">'+p+'</button>').join("");
+  if(hasNone) s += '<button class="prepBtn none" data-p="none">sin preposición</button>';
+  return s;
+}
+
+function renderExercise(mount, ex, handlers){
+  let html = "";
+  const badgeLabel = CAT_LABEL[ex.cat] || ex.cat.toUpperCase();
+  html += '<div class="exBadgeWrap"><span class="pill '+ex.cat+'">'+badgeLabel+'</span></div>';
+
+  if(ex.type === "mc"){
+    html += '<p class="smallMuted" style="margin:0 0 8px;">¿Cuál es la frase correcta?</p>';
+    html += '<div class="sentence">'+ ex.prompt.replace("___", '<span class="blank">___</span>') +'</div>';
+    html += '<div id="answerWrap">' + ex.options.map((o,i) => '<button class="optionCard" data-idx="'+i+'">'+o.text+'</button>').join("") + '</div>';
+  } else if(ex.type === "ec"){
+    html += '<p class="smallMuted" style="margin:0 0 8px;">Esta frase tiene un error. ¿Cuál es la preposición correcta?</p>';
+    html += '<div class="sentence">'+ ex.wrongDisplay +'</div>';
+    html += '<div class="prepRow'+(ex.hasNone?' four':'')+'" id="answerWrap">' + prepButtonsHtml(ex.hasNone) + '</div>';
+  } else if(ex.type === "trampa"){
+    html += '<div class="esQuote">"'+ ex.es +'"</div>';
+    html += '<div class="prepRow" id="answerWrap">' + prepButtonsHtml(false) + '</div>';
+  } else {
+    html += '<div class="sentence">'+ ex.prompt.replace("___", '<span class="blank">___</span>') +'</div>';
+    html += '<div class="prepRow" id="answerWrap">' + prepButtonsHtml(false) + '</div>';
+  }
+  html += '<div class="fbArea"></div>';
+  mount.innerHTML = html;
+
+  let answered = false;
+  function finish(correct, chosenPrep){
+    if(answered) return;
+    answered = true;
+    const buttons = mount.querySelectorAll(ex.type==="mc" ? ".optionCard" : ".prepBtn");
+    buttons.forEach(b => b.disabled = true);
+
+    let correctText;
+    if(ex.type === "trampa") correctText = ex.en;
+    else if(ex.type === "mc") correctText = ex.options.find(o => o.prep === ex.answer).text;
+    else correctText = fillFrame(ex.prompt, ex.answer);
+
+    const fb = mount.querySelector(".fbArea");
+    fb.innerHTML =
+      '<div class="feedback '+(correct?"correct":"wrong")+'">' +
+        '<div class="fbTitle">'+(correct ? "✅ ¡Correcto!" : "❌ No exactamente")+'</div>' +
+        '<div class="fbAnswer">'+ correctText +'</div>' +
+        '<div class="fbMeta">'+ METAPHOR[ex.answer] +'</div>' +
+        (ex.note ? '<div class="fbNote">'+ ex.note +'</div>' : "") +
+        '<div class="nextBtnWrap"><button class="btn btn-primary nextBtn">Siguiente →</button></div>' +
+      '</div>';
+    mount.querySelector(".nextBtn").addEventListener("click", () => handlers.onNext());
+    handlers.onAnswer(correct, ex, chosenPrep);
+  }
+
+  if(ex.type === "mc"){
+    mount.querySelectorAll(".optionCard").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if(answered) return;
+        const idx = parseInt(btn.dataset.idx,10);
+        const chosen = ex.options[idx];
+        const correct = chosen.prep === ex.answer;
+        mount.querySelectorAll(".optionCard").forEach((b,i) => {
+          if(i===idx) b.classList.add("selected", correct?"correct":"wrong");
+          if(!correct && ex.options[i].prep === ex.answer) b.classList.add("reveal-correct");
+        });
+        finish(correct, chosen.prep);
+      });
+    });
+  } else {
+    mount.querySelectorAll(".prepBtn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if(answered) return;
+        const chosenPrep = btn.dataset.p;
+        const correct = chosenPrep === ex.answer;
+        mount.querySelectorAll(".prepBtn").forEach(b => {
+          if(b === btn) b.classList.add("selected", correct?"correct":"wrong");
+          if(!correct && b.dataset.p === ex.answer) b.classList.add("reveal-correct");
+        });
+        finish(correct, chosenPrep);
+      });
+    });
+  }
+}
+
+/* ================= NAVEGACIÓN ================= */
+const VIEW_NAMES = ["inicio","historias","diagnostico","practica","trampa","jefe","stats"];
+function showView(name){
+  VIEW_NAMES.forEach(v => {
+    const el = document.getElementById("view-"+v);
+    if(el) el.classList.toggle("active", v===name);
+  });
+  document.querySelectorAll(".bottomnav button").forEach(b => b.classList.toggle("active", b.dataset.view===name));
+  const renderers = {
+    inicio: renderHome, historias: renderHistorias, diagnostico: renderDiagnostico,
+    practica: renderPractica, trampa: renderTrampa, jefe: renderJefe, stats: renderStats
+  };
+  if(renderers[name]) renderers[name]();
+  window.scrollTo(0,0);
+}
+window.showView = showView;
+
+/* ================= INICIO ================= */
+const ZOOM_LEVELS = [
+  {key:"in", color:"var(--in)", place:"in Spain → in Vila-real", time:"in 2026 → in July", label:"IN · Plano general"},
+  {key:"on", color:"var(--on)", place:"on Calle Mayor", time:"on Monday", label:"ON · Plano medio"},
+  {key:"at", color:"var(--at)", place:"at number 25", time:"at 9pm", label:"AT · Primer plano"}
+];
+
+function renderHome(){
+  const mount = document.getElementById("view-inicio");
+  const due = dueReviewCount();
+  const cats = ["tiempo","lugar","expresiones"];
+  const domBars = cats.map(c => {
+    const s = state.categories[c];
+    const pct = s.total ? Math.round(s.correct/s.total*100) : 0;
+    return '<div class="domRow"><div class="domTop"><span>'+CAT_LABEL[c]+'</span><span>'+pct+'%</span></div><div class="domBar"><div class="domFill '+c+'" style="width:'+pct+'%"></div></div></div>';
+  }).join("");
+
+  let dailyHtml = "";
+  const today = todayISO();
+  const dc = state.dailyChallenge;
+  if(dc.date === today && dc.done){
+    dailyHtml = '<div class="card"><h3 class="subtitle2">🎯 Reto diario</h3><p class="smallMuted">Ya completaste el reto de hoy '+(dc.correct?'✅':'— ¡vuelve mañana a por otro!')+'. Vuelve mañana para el siguiente.</p></div>';
+  } else {
+    const idx = dayOfYear() % GENERAL_EXERCISES.length;
+    const ex = GENERAL_EXERCISES[idx];
+    dailyHtml = '<div class="card"><h3 class="subtitle2">🎯 Reto diario</h3><div id="dailyMount"></div></div>';
+    setTimeout(() => {
+      const dm = document.getElementById("dailyMount");
+      if(!dm) return;
+      renderExercise(dm, ex, {
+        onAnswer:(correct) => {
+          recordAnswer(ex, correct);
+          state.dailyChallenge = {date: today, done:true, correct: correct};
+          saveState();
+        },
+        onNext:() => renderHome()
+      });
+    },0);
+  }
+
+  let bannerHtml = "";
+  if(due > 0){
+    bannerHtml = '<div class="bannerReview"><div class="num">'+due+'</div><div style="flex:1"><b>repaso'+(due===1?"":"s")+' pendiente'+(due===1?"":"s")+'</b><div class="smallMuted">Es el mejor momento para reforzarlos antes de que se olviden.</div></div><button class="btn btn-primary btn-sm" style="width:auto;" onclick="showView(\'practica\')">Repasar</button></div>';
+  }
+
+  let diagCta = "";
+  if(!state.diagnostic.done){
+    diagCta = '<div class="card"><h3 class="subtitle2">🧭 Diagnóstico inicial</h3><p class="smallMuted">10 preguntas para descubrir tus puntos débiles: tiempo, lugar y expresiones.</p><button class="btn btn-accent" onclick="showView(\'diagnostico\')">Empezar diagnóstico</button></div>';
+  }
+
+  mount.innerHTML =
+    '<div class="zoomHero">' +
+      '<div class="cameraWrap"><div class="camera" id="cameraVisual"><div class="cross" id="cameraCross"></div><div class="lens" id="lensDot"></div></div></div>' +
+      '<div class="zoomLabel" id="zoomLabel">ON · Plano medio</div>' +
+      '<div class="zoomHint">Arrastra: lugar y tiempo cambian juntos, con el mismo zoom.</div>' +
+      '<input type="range" id="zoomSlider" min="0" max="100" value="50" step="1">' +
+      '<div class="zoomExamples">' +
+        '<div class="exRow"><span class="tag">LUGAR</span><b id="exPlace"></b></div>' +
+        '<div class="exRow"><span class="tag">TIEMPO</span><b id="exTime"></b></div>' +
+      '</div>' +
+    '</div>' +
+    bannerHtml +
+    diagCta +
+    dailyHtml +
+    '<div class="card"><h3 class="subtitle2">📊 Tu dominio</h3>' + domBars + '<button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="showView(\'stats\')">Ver estadísticas completas</button></div>';
+
+  initZoomSlider();
+}
+
+function initZoomSlider(){
+  const slider = document.getElementById("zoomSlider");
+  const camera = document.getElementById("cameraVisual");
+  const cross = document.getElementById("cameraCross");
+  const lens = document.getElementById("lensDot");
+  const label = document.getElementById("zoomLabel");
+  const exPlace = document.getElementById("exPlace");
+  const exTime = document.getElementById("exTime");
+  if(!slider) return;
+
+  function update(){
+    const v = parseInt(slider.value,10);
+    const zone = v < 34 ? 0 : (v < 67 ? 1 : 2);
+    const z = ZOOM_LEVELS[zone];
+    const scale = 1 - (v/100)*0.65;
+    camera.style.transform = "scale("+scale.toFixed(2)+")";
+    camera.style.borderColor = z.color;
+    lens.style.background = z.color;
+    cross.style.opacity = zone===2 ? "1" : "0";
+    label.textContent = z.label;
+    label.style.color = z.color;
+    exPlace.textContent = z.place;
+    exPlace.style.color = z.color;
+    exTime.textContent = z.time;
+    exTime.style.color = z.color;
+  }
+  slider.addEventListener("input", update);
+  update();
+}
+
+/* ================= HISTORIAS ================= */
+function renderHistorias(){ /* contenido estático ya en el HTML */ }
+document.addEventListener("DOMContentLoaded", () => {
+  const hist = document.getElementById("view-historias");
+  if(hist){
+    hist.addEventListener("click", e => {
+      const t = e.target.closest(".prep");
+      if(t){
+        const m = t.nextElementSibling;
+        if(m && m.classList.contains("mnemo")) m.classList.toggle("open");
+      }
+    });
+  }
+});
+
+/* ================= DIAGNÓSTICO ================= */
+let diagState = {queue:null, idx:0, results:null};
+function startDiagnostic(){
+  const counts = {tiempo:4, lugar:3, expresiones:3};
+  let queue = [];
+  Object.keys(counts).forEach(c => {
+    let pool = GENERAL_EXERCISES.filter(e => e.cat===c && e.type==="gap" && !e.errorProne);
+    if(pool.length < counts[c]) pool = GENERAL_EXERCISES.filter(e => e.cat===c && e.type==="gap");
+    queue = queue.concat(shuffle(pool).slice(0, counts[c]));
+  });
+  diagState.queue = shuffle(queue);
+  diagState.idx = 0;
+  diagState.results = {tiempo:{c:0,t:0}, lugar:{c:0,t:0}, expresiones:{c:0,t:0}};
+  renderDiagnostico();
+}
+function diagnosticIntroHtml(){
+  return '<h2 class="title">🧭 Diagnóstico</h2><p class="subtitle">10 preguntas rápidas para descubrir dónde flojeas: tiempo, lugar o expresiones.</p><div class="card"><button class="btn btn-primary" id="startDiagBtn">Empezar (2 minutos)</button></div>';
+}
+function diagnosticSummaryHtml(){
+  const r = state.diagnostic.results || {tiempo:{c:0,t:0}, lugar:{c:0,t:0}, expresiones:{c:0,t:0}};
+  const cats = ["tiempo","lugar","expresiones"];
+  let weakest = null, weakestPct = 101;
+  const bars = cats.map(c => {
+    const pct = r[c].t ? Math.round(r[c].c/r[c].t*100) : 0;
+    if(pct < weakestPct){ weakestPct = pct; weakest = c; }
+    return '<div class="domRow"><div class="domTop"><span>'+CAT_LABEL[c]+'</span><span>'+r[c].c+'/'+r[c].t+' ('+pct+'%)</span></div><div class="domBar"><div class="domFill '+c+'" style="width:'+pct+'%"></div></div></div>';
+  }).join("");
+  const rec = weakest ? '<p class="smallMuted">Tu punto más débil es <b>'+CAT_LABEL[weakest]+'</b>. La práctica adaptativa te dará más ejercicios de esa categoría.</p>' : "";
+  return '<h2 class="title">🧭 Resultado del diagnóstico</h2>' + bars + rec + '<button class="btn btn-outline" id="retryDiagBtn" style="margin-top:10px;">Repetir diagnóstico</button>';
+}
+function renderDiagnostico(){
+  const mount = document.getElementById("view-diagnostico");
+  if(!diagState.queue){
+    if(state.diagnostic.done){
+      mount.innerHTML = diagnosticSummaryHtml();
+      document.getElementById("retryDiagBtn").addEventListener("click", startDiagnostic);
+    } else {
+      mount.innerHTML = diagnosticIntroHtml();
+      document.getElementById("startDiagBtn").addEventListener("click", startDiagnostic);
+    }
+    return;
+  }
+  if(diagState.idx >= diagState.queue.length){
+    state.diagnostic.done = true;
+    state.diagnostic.results = diagState.results;
+    saveState();
+    diagState.queue = null;
+    renderDiagnostico();
+    return;
+  }
+  const ex = diagState.queue[diagState.idx];
+  mount.innerHTML = '<h2 class="title">Diagnóstico</h2><p class="subtitle">Pregunta '+(diagState.idx+1)+' de '+diagState.queue.length+'</p><div class="card" id="exMountDiag"></div>';
+  renderExercise(document.getElementById("exMountDiag"), ex, {
+    onAnswer:(correct) => {
+      diagState.results[ex.cat].t++;
+      if(correct) diagState.results[ex.cat].c++;
+      recordAnswer(ex, correct);
+    },
+    onNext:() => { diagState.idx++; renderDiagnostico(); }
+  });
+}
+
+/* ================= PRÁCTICA ================= */
+function renderPractica(){
+  sessionCounter = 0;
+  sessionRepeatQueue = [];
+  lastExerciseId = null;
+  const mount = document.getElementById("view-practica");
+  mount.innerHTML = '<h2 class="title">🎯 Práctica adaptativa</h2><p class="subtitle">Verás más ejercicios de las categorías donde fallas.</p><div class="card" id="exMountPractica"></div>';
+  loadNextPracticeExercise();
+}
+function loadNextPracticeExercise(){
+  const mount = document.getElementById("exMountPractica");
+  if(!mount) return;
+  const ex = pickNextGeneral();
+  if(!ex){ mount.innerHTML = "<p>No hay ejercicios disponibles.</p>"; return; }
+  lastExerciseId = ex.id;
+  sessionCounter++;
+  renderExercise(mount, ex, {
+    onAnswer:(correct) => recordAnswer(ex, correct),
+    onNext:() => loadNextPracticeExercise()
+  });
+}
+
+/* ================= LA TRAMPA DEL EN ================= */
+function renderTrampa(){
+  const mount = document.getElementById("view-trampa");
+  mount.innerHTML = '<h2 class="title">⚠️ La trampa del EN</h2><p class="subtitle">En español todo es "en". En inglés, no. Elige in / on / at.</p><div class="card" id="exMountTrampa"></div>';
+  loadNextTrampa();
+}
+function loadNextTrampa(){
+  const mount = document.getElementById("exMountTrampa");
+  if(!mount) return;
+  const ex = pickNextTrampa();
+  lastTrampaId = ex.id;
+  renderExercise(mount, ex, {
+    onAnswer:(correct) => recordAnswer(ex, correct),
+    onNext:() => loadNextTrampa()
+  });
+}
+
+/* ================= NIVEL JEFE ================= */
+const JEFE_UNLOCK_ANSWERED = 50;
+function isJefeUnlocked(){ return state.diagnostic.done && state.totalAnswered >= JEFE_UNLOCK_ANSWERED; }
+let jefeState = {phase:"lessons", queue:null, idx:0, score:0};
+
+function renderJefe(){
+  const mount = document.getElementById("view-jefe");
+  if(!isJefeUnlocked()){
+    const pct = Math.min(100, Math.round((state.totalAnswered/JEFE_UNLOCK_ANSWERED)*100));
+    mount.innerHTML =
+      '<div class="lockBox"><div class="big">🔒</div><h2 class="title">Nivel Jefe bloqueado</h2>' +
+      '<p class="smallMuted">Completa el diagnóstico y responde al menos '+JEFE_UNLOCK_ANSWERED+' ejercicios en Práctica o Trampa para desbloquear las excepciones y el examen final.</p>' +
+      '<div class="progWrap"><div class="progFill" style="width:'+pct+'%"></div></div>' +
+      '<p class="smallMuted">'+state.totalAnswered+' / '+JEFE_UNLOCK_ANSWERED+' ejercicios · Diagnóstico: '+(state.diagnostic.done?"hecho ✅":"pendiente")+'</p></div>';
+    return;
+  }
+  if(jefeState.phase === "lessons") renderJefeLessons(mount);
+  else if(jefeState.phase === "exam") renderJefeExam(mount);
+  else renderJefeResult(mount);
+}
+function renderJefeLessons(mount){
+  const uniquePhrases = PHRASES.filter(p => p.errorProne);
+  const lessons = uniquePhrases.map(p =>
+    '<div class="lessonItem"><div class="lessonSentence">'+fillFrame(p.frame, p.prep).replace(new RegExp("\\b"+p.prep+"\\b"), '<span class="prep '+p.prep+'">'+p.prep+'</span>')+'</div><div class="lessonNote">'+p.note+'</div></div>'
+  ).join("");
+  mount.innerHTML =
+    '<h2 class="title">👑 Nivel Jefe</h2><p class="subtitle">Excepciones que rompen la lógica del zoom. Memorízalas antes del examen.</p>' +
+    '<div class="card">'+lessons+'</div>' +
+    '<button class="btn btn-primary" id="startExamBtn">Comenzar examen final (25 preguntas)</button>';
+  document.getElementById("startExamBtn").addEventListener("click", () => {
+    jefeState.queue = shuffle(EXCEPTIONS_POOL).slice(0,25);
+    jefeState.idx = 0;
+    jefeState.score = 0;
+    jefeState.phase = "exam";
+    renderJefe();
+  });
+}
+function renderJefeExam(mount){
+  if(jefeState.idx >= jefeState.queue.length){
+    const total = jefeState.queue.length;
+    const pct = Math.round((jefeState.score/total)*100);
+    state.jefe.examResults.push({date: todayISO(), score: jefeState.score, total: total, pct: pct});
+    saveState();
+    jefeState.phase = "result";
+    renderJefe();
+    return;
+  }
+  const raw = jefeState.queue[jefeState.idx];
+  const ex = Object.assign({}, raw, {cat:"excepciones"});
+  mount.innerHTML = '<h2 class="title">👑 Examen final</h2><p class="subtitle">Pregunta '+(jefeState.idx+1)+' de '+jefeState.queue.length+' · Aciertos: '+jefeState.score+'</p><div class="card" id="exMountJefe"></div>';
+  renderExercise(document.getElementById("exMountJefe"), ex, {
+    onAnswer:(correct) => { if(correct) jefeState.score++; },
+    onNext:() => { jefeState.idx++; renderJefe(); }
+  });
+}
+function renderJefeResult(mount){
+  const last = state.jefe.examResults[state.jefe.examResults.length-1];
+  const pass = last.pct >= 80;
+  mount.innerHTML =
+    '<div class="card center">' +
+      '<div style="font-size:48px;">'+(pass?"🏆":"📚")+'</div>' +
+      '<h2 class="title">'+(pass?"¡Nivel Jefe superado!":"Casi lo tienes")+'</h2>' +
+      '<p class="subtitle">Acertaste '+last.score+' de '+last.total+' ('+last.pct+'%). '+(pass?"Necesitabas 80% para aprobar.":"Necesitas 80% para aprobar.")+'</p>' +
+      '<button class="btn btn-outline" id="retryLessonsBtn">Repasar excepciones</button>' +
+      '<button class="btn btn-primary" style="margin-top:8px;" id="retryExamBtn">Repetir examen</button>' +
+    '</div>';
+  document.getElementById("retryLessonsBtn").addEventListener("click", () => { jefeState.phase="lessons"; renderJefe(); });
+  document.getElementById("retryExamBtn").addEventListener("click", () => {
+    jefeState.queue = shuffle(EXCEPTIONS_POOL).slice(0,25);
+    jefeState.idx = 0; jefeState.score = 0; jefeState.phase = "exam";
+    renderJefe();
+  });
+}
+
+/* ================= ESTADÍSTICAS ================= */
+function renderStats(){
+  const mount = document.getElementById("view-stats");
+  const cats = ["tiempo","lugar","expresiones","trampa"];
+  const bars = cats.map(c => {
+    const s = state.categories[c];
+    const pct = s.total ? Math.round(s.correct/s.total*100) : 0;
+    return '<div class="domRow"><div class="domTop"><span>'+CAT_LABEL[c]+'</span><span>'+s.correct+'/'+s.total+' ('+pct+'%)</span></div><div class="domBar"><div class="domFill '+c+'" style="width:'+pct+'%"></div></div></div>';
+  }).join("");
+
+  const examHistory = state.jefe.examResults.slice(-5).reverse().map(r =>
+    '<div>'+r.date+' — '+r.score+'/'+r.total+' ('+r.pct+'%) '+(r.pct>=80?"✅":"❌")+'</div>'
+  ).join("") || '<p class="smallMuted">Todavía no has hecho el examen final.</p>';
+
+  const recentErrors = state.history.filter(h => !h.correct).slice(-8).reverse().map(h => {
+    const ex = ALL_EX_BY_ID[h.id];
+    const label = ex ? (ex.type==="trampa" ? ex.es : ex.prompt) : h.id;
+    return '<div>'+h.date+' · '+label+'</div>';
+  }).join("") || '<p class="smallMuted">Sin errores registrados todavía. ¡Bien!</p>';
+
+  mount.innerHTML =
+    '<h2 class="title">📊 Estadísticas</h2>' +
+    '<div class="card"><h3 class="subtitle2">Dominio por categoría</h3>' + bars + '</div>' +
+    '<div class="card"><h3 class="subtitle2">Resumen</h3>' +
+      '<p class="smallMuted">Racha actual: <b>'+state.streak.count+' días</b> · Récord: <b>'+(state.streak.best||0)+' días</b></p>' +
+      '<p class="smallMuted">Ejercicios respondidos: <b>'+state.totalAnswered+'</b> · Aciertos: <b>'+state.totalCorrect+'</b></p>' +
+      '<p class="smallMuted">Repasos pendientes hoy: <b>'+dueReviewCount()+'</b></p>' +
+      '<p class="smallMuted">Banco de ejercicios: <b>'+(GENERAL_EXERCISES.length + TRAMPA_EXERCISES.length)+'</b> (general + trampa del EN)</p>' +
+    '</div>' +
+    '<div class="card"><h3 class="subtitle2">👑 Historial del examen final</h3>' + examHistory + '</div>' +
+    '<div class="card"><h3 class="subtitle2">Últimos errores</h3><div class="errList">' + recentErrors + '</div></div>' +
+    '<div class="card"><h3 class="subtitle2">Reiniciar progreso</h3><p class="smallMuted">Borra racha, historial, exámenes y repasos. No se puede deshacer.</p><button class="btn btn-outline" id="resetBtn" style="color:var(--at); border-color:var(--at-soft);">Reiniciar todo el progreso</button></div>';
+
+  document.getElementById("resetBtn").addEventListener("click", openResetModal);
+}
+
+/* ================= MODAL DE REINICIO ================= */
+function openModal(html){
+  const root = document.getElementById("modalRoot");
+  root.innerHTML = '<div class="modalOverlay" id="ovl"><div class="modalCard">'+html+'</div></div>';
+  document.getElementById("ovl").addEventListener("click", e => { if(e.target.id==="ovl") closeModal(); });
+}
+function closeModal(){ document.getElementById("modalRoot").innerHTML = ""; }
+function openResetModal(){
+  openModal(
+    '<h3 class="title" style="font-size:19px;">¿Reiniciar todo el progreso?</h3>' +
+    '<p class="subtitle">Se borrará tu racha, historial de errores, exámenes y repasos programados. Esta acción no se puede deshacer.</p>' +
+    '<button class="btn btn-primary" id="confirmReset" style="background:var(--at);">Sí, reiniciar</button>' +
+    '<button class="btn btn-outline" id="cancelReset" style="margin-top:8px;">Cancelar</button>'
+  );
+  document.getElementById("confirmReset").addEventListener("click", () => {
+    state = clone(DEFAULT_STATE);
+    saveState();
+    closeModal();
+    showView("inicio");
+  });
+  document.getElementById("cancelReset").addEventListener("click", closeModal);
+}
+
+/* ================= INICIALIZACIÓN ================= */
+function updateStreakChip(){
+  const chip = document.getElementById("streakChip");
+  if(chip) chip.textContent = "🔥 " + state.streak.count + " día" + (state.streak.count===1?"":"s");
+}
+document.querySelectorAll(".bottomnav button").forEach(b => {
+  b.addEventListener("click", () => showView(b.dataset.view));
+});
+updateStreakChip();
+showView("inicio");
+setInterval(updateStreakChip, 2000);
+
+})();
+</script>
+</body>
+</html>
