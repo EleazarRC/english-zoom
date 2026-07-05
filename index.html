@@ -64,6 +64,7 @@ p.subtitle{color:var(--muted); margin:0 0 14px; font-size:14px;}
 .prep.in{color:var(--in-dark); background:var(--in-soft);}
 .prep.on{color:var(--on-dark); background:var(--on-soft);}
 .prep.at{color:var(--at-dark); background:var(--at-soft);}
+.prep.none{color:var(--muted); background:#e2e8f0;}
 .mnemo{display:none; font-size:12.5px; color:var(--muted); background:#f8fafc; border-left:3px solid var(--border); padding:7px 10px; margin:6px 0 10px; border-radius:8px;}
 .mnemo.open{display:block;}
 .storyText{font-size:16.5px; line-height:1.75;}
@@ -129,8 +130,6 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 .bannerReview{display:flex; align-items:center; gap:12px; background:var(--in-bg); border:1px solid var(--in-soft); border-radius:16px; padding:14px; margin-bottom:14px;}
 .bannerReview .num{font-size:26px; font-weight:800; color:var(--in);}
 
-.lockBox{text-align:center; padding:30px 16px; color:var(--muted);}
-.lockBox .big{font-size:44px; margin-bottom:8px;}
 .progWrap{background:#eef1f6; border-radius:999px; height:12px; overflow:hidden; margin:14px 0;}
 .progFill{background:var(--in); height:100%; border-radius:999px; transition:width .3s ease;}
 
@@ -227,11 +226,15 @@ function dayOfYear(){ const d = new Date(); const start = new Date(d.getFullYear
 function shuffle(arr){ const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function clone(x){ return JSON.parse(JSON.stringify(x)); }
+function capitalizeFirst(s){ return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 function fillFrame(frame, prep){
+  let filled;
   if(prep === "none"){
-    return frame.replace("___ ", "").replace(" ___", "").replace("___", "").replace(/\s+/g," ").trim();
+    filled = frame.replace("___ ", "").replace(" ___", "").replace("___", "").replace(/\s+/g," ").trim();
+  } else {
+    filled = frame.replace("___", prep);
   }
-  return frame.replace("___", prep);
+  return capitalizeFirst(filled);
 }
 function mistakeFor(prep){
   if(prep === "in") return "on";
@@ -358,7 +361,12 @@ const PHRASES = [
   {id:"p105", cat:"expresiones", prep:"at", frame:"I cried ___ the end of the movie.", note:"Fija: 'at the end (of)' = en el punto final concreto de algo. Compara con 'in the end' (finalmente).", errorProne:true},
   {id:"p106", cat:"expresiones", prep:"on", frame:"The train arrived ___ time.", note:"Fija: 'on time' = puntual, ni antes ni después. Compara con 'in time' = a tiempo/antes del límite.", errorProne:true},
   {id:"p107", cat:"expresiones", prep:"on", frame:"___ average, I sleep 7 hours.", note:"Fija: 'on average' = de media.", errorProne:true},
-  {id:"p108", cat:"expresiones", prep:"on", frame:"She's travelling ___ business this week.", note:"Fija: 'on business' = por motivos de trabajo.", errorProne:true}
+  {id:"p108", cat:"expresiones", prep:"on", frame:"She's travelling ___ business this week.", note:"Fija: 'on business' = por motivos de trabajo.", errorProne:true},
+  // ---- NIVEL B2: excepciones adicionales ----
+  {id:"p109", cat:"lugar", prep:"on", frame:"It's faster to go there ___ foot than by car.", note:"Excepción de transporte: 'on foot' (a pie) es fija, aunque caminar no es un vehículo.", errorProne:true},
+  {id:"p110", cat:"expresiones", prep:"in", frame:"I read about it ___ a magazine.", note:"Los medios impresos ('in a magazine/newspaper/book') usan IN, a diferencia de 'on TV' o 'on the radio'.", errorProne:true},
+  {id:"p111", cat:"expresiones", prep:"on", frame:"I found the recipe ___ the internet.", note:"Los medios de pantalla ('on the internet/on a website') usan ON, igual que 'on TV'.", errorProne:true},
+  {id:"p112", cat:"tiempo", prep:"at", frame:"She started university ___ the age of 17.", note:"Fija: 'at the age of' = a la edad de, un punto exacto en la línea de la vida.", errorProne:true}
 ];
 
 /* ================= LA TRAMPA DEL EN ================= */
@@ -412,7 +420,9 @@ function buildMC(p){
 }
 function buildEC(p){
   const wrong = mistakeFor(p.prep);
-  const wrongDisplay = p.frame.replace("___", "<u>"+wrong+"</u>");
+  const atStart = p.frame.indexOf("___") === 0;
+  const wrongWordDisplay = atStart ? capitalizeFirst(wrong) : wrong;
+  const wrongDisplay = p.frame.replace("___", "<u>"+wrongWordDisplay+"</u>");
   return {id:p.id+"e", type:"ec", cat:p.cat, prompt:p.frame, answer:p.prep, note:p.note, wrongDisplay:wrongDisplay, hasNone:p.prep==="none", errorProne:true};
 }
 function buildExercises(phrases){
@@ -729,6 +739,8 @@ function renderHome(){
     diagCta = '<div class="card"><h3 class="subtitle2">🧭 Diagnóstico inicial</h3><p class="smallMuted">10 preguntas para descubrir tus puntos débiles: tiempo, lugar y expresiones.</p><button class="btn btn-accent" onclick="showView(\'diagnostico\')">Empezar diagnóstico</button></div>';
   }
 
+  const exceptionsCta = '<div class="card"><h3 class="subtitle2">📌 Excepciones a la regla</h3><p class="smallMuted">Casos fijos que NO siguen la lógica del zoom (at night, on foot, in the end...). Lista siempre disponible, sin desbloquear nada.</p><button class="btn btn-outline btn-sm" onclick="showView(\'jefe\')">Ver todas las excepciones</button></div>';
+
   mount.innerHTML =
     '<div class="zoomHero">' +
       '<div class="cameraWrap"><div class="camera" id="cameraVisual"><div class="cross" id="cameraCross"></div><div class="lens" id="lensDot"></div></div></div>' +
@@ -742,6 +754,7 @@ function renderHome(){
     '</div>' +
     bannerHtml +
     diagCta +
+    exceptionsCta +
     dailyHtml +
     '<div class="card"><h3 class="subtitle2">📊 Tu dominio</h3>' + domBars + '<button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="showView(\'stats\')">Ver estadísticas completas</button></div>';
 
@@ -901,35 +914,56 @@ let jefeState = {phase:"lessons", queue:null, idx:0, score:0};
 
 function renderJefe(){
   const mount = document.getElementById("view-jefe");
-  if(!isJefeUnlocked()){
-    const pct = Math.min(100, Math.round((state.totalAnswered/JEFE_UNLOCK_ANSWERED)*100));
-    mount.innerHTML =
-      '<div class="lockBox"><div class="big">🔒</div><h2 class="title">Nivel Jefe bloqueado</h2>' +
-      '<p class="smallMuted">Completa el diagnóstico y responde al menos '+JEFE_UNLOCK_ANSWERED+' ejercicios en Práctica o Trampa para desbloquear las excepciones y el examen final.</p>' +
-      '<div class="progWrap"><div class="progFill" style="width:'+pct+'%"></div></div>' +
-      '<p class="smallMuted">'+state.totalAnswered+' / '+JEFE_UNLOCK_ANSWERED+' ejercicios · Diagnóstico: '+(state.diagnostic.done?"hecho ✅":"pendiente")+'</p></div>';
-    return;
-  }
-  if(jefeState.phase === "lessons") renderJefeLessons(mount);
-  else if(jefeState.phase === "exam") renderJefeExam(mount);
-  else renderJefeResult(mount);
+  const unlocked = isJefeUnlocked();
+  if(unlocked && jefeState.phase === "exam") renderJefeExam(mount);
+  else if(unlocked && jefeState.phase === "result") renderJefeResult(mount);
+  else renderJefeLessons(mount, unlocked);
 }
-function renderJefeLessons(mount){
+function highlightLessonSentence(p){
+  const filled = fillFrame(p.frame, p.prep);
+  if(p.prep === "none"){
+    const m = filled.match(/\b(next|last|this|every)\b/i);
+    return m ? filled.replace(m[0], '<span class="prep none">'+m[0]+'</span>') : filled;
+  }
+  const re = new RegExp("\\b"+p.prep+"\\b", "i");
+  return filled.replace(re, (match) => '<span class="prep '+p.prep+'">'+match+'</span>');
+}
+function renderJefeLessons(mount, unlocked){
   const uniquePhrases = PHRASES.filter(p => p.errorProne);
   const lessons = uniquePhrases.map(p =>
-    '<div class="lessonItem"><div class="lessonSentence">'+fillFrame(p.frame, p.prep).replace(new RegExp("\\b"+p.prep+"\\b"), '<span class="prep '+p.prep+'">'+p.prep+'</span>')+'</div><div class="lessonNote">'+p.note+'</div></div>'
+    '<div class="lessonItem"><div class="lessonSentence">'+highlightLessonSentence(p)+'</div><div class="lessonNote">'+p.note+'</div></div>'
   ).join("");
+
+  let examBlock;
+  if(unlocked){
+    examBlock = '<button class="btn btn-primary" id="startExamBtn">Comenzar examen final (25 preguntas)</button>';
+  } else {
+    const pct = Math.min(100, Math.round((state.totalAnswered/JEFE_UNLOCK_ANSWERED)*100));
+    examBlock =
+      '<div class="card">' +
+        '<h3 class="subtitle2">🔒 Examen final bloqueado</h3>' +
+        '<p class="smallMuted">La lista de excepciones de arriba está siempre disponible. Para desbloquear el examen de 25 preguntas, completa el diagnóstico y responde al menos '+JEFE_UNLOCK_ANSWERED+' ejercicios en Práctica o Trampa.</p>' +
+        '<div class="progWrap"><div class="progFill" style="width:'+pct+'%"></div></div>' +
+        '<p class="smallMuted">'+state.totalAnswered+' / '+JEFE_UNLOCK_ANSWERED+' ejercicios · Diagnóstico: '+(state.diagnostic.done?"hecho ✅":"pendiente")+'</p>' +
+      '</div>';
+  }
+
   mount.innerHTML =
-    '<h2 class="title">👑 Nivel Jefe</h2><p class="subtitle">Excepciones que rompen la lógica del zoom. Memorízalas antes del examen.</p>' +
+    '<h2 class="title">👑 Nivel Jefe</h2>' +
+    '<p class="subtitle">📌 Excepciones: esto NO sigue la regla del zoom. Son fijas, hay que memorizarlas tal cual.</p>' +
     '<div class="card">'+lessons+'</div>' +
-    '<button class="btn btn-primary" id="startExamBtn">Comenzar examen final (25 preguntas)</button>';
-  document.getElementById("startExamBtn").addEventListener("click", () => {
-    jefeState.queue = shuffle(EXCEPTIONS_POOL).slice(0,25);
-    jefeState.idx = 0;
-    jefeState.score = 0;
-    jefeState.phase = "exam";
-    renderJefe();
-  });
+    examBlock;
+
+  const startBtn = document.getElementById("startExamBtn");
+  if(startBtn){
+    startBtn.addEventListener("click", () => {
+      jefeState.queue = shuffle(EXCEPTIONS_POOL).slice(0,25);
+      jefeState.idx = 0;
+      jefeState.score = 0;
+      jefeState.phase = "exam";
+      renderJefe();
+    });
+  }
 }
 function renderJefeExam(mount){
   if(jefeState.idx >= jefeState.queue.length){
@@ -1020,6 +1054,7 @@ function openResetModal(){
   );
   document.getElementById("confirmReset").addEventListener("click", () => {
     state = clone(DEFAULT_STATE);
+    jefeState = {phase:"lessons", queue:null, idx:0, score:0};
     saveState();
     closeModal();
     showView("inicio");
