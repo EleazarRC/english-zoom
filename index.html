@@ -281,6 +281,21 @@ function shuffle(arr){ const a = arr.slice(); for(let i=a.length-1;i>0;i--){ con
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function clone(x){ return JSON.parse(JSON.stringify(x)); }
 function capitalizeFirst(s){ return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+// Cualquier valor que salga de localStorage (state) se trata como no confiable:
+// puede haber sido editado a mano o corrompido, y no debe poder inyectar HTML.
+function esc(v){
+  return String(v).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function safeInt(v, fallback){
+  const n = Math.trunc(Number(v));
+  if(!Number.isFinite(n)) return fallback||0;
+  return Math.max(0, n); // ningún contador de esta app es válido en negativo
+}
+function safePct(correct, total){
+  const c = safeInt(correct,0), t = safeInt(total,0);
+  if(t <= 0) return 0;
+  return Math.min(100, Math.max(0, Math.round(c/t*100)));
+}
 function fillFrame(frame, prep){
   let filled;
   if(prep === "none"){
@@ -348,7 +363,7 @@ const PHRASES = [
   {id:"p41", cat:"lugar", prep:"in", frame:"She lives ___ Madrid.", note:"Una ciudad es un contenedor: zoom general."},
   {id:"p42", cat:"lugar", prep:"in", frame:"My grandparents live ___ Vila-real.", note:"Un pueblo o ciudad sigue siendo un contenedor."},
   {id:"p43", cat:"lugar", prep:"in", frame:"Dinner is ready ___ the kitchen.", note:"Una habitación es un contenedor cerrado: plano general dentro de la casa."},
-  {id:"p44", cat:"lugar", prep:"in", frame:"All the files are ___ the office.", note:"Cuando 'the office' es el espacio físico que te rodea, es un contenedor: IN."},
+  {id:"p44", cat:"lugar", prep:"in", frame:"All the files are ___ the office.", note:"Cuando 'the office' es el espacio físico que contiene algo, es un contenedor: IN. AT también es correcto si lo ves como 'en esa ubicación'.", alt:["at"]},
   {id:"p45", cat:"lugar", prep:"in", frame:"We were stuck ___ the car for two hours.", note:"Un coche es pequeño y cerrado, pero sigue siendo un contenedor: te mete dentro."},
   {id:"p46", cat:"lugar", prep:"in", frame:"I left my phone ___ a taxi.", note:"Otro vehículo pequeño y cerrado: contenedor."},
   {id:"p47", cat:"lugar", prep:"in", frame:"I stayed ___ bed all morning.", note:"'Bed' como espacio que te envuelve: contenedor."},
@@ -373,7 +388,7 @@ const PHRASES = [
   {id:"p65", cat:"lugar", prep:"on", frame:"Our flat is ___ the second floor.", note:"Un piso o planta funciona como una 'balda' horizontal: superficie, ON."},
   {id:"p66", cat:"lugar", prep:"on", frame:"The bathroom is ___ the left.", note:"'The left/right' se tratan como puntos de referencia sobre una línea: ON."},
   {id:"p67", cat:"lugar", prep:"on", frame:"The shop is ___ the right.", note:"Mismo caso: referencia direccional con ON."},
-  {id:"p68", cat:"lugar", prep:"on", frame:"We relaxed ___ the beach.", note:"La playa es una superficie extensa (arena): ON."},
+  {id:"p68", cat:"lugar", prep:"on", frame:"We relaxed ___ the beach.", note:"La playa es una superficie extensa (arena): ON. AT también es correcto si hablas de la playa como destino/lugar de la agenda.", alt:["at"]},
   {id:"p69", cat:"lugar", prep:"on", frame:"The bank is ___ the corner.", note:"La esquina exterior de la calle: ON (también se acepta AT).", alt:["at"], vs:{in:"'In the corner' es el rincón INTERIOR de una habitación. La esquina exterior de la calle usa ON/AT."}},
   {id:"p70", cat:"lugar", prep:"on", frame:"The captain stood ___ the ship.", note:"La cubierta de un barco se trata como superficie: ON."},
   // ---- LUGAR · AT ----
@@ -382,8 +397,8 @@ const PHRASES = [
   {id:"p73", cat:"lugar", prep:"at", frame:"Someone is knocking ___ the door.", note:"La puerta como punto exacto de contacto: AT. Con 'knock', ON también es correcto (knock on the door) e incluso más frecuente.", alt:["on"]},
   {id:"p74", cat:"lugar", prep:"at", frame:"Nobody is ___ home.", note:"'Home' como punto de actividad (no como espacio físico) usa AT."},
   {id:"p75", cat:"lugar", prep:"at", frame:"She's still ___ work.", note:"'Work' como actividad, un punto en el día: AT."},
-  {id:"p76", cat:"lugar", prep:"at", frame:"The children are ___ school.", note:"'School' como punto de actividad: AT."},
-  {id:"p77", cat:"lugar", prep:"at", frame:"I have a meeting ___ the office.", note:"Cuando 'the office' es el punto de una agenda, usamos AT (compara con IN cuando hablamos del espacio físico)."},
+  {id:"p76", cat:"lugar", prep:"at", frame:"The children are ___ school.", note:"'School' como punto de actividad: AT. En inglés americano también se dice 'in school' (= escolarizados).", alt:["in"]},
+  {id:"p77", cat:"lugar", prep:"at", frame:"I have a meeting ___ the office.", note:"Cuando 'the office' es el punto de una agenda, usamos AT. IN también es correcto si piensas en el espacio físico.", alt:["in"]},
   {id:"p78", cat:"lugar", prep:"at", frame:"Let's meet ___ the airport.", note:"Un punto de encuentro concreto: AT."},
   {id:"p79", cat:"lugar", prep:"at", frame:"The train arrives ___ the station.", note:"La estación como punto exacto de llegada: AT."},
   {id:"p80", cat:"lugar", prep:"at", frame:"There were 50 people ___ the party.", note:"Un evento se trata como un punto: AT."},
@@ -406,16 +421,16 @@ const PHRASES = [
   {id:"p96", cat:"expresiones", prep:"in", frame:"Sorry, I'm ___ a hurry!", note:"Fija: 'in a hurry' = con prisa.", errorProne:true},
   {id:"p97", cat:"expresiones", prep:"in", frame:"He's ___ trouble with his boss.", note:"Fija: 'in trouble' = en problemas.", errorProne:true},
   {id:"p98", cat:"expresiones", prep:"in", frame:"___ fact, I've never been to London.", note:"Fija: 'in fact' = de hecho.", errorProne:true},
-  {id:"p99", cat:"expresiones", prep:"in", frame:"___ the end, everything worked out fine.", note:"Fija: 'in the end' = finalmente. No confundir con 'at the end (of)' = en el punto final de algo.", errorProne:true, vs:{at:"'At the end' necesita 'of + algo' y señala un punto final concreto (at the end of the film). 'Finalmente, después de todo' es IN the end."}},
+  {id:"p99", cat:"expresiones", prep:"in", frame:"___ the end, everything worked out fine.", note:"Fija: 'in the end' = finalmente. No confundir con 'at the end (of)' = en el punto final de algo.", errorProne:true, trapWrong:"at", vs:{at:"'At the end' necesita 'of + algo' y señala un punto final concreto (at the end of the film). 'Finalmente, después de todo' es IN the end."}},
   {id:"p100", cat:"expresiones", prep:"in", frame:"We arrived just ___ time for the flight.", note:"Fija: 'in time' = a tiempo, antes del límite. Distinto de 'on time' = puntual.", errorProne:true, vs:{on:"'On time' = puntual, a la hora exacta prevista. 'A tiempo, antes de que sea tarde' es IN time."}},
   {id:"p101", cat:"expresiones", prep:"in", frame:"Please don't discuss this ___ public.", note:"Fija: 'in public' = en público.", errorProne:true},
   {id:"p102", cat:"expresiones", prep:"at", frame:"___ first, I didn't understand the accent.", note:"Fija: 'at first' = al principio.", errorProne:true},
   {id:"p103", cat:"expresiones", prep:"at", frame:"___ last, the bus arrived!", note:"Fija: 'at last' = por fin.", errorProne:true},
   {id:"p104", cat:"expresiones", prep:"at", frame:"It costs ___ least twenty euros.", note:"Fija: 'at least' = como mínimo.", errorProne:true},
   {id:"p105", cat:"expresiones", prep:"at", frame:"I cried ___ the end of the movie.", note:"Fija: 'at the end (of)' = en el punto final concreto de algo. Compara con 'in the end' (finalmente).", errorProne:true, vs:{in:"'In the end' = finalmente, después de todo (sin 'of'). El punto final de algo concreto usa AT the end of."}},
-  {id:"p106", cat:"expresiones", prep:"on", frame:"The train arrived ___ time.", note:"Fija: 'on time' = puntual, ni antes ni después. Compara con 'in time' = a tiempo/antes del límite.", errorProne:true, vs:{in:"'In time' = a tiempo, antes del límite. 'Puntual, a la hora exacta prevista' es ON time."}},
+  {id:"p106", cat:"expresiones", prep:"on", frame:"The train arrived right ___ time.", note:"Fija: 'right on time' = puntual, clavado a la hora. Compara con 'just in time' = justo a tiempo, antes del límite.", errorProne:true, vs:{in:"'In time' = a tiempo, antes del límite ('just in time'). 'Puntual, a la hora exacta prevista' es ON time ('right on time')."}},
   {id:"p107", cat:"expresiones", prep:"on", frame:"___ average, I sleep 7 hours.", note:"Fija: 'on average' = de media.", errorProne:true},
-  {id:"p108", cat:"expresiones", prep:"on", frame:"She's travelling ___ business this week.", note:"Fija: 'on business' = por motivos de trabajo.", errorProne:true},
+  {id:"p108", cat:"expresiones", prep:"on", frame:"She's away ___ business this week.", note:"Fija: 'away on business' = fuera por trabajo.", errorProne:true},
   // ---- NIVEL B2: excepciones adicionales ----
   {id:"p109", cat:"lugar", prep:"on", frame:"It's faster to go there ___ foot than by car.", note:"Excepción de transporte: 'on foot' (a pie) es fija, aunque caminar no es un vehículo.", errorProne:true},
   {id:"p110", cat:"expresiones", prep:"in", frame:"I read about it ___ a magazine.", note:"Los medios impresos ('in a magazine/newspaper/book') usan IN, a diferencia de 'on TV' o 'on the radio'.", errorProne:true},
@@ -446,11 +461,11 @@ const PHRASES = [
   {id:"p133", cat:"lugar", prep:"in", frame:"You look great ___ this photo.", note:"Las personas 'salen' DENTRO de la imagen: IN a photo/picture.", errorProne:true, vs:{on:"'On the photo' sería algo físicamente encima del papel (una mancha, una mosca). Las personas aparecen dentro de la imagen: IN."}},
   {id:"p134", cat:"lugar", prep:"on", frame:"The cat loves sleeping ___ the roof.", note:"El tejado es una superficie exterior: ON."},
   {id:"p135", cat:"lugar", prep:"in", frame:"The birds are singing ___ the tree.", note:"Las ramas envuelven al pájaro: IN the tree (la fruta, en cambio, crece pegada a la rama: ON the tree).", errorProne:true},
-  {id:"p136", cat:"lugar", prep:"at", frame:"Leave your keys ___ reception.", note:"La recepción es un punto de servicio concreto: AT."},
+  {id:"p136", cat:"lugar", prep:"at", frame:"Leave your keys ___ reception.", note:"La recepción es un punto de servicio concreto: AT. En británico también oirás 'in reception' (la sala).", alt:["in"]},
   {id:"p137", cat:"lugar", prep:"at", frame:"We met ___ a concert two years ago.", note:"Los eventos (concert, party, meeting, wedding) son puntos de la agenda: AT."},
   {id:"p138", cat:"lugar", prep:"in", frame:"Don't stay ___ the sun too long.", note:"'In the sun / in the rain / in the shade': el ambiente te envuelve, IN.", errorProne:true},
   {id:"p139", cat:"lugar", prep:"in", frame:"The kids always sit ___ the back of the car.", note:"Dentro de un vehículo cerrado: IN the back of the car.", errorProne:true, trapWrong:"at", vs:{at:"'At the back of' se usa para la parte trasera de salas y espacios (at the back of the room). Dentro del coche: IN."}},
-  {id:"p140", cat:"lugar", prep:"at", frame:"The toilets are ___ the back of the restaurant.", note:"La parte trasera de una sala o espacio abierto: AT the back of.", errorProne:true, trapWrong:"in", vs:{in:"'In the back of' es para el interior de un vehículo (in the back of the car). En salas y espacios: AT the back of."}},
+  {id:"p140", cat:"lugar", prep:"at", frame:"The toilets are ___ the back of the restaurant.", note:"La parte trasera de una sala o espacio: AT the back of (británico). En americano también se dice 'in the back'.", errorProne:true, trapWrong:"on", alt:["in"], vs:{on:"'On the back of' sería sobre la superficie trasera de un objeto (on the back of the envelope). Para la zona trasera de una sala: AT the back of."}},
   {id:"p141", cat:"lugar", prep:"in", frame:"My grandparents live ___ the countryside.", note:"El campo como zona que te rodea: contenedor, IN."},
   {id:"p142", cat:"lugar", prep:"at", frame:"We arrived ___ the hotel just before midnight.", note:"'Arrive AT' + edificios y puntos concretos (hotel, airport, station).", errorProne:true, trapWrong:"in", vs:{in:"'Arrive IN' se usa con ciudades y países (arrive in Madrid). Con edificios y puntos: arrive AT."}},
   {id:"p143", cat:"lugar", prep:"in", frame:"The train arrives ___ Madrid at nine.", note:"'Arrive IN' + ciudades y países. Con edificios y puntos: arrive AT.", errorProne:true, trapWrong:"at", vs:{at:"'Arrive AT' es para edificios y puntos (arrive at the hotel). Con ciudades y países: arrive IN."}},
@@ -850,6 +865,7 @@ function renderExercise(mount, ex, handlers){
 /* ================= NAVEGACIÓN ================= */
 const VIEW_NAMES = ["inicio","historias","diagnostico","practica","trampa","jefe","stats"];
 function showView(name){
+  if(VIEW_NAMES.indexOf(name) === -1) name = "inicio"; // nombre inválido -> no dejar la app en blanco
   VIEW_NAMES.forEach(v => {
     const el = document.getElementById("view-"+v);
     if(el) el.classList.toggle("active", v===name);
@@ -877,7 +893,7 @@ function renderHome(){
   const cats = ["tiempo","lugar","expresiones"];
   const domBars = cats.map(c => {
     const s = state.categories[c];
-    const pct = s.total ? Math.round(s.correct/s.total*100) : 0;
+    const pct = safePct(s.correct, s.total);
     return '<div class="domRow"><div class="domTop"><span>'+CAT_LABEL[c]+'</span><span>'+pct+'%</span></div><div class="domBar"><div class="domFill '+c+'" style="width:'+pct+'%"></div></div></div>';
   }).join("");
 
@@ -1004,9 +1020,10 @@ function diagnosticSummaryHtml(){
   const cats = ["tiempo","lugar","expresiones"];
   let weakest = null, weakestPct = 101;
   const bars = cats.map(c => {
-    const pct = r[c].t ? Math.round(r[c].c/r[c].t*100) : 0;
+    const cc = safeInt(r[c] && r[c].c, 0), ct = safeInt(r[c] && r[c].t, 0);
+    const pct = safePct(cc, ct);
     if(pct < weakestPct){ weakestPct = pct; weakest = c; }
-    return '<div class="domRow"><div class="domTop"><span>'+CAT_LABEL[c]+'</span><span>'+r[c].c+'/'+r[c].t+' ('+pct+'%)</span></div><div class="domBar"><div class="domFill '+c+'" style="width:'+pct+'%"></div></div></div>';
+    return '<div class="domRow"><div class="domTop"><span>'+CAT_LABEL[c]+'</span><span>'+cc+'/'+ct+' ('+pct+'%)</span></div><div class="domBar"><div class="domFill '+c+'" style="width:'+pct+'%"></div></div></div>';
   }).join("");
   const rec = weakest ? '<p class="smallMuted">Tu punto más débil es <b>'+CAT_LABEL[weakest]+'</b>. La práctica adaptativa te dará más ejercicios de esa categoría.</p>' : "";
   return '<h2 class="title">🧭 Resultado del diagnóstico</h2>' + bars + rec + '<button class="btn btn-outline" id="retryDiagBtn" style="margin-top:10px;">Repetir diagnóstico</button>';
@@ -1097,7 +1114,7 @@ function loadNextTrampa(){
 
 /* ================= NIVEL JEFE ================= */
 const JEFE_UNLOCK_ANSWERED = 50;
-function isJefeUnlocked(){ return state.diagnostic.done && state.totalAnswered >= JEFE_UNLOCK_ANSWERED; }
+function isJefeUnlocked(){ return !!state.diagnostic.done && safeInt(state.totalAnswered,0) >= JEFE_UNLOCK_ANSWERED; }
 let jefeState = {phase:"lessons", queue:null, idx:0, score:0};
 function buildExamQueue(){
   const seen = {};
@@ -1138,13 +1155,14 @@ function renderJefeLessons(mount, unlocked){
   if(unlocked){
     examBlock = '<button class="btn btn-primary" id="startExamBtn">Comenzar examen final (25 preguntas)</button>';
   } else {
-    const pct = Math.min(100, Math.round((state.totalAnswered/JEFE_UNLOCK_ANSWERED)*100));
+    const answered = safeInt(state.totalAnswered, 0);
+    const pct = Math.min(100, Math.max(0, Math.round((answered/JEFE_UNLOCK_ANSWERED)*100)));
     examBlock =
       '<div class="card">' +
         '<h3 class="subtitle2">🔒 Examen final bloqueado</h3>' +
         '<p class="smallMuted">La lista de excepciones de arriba está siempre disponible. Para desbloquear el examen de 25 preguntas, completa el diagnóstico y responde al menos '+JEFE_UNLOCK_ANSWERED+' ejercicios en Práctica o Trampa.</p>' +
         '<div class="progWrap"><div class="progFill" style="width:'+pct+'%"></div></div>' +
-        '<p class="smallMuted">'+state.totalAnswered+' / '+JEFE_UNLOCK_ANSWERED+' ejercicios · Diagnóstico: '+(state.diagnostic.done?"hecho ✅":"pendiente")+'</p>' +
+        '<p class="smallMuted">'+esc(answered)+' / '+JEFE_UNLOCK_ANSWERED+' ejercicios · Diagnóstico: '+(state.diagnostic.done?"hecho ✅":"pendiente")+'</p>' +
       '</div>';
   }
 
@@ -1185,12 +1203,13 @@ function renderJefeExam(mount){
 }
 function renderJefeResult(mount){
   const last = state.jefe.examResults[state.jefe.examResults.length-1];
-  const pass = last.pct >= 80;
+  const score = safeInt(last.score,0), total = safeInt(last.total,0), pct = safeInt(last.pct,0);
+  const pass = pct >= 80;
   mount.innerHTML =
     '<div class="card center">' +
       '<div style="font-size:48px;">'+(pass?"🏆":"📚")+'</div>' +
       '<h2 class="title">'+(pass?"¡Nivel Jefe superado!":"Casi lo tienes")+'</h2>' +
-      '<p class="subtitle">Acertaste '+last.score+' de '+last.total+' ('+last.pct+'%). '+(pass?"Necesitabas 80% para aprobar.":"Necesitas 80% para aprobar.")+'</p>' +
+      '<p class="subtitle">Acertaste '+score+' de '+total+' ('+pct+'%). '+(pass?"Necesitabas 80% para aprobar.":"Necesitas 80% para aprobar.")+'</p>' +
       '<button class="btn btn-outline" id="retryLessonsBtn">Repasar excepciones</button>' +
       '<button class="btn btn-primary" style="margin-top:8px;" id="retryExamBtn">Repetir examen</button>' +
     '</div>';
@@ -1208,26 +1227,34 @@ function renderStats(){
   const cats = ["tiempo","lugar","expresiones","trampa"];
   const bars = cats.map(c => {
     const s = state.categories[c];
-    const pct = s.total ? Math.round(s.correct/s.total*100) : 0;
-    return '<div class="domRow"><div class="domTop"><span>'+CAT_LABEL[c]+'</span><span>'+s.correct+'/'+s.total+' ('+pct+'%)</span></div><div class="domBar"><div class="domFill '+c+'" style="width:'+pct+'%"></div></div></div>';
+    const pct = safePct(s.correct, s.total);
+    return '<div class="domRow"><div class="domTop"><span>'+CAT_LABEL[c]+'</span><span>'+esc(safeInt(s.correct,0))+'/'+esc(safeInt(s.total,0))+' ('+pct+'%)</span></div><div class="domBar"><div class="domFill '+c+'" style="width:'+pct+'%"></div></div></div>';
   }).join("");
 
-  const examHistory = state.jefe.examResults.slice(-5).reverse().map(r =>
-    '<div>'+r.date+' — '+r.score+'/'+r.total+' ('+r.pct+'%) '+(r.pct>=80?"✅":"❌")+'</div>'
-  ).join("") || '<p class="smallMuted">Todavía no has hecho el examen final.</p>';
+  const examHistory = state.jefe.examResults.slice(-5).reverse().map(r => {
+    const score = safeInt(r.score,0), total = safeInt(r.total,0), pct = safeInt(r.pct,0);
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(r.date) ? r.date : esc(r.date);
+    return '<div>'+date+' — '+score+'/'+total+' ('+pct+'%) '+(pct>=80?"✅":"❌")+'</div>';
+  }).join("") || '<p class="smallMuted">Todavía no has hecho el examen final.</p>';
 
   const recentErrors = state.history.filter(h => !h.correct).slice(-8).reverse().map(h => {
     const ex = ALL_EX_BY_ID[h.id];
-    const label = ex ? (ex.type==="trampa" ? ex.es : ex.prompt) : h.id;
-    return '<div>'+h.date+' · '+label+'</div>';
+    const label = ex ? (ex.type==="trampa" ? ex.es : ex.prompt) : esc(h.id);
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(h.date) ? h.date : esc(h.date);
+    return '<div>'+date+' · '+label+'</div>';
   }).join("") || '<p class="smallMuted">Sin errores registrados todavía. ¡Bien!</p>';
+
+  const streakCount = safeInt(state.streak.count, 0);
+  const streakBest = Math.max(streakCount, safeInt(state.streak.best, 0));
+  const totalAnswered = safeInt(state.totalAnswered, 0);
+  const totalCorrect = Math.min(totalAnswered, safeInt(state.totalCorrect, 0));
 
   mount.innerHTML =
     '<h2 class="title">📊 Estadísticas</h2>' +
     '<div class="card"><h3 class="subtitle2">Dominio por categoría</h3>' + bars + '</div>' +
     '<div class="card"><h3 class="subtitle2">Resumen</h3>' +
-      '<p class="smallMuted">Racha actual: <b>'+state.streak.count+' días</b> · Récord: <b>'+(state.streak.best||0)+' días</b></p>' +
-      '<p class="smallMuted">Ejercicios respondidos: <b>'+state.totalAnswered+'</b> · Aciertos: <b>'+state.totalCorrect+'</b></p>' +
+      '<p class="smallMuted">Racha actual: <b>'+streakCount+' días</b> · Récord: <b>'+streakBest+' días</b></p>' +
+      '<p class="smallMuted">Ejercicios respondidos: <b>'+totalAnswered+'</b> · Aciertos: <b>'+totalCorrect+'</b></p>' +
       '<p class="smallMuted">Repasos pendientes hoy: <b>'+dueReviewCount()+'</b></p>' +
       '<p class="smallMuted">🎓 Frases dominadas: <b>'+masteryStats().mastered+' / '+masteryStats().total+'</b> (dominada = acertada en dos repasos espaciados)</p>' +
       '<p class="smallMuted">Banco de ejercicios: <b>'+(GENERAL_EXERCISES.length + TRAMPA_EXERCISES.length)+'</b> (general + trampa del EN)</p>' +
@@ -1266,7 +1293,8 @@ function openResetModal(){
 /* ================= INICIALIZACIÓN ================= */
 function updateStreakChip(){
   const chip = document.getElementById("streakChip");
-  if(chip) chip.textContent = "🔥 " + state.streak.count + " día" + (state.streak.count===1?"":"s");
+  const n = safeInt(state.streak.count, 0);
+  if(chip) chip.textContent = "🔥 " + n + " día" + (n===1?"":"s");
 }
 document.querySelectorAll(".bottomnav button").forEach(b => {
   b.addEventListener("click", () => showView(b.dataset.view));
