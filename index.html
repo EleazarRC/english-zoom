@@ -157,18 +157,48 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 .cheatBlock.b-none{border-color:var(--muted); background:#f8fafc;}
 .cheatHead{font-weight:800; margin-bottom:4px; font-size:14.5px;}
 .cheatBody{font-size:13.5px; line-height:1.6;}
+
+/* ===== HUB (selector de módulos) y contenedores de módulo ===== */
+.brand{cursor:pointer; user-select:none;}
+.screen{display:none;}
+.screen.active{display:block; animation:fadeIn .25s ease;}
+.module{display:none;}
+.module.active{display:block; animation:fadeIn .2s ease;}
+.hubHead{margin:2px 0 4px; font-size:22px; font-weight:800;}
+.hubSub{color:var(--muted); margin:0 0 16px; font-size:14px;}
+.modCard{display:flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:15px 16px; margin-bottom:13px; box-shadow:var(--shadow); width:100%; text-align:left; cursor:pointer;}
+.modCard:disabled{cursor:default; opacity:.85;}
+.modIcon{width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; flex:0 0 auto;}
+.modBody{flex:1; min-width:0;}
+.modName{font-weight:800; font-size:16px; margin-bottom:2px;}
+.modDesc{font-size:12.5px; color:var(--muted); line-height:1.35;}
+.modProg{margin-top:8px; height:8px; background:#eef1f6; border-radius:999px; overflow:hidden;}
+.modProg > div{height:100%; border-radius:999px; transition:width .3s ease;}
+.modMeta{display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px; font-weight:700; color:var(--muted);}
+.modSoon{font-size:10.5px; font-weight:800; letter-spacing:.03em; color:var(--accent-dark); background:var(--accent-bg); padding:3px 9px; border-radius:999px;}
+.modChevron{font-size:22px; color:var(--muted); flex:0 0 auto;}
+.filterRow.wrap{flex-wrap:wrap;}
+.filterRow.wrap .chip{flex:0 1 calc(33.33% - 6px);}
+.pill.ps{background:var(--on-soft); color:var(--on-dark);}
+.psRule{border-left:4px solid var(--on); background:var(--on-bg); padding:9px 12px; margin-bottom:10px; border-radius:10px;}
+.psRule .h{font-weight:800; font-size:14.5px; margin-bottom:3px;}
+.psRule .b{font-size:13.5px; line-height:1.6;}
+.psRule code{background:#dcfce7; padding:1px 5px; border-radius:5px; font-weight:700;}
 </style>
 </head>
 <body>
 <div id="app">
 
   <header class="topbar">
-    <div class="brand">🔎 El Zoom del Inglés</div>
+    <div class="brand" id="brand">🔎 El Zoom del Inglés</div>
     <div class="streakChip" id="streakChip">🔥 0 días</div>
   </header>
 
   <main id="views">
 
+    <section id="screen-hub" class="screen active"></section>
+
+    <div id="module-ioa" class="module">
     <section id="view-inicio" class="view active"></section>
 
     <section id="view-historias" class="view">
@@ -253,10 +283,14 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     <section id="view-trampa" class="view"></section>
     <section id="view-jefe" class="view"></section>
     <section id="view-stats" class="view"></section>
+    </div><!-- /module-ioa -->
+
+    <div id="module-ps" class="module"></div>
+    <div id="module-vocab" class="module"></div>
 
   </main>
 
-  <nav class="bottomnav">
+  <nav class="bottomnav" id="nav-ioa" style="display:none;">
     <button data-view="inicio"><span class="ic">🏠</span><span>Inicio</span></button>
     <button data-view="historias"><span class="ic">📖</span><span>Aprender</span></button>
     <button data-view="practica"><span class="ic">🎯</span><span>Práctica</span></button>
@@ -264,6 +298,8 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     <button data-view="jefe"><span class="ic">👑</span><span>Jefe</span></button>
     <button data-view="stats"><span class="ic">📊</span><span>Stats</span></button>
   </nav>
+
+  <nav class="bottomnav" id="nav-ps" style="display:none;"></nav>
 
 </div>
 
@@ -602,62 +638,97 @@ const ALL_EX_BY_ID = {};
 GENERAL_EXERCISES.forEach(e => ALL_EX_BY_ID[e.id] = e);
 TRAMPA_EXERCISES.forEach(e => ALL_EX_BY_ID[e.id] = e);
 
-/* ================= ESTADO / PERSISTENCIA ================= */
-const STORAGE_KEY = "zoomInglesState_v1";
-const DEFAULT_STATE = {
-  version: 1,
-  streak: {count:0, best:0, lastDate:null},
+/* ================= ESTADO / PERSISTENCIA (multi-módulo) ================= */
+const OLD_STORAGE_KEY = "zoomInglesState_v1";  // versión antigua: una sola pantalla in/on/at
+const STORAGE_KEY = "elZoomState_v2";          // versión nueva: hub + módulos
+const IOA_DEFAULT = {   // módulo "IN / ON / AT" (progreso propio, sin racha: la racha es global)
   dailyChallenge: {date:null, done:false, correct:null},
   categories: {
     tiempo:{correct:0,total:0}, lugar:{correct:0,total:0}, expresiones:{correct:0,total:0},
     trampa:{correct:0,total:0}, excepciones:{correct:0,total:0}
   },
-  history: [],
-  srs: {},
-  diagnostic: {done:false, results:null},
-  jefe: {examResults:[]},
-  practiceFilter: "todo",
-  totalAnswered: 0,
-  totalCorrect: 0
+  history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
+  practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
 };
+const PS_DEFAULT = {   // módulo "Presente Simple"
+  dailyChallenge: {date:null, done:false, correct:null},
+  categories: {
+    afirmativa:{correct:0,total:0}, negativa:{correct:0,total:0}, pregunta:{correct:0,total:0},
+    tercera:{correct:0,total:0}, uso:{correct:0,total:0}
+  },
+  history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
+  practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
+};
+const APP_DEFAULT = { version:2, streak:{count:0,best:0,lastDate:null}, lastModuleId:null, modules:{} };
+
 function mergeDefaults(base, incoming){
   const out = clone(base);
-  if(incoming && typeof incoming === "object"){
-    Object.keys(base).forEach(k => {
-      if(incoming[k] === undefined) return;
-      if(typeof base[k] === "object" && base[k] !== null && !Array.isArray(base[k])){
-        out[k] = mergeDefaults(base[k], incoming[k]);
-      } else {
-        out[k] = incoming[k];
-      }
-    });
-  }
+  if(!incoming || typeof incoming !== "object" || Array.isArray(incoming)) return out;
+  // 1) Claves del esquema por defecto: se validan por tipo (protege contra datos corruptos).
+  Object.keys(base).forEach(k => {
+    if(incoming[k] === undefined) return;
+    const bv = base[k], iv = incoming[k];
+    if(bv && typeof bv === "object" && !Array.isArray(bv)){
+      if(iv && typeof iv === "object" && !Array.isArray(iv)) out[k] = mergeDefaults(bv, iv);
+      // si el valor entrante no es un objeto usable (null/string...), se mantiene el default
+    } else if(Array.isArray(bv)){
+      if(Array.isArray(iv)) out[k] = clone(iv);
+    } else {
+      out[k] = iv;
+    }
+  });
+  // 2) Claves dinámicas presentes solo en los datos guardados (srs, modules...): se conservan tal cual.
+  Object.keys(incoming).forEach(k => {
+    if(!(k in base) && incoming[k] !== undefined) out[k] = clone(incoming[k]);
+  });
   return out;
 }
-function loadState(){
+function ensureModules(app){
+  if(!app.modules || typeof app.modules !== "object") app.modules = {};
+  app.modules["in-on-at"] = mergeDefaults(IOA_DEFAULT, app.modules["in-on-at"] || {});
+  app.modules["present-simple"] = mergeDefaults(PS_DEFAULT, app.modules["present-simple"] || {});
+}
+function loadApp(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return clone(DEFAULT_STATE);
-    const parsed = JSON.parse(raw);
-    return mergeDefaults(DEFAULT_STATE, parsed);
-  }catch(e){
-    return clone(DEFAULT_STATE);
-  }
+    if(raw){
+      const app = mergeDefaults(APP_DEFAULT, JSON.parse(raw));
+      ensureModules(app);
+      return app;
+    }
+    // Migración transparente desde la versión antigua (in/on/at en una sola pantalla)
+    const old = localStorage.getItem(OLD_STORAGE_KEY);
+    if(old){
+      const parsed = JSON.parse(old);
+      const app = clone(APP_DEFAULT);
+      if(parsed.streak) app.streak = mergeDefaults(APP_DEFAULT.streak, parsed.streak);
+      const migrated = mergeDefaults(IOA_DEFAULT, parsed);
+      delete migrated.streak; delete migrated.version;  // eran globales; no deben vivir en el módulo
+      app.modules["in-on-at"] = migrated;
+      ensureModules(app);
+      return app;
+    }
+  }catch(e){/* corrupto: caemos a valores por defecto */}
+  const app = clone(APP_DEFAULT);
+  ensureModules(app);
+  return app;
 }
 function saveState(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){/* almacenamiento lleno o bloqueado */}
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(APP)); }catch(e){/* almacenamiento lleno o bloqueado */}
 }
-let state = loadState();
+let APP = loadApp();
+let state = APP.modules["in-on-at"];   // el módulo in/on/at sigue usando la variable 'state'
+saveState();                            // persiste la migración / normalización desde el primer arranque
 
 /* ================= LÓGICA DE RACHA ================= */
 function updateStreak(){
   const today = todayISO();
-  if(state.streak.lastDate === today) return;
+  if(APP.streak.lastDate === today) return;
   const yesterday = addDaysISO(today, -1);
-  if(state.streak.lastDate === yesterday){ state.streak.count++; }
-  else { state.streak.count = 1; }
-  state.streak.lastDate = today;
-  if(state.streak.count > (state.streak.best||0)) state.streak.best = state.streak.count;
+  if(APP.streak.lastDate === yesterday){ APP.streak.count++; }
+  else { APP.streak.count = 1; }
+  APP.streak.lastDate = today;
+  if(APP.streak.count > (APP.streak.best||0)) APP.streak.best = APP.streak.count;
 }
 
 /* ================= REPETICIÓN ESPACIADA (SRS) ================= */
@@ -890,7 +961,7 @@ function showView(name){
     const el = document.getElementById("view-"+v);
     if(el) el.classList.toggle("active", v===name);
   });
-  document.querySelectorAll(".bottomnav button").forEach(b => b.classList.toggle("active", b.dataset.view===name));
+  document.querySelectorAll("#nav-ioa button").forEach(b => b.classList.toggle("active", b.dataset.view===name));
   const renderers = {
     inicio: renderHome, historias: renderHistorias, diagnostico: renderDiagnostico,
     practica: renderPractica, trampa: renderTrampa, jefe: renderJefe, stats: renderStats
@@ -1264,8 +1335,8 @@ function renderStats(){
     return '<div>'+date+' · '+label+'</div>';
   }).join("") || '<p class="smallMuted">Sin errores registrados todavía. ¡Bien!</p>';
 
-  const streakCount = safeInt(state.streak.count, 0);
-  const streakBest = Math.max(streakCount, safeInt(state.streak.best, 0));
+  const streakCount = safeInt(APP.streak.count, 0);
+  const streakBest = Math.max(streakCount, safeInt(APP.streak.best, 0));
   const totalAnswered = safeInt(state.totalAnswered, 0);
   const totalCorrect = Math.min(totalAnswered, safeInt(state.totalCorrect, 0));
 
@@ -1295,13 +1366,14 @@ function openModal(html){
 function closeModal(){ document.getElementById("modalRoot").innerHTML = ""; }
 function openResetModal(){
   openModal(
-    '<h3 class="title" style="font-size:19px;">¿Reiniciar todo el progreso?</h3>' +
-    '<p class="subtitle">Se borrará tu racha, historial de errores, exámenes y repasos programados. Esta acción no se puede deshacer.</p>' +
+    '<h3 class="title" style="font-size:19px;">¿Reiniciar el progreso de IN/ON/AT?</h3>' +
+    '<p class="subtitle">Se borrará el historial de errores, exámenes y repasos de este módulo. Tu racha global y los demás módulos no se tocan. Esta acción no se puede deshacer.</p>' +
     '<button class="btn btn-primary" id="confirmReset" style="background:var(--at);">Sí, reiniciar</button>' +
     '<button class="btn btn-outline" id="cancelReset" style="margin-top:8px;">Cancelar</button>'
   );
   document.getElementById("confirmReset").addEventListener("click", () => {
-    state = clone(DEFAULT_STATE);
+    APP.modules["in-on-at"] = clone(IOA_DEFAULT);
+    state = APP.modules["in-on-at"];
     jefeState = {phase:"lessons", queue:null, idx:0, score:0};
     saveState();
     closeModal();
@@ -1310,17 +1382,367 @@ function openResetModal(){
   document.getElementById("cancelReset").addEventListener("click", closeModal);
 }
 
+/* ================= REGISTRO DE MÓDULOS + HUB ================= */
+const MODULES = [
+  { id:"in-on-at", name:"IN · ON · AT", icon:"🔎", color:"var(--in)", bg:"var(--in-bg)",
+    desc:"Preposiciones de tiempo y lugar con la metáfora del zoom.",
+    status:"ready", mastery: () => masteryStats(), enter: () => enterIOA() },
+  { id:"present-simple", name:"Presente Simple", icon:"🟢", color:"var(--on)", bg:"var(--on-bg)",
+    desc:"Afirmativa, negativa, preguntas y la -s de tercera persona.",
+    status:"ready", mastery: () => psMasteryStats(), enter: () => enterPS() },
+  { id:"vocabulary", name:"Vocabulario", icon:"📚", color:"var(--at)", bg:"var(--at-bg)",
+    desc:"Listas de palabras con tarjetas y repaso espaciado.",
+    status:"ready", mastery: () => ({mastered:0,total:0}), enter: () => enterVocab() }
+];
+function allModuleEls(){ return ["module-ioa","module-ps","module-vocab"].map(id=>document.getElementById(id)); }
+function allNavEls(){ return ["nav-ioa","nav-ps"].map(id=>document.getElementById(id)); }
+function showHub(){
+  APP.lastModuleId = null;
+  allModuleEls().forEach(el => { if(el){ el.classList.remove("active"); el.style.display="none"; } });
+  allNavEls().forEach(el => { if(el) el.style.display="none"; });
+  document.getElementById("screen-hub").classList.add("active");
+  document.getElementById("brand").textContent = "🔎 El Zoom del Inglés";
+  renderHub();
+  window.scrollTo(0,0);
+}
+function enterModuleUI(moduleElId, navElId){
+  document.getElementById("screen-hub").classList.remove("active");
+  allModuleEls().forEach(el => { if(el){ el.classList.remove("active"); el.style.display="none"; } });
+  allNavEls().forEach(el => { if(el) el.style.display="none"; });
+  const mEl = document.getElementById(moduleElId);
+  if(mEl){ mEl.classList.add("active"); mEl.style.display="block"; }
+  if(navElId){ const n=document.getElementById(navElId); if(n) n.style.display="flex"; }
+  document.getElementById("brand").textContent = "‹ Módulos";
+  window.scrollTo(0,0);
+}
+function enterModule(id){
+  const mod = MODULES.find(m => m.id===id);
+  if(!mod) return;
+  APP.lastModuleId = id; saveState();
+  mod.enter();
+}
+function renderHub(){
+  const cards = MODULES.map(m => {
+    const soon = m.status === "soon";
+    const ms = m.mastery();
+    const pct = ms.total ? Math.round(ms.mastered/ms.total*100) : 0;
+    let meta, bar;
+    if(soon){ meta = '<span class="modSoon">PRÓXIMAMENTE</span>'; bar = ''; }
+    else if(ms.total === 0){ meta = '<span>Vacío — pásame tus palabras</span>'; bar = ''; }
+    else {
+      meta = '<span>'+ms.mastered+' / '+ms.total+' dominadas</span><span>'+pct+'%</span>';
+      bar = '<div class="modProg"><div style="width:'+pct+'%; background:'+m.color+';"></div></div>';
+    }
+    return '<button class="modCard" data-mod="'+m.id+'"'+(soon?' disabled':'')+'>' +
+        '<div class="modIcon" style="background:'+m.bg+';">'+m.icon+'</div>' +
+        '<div class="modBody">' +
+          '<div class="modName">'+m.name+'</div>' +
+          '<div class="modDesc">'+m.desc+'</div>' + bar +
+          '<div class="modMeta">'+meta+'</div>' +
+        '</div>' + (soon ? '' : '<div class="modChevron">›</div>') +
+      '</button>';
+  }).join("");
+  document.getElementById("screen-hub").innerHTML =
+    '<div class="hubHead">¿Qué quieres dominar hoy?</div>' +
+    '<p class="hubSub">Elige un módulo. Cada uno te lleva de cero a experto en su tema, con tu propio progreso y repaso.</p>' +
+    cards;
+  document.querySelectorAll("#screen-hub .modCard").forEach(btn => {
+    if(btn.disabled) return;
+    btn.addEventListener("click", () => enterModule(btn.dataset.mod));
+  });
+}
+function enterIOA(){
+  state = APP.modules["in-on-at"];
+  enterModuleUI("module-ioa","nav-ioa");
+  showView("inicio");
+}
+
+/* ================= MÓDULO: PRESENTE SIMPLE ================= */
+let psState = APP.modules["present-simple"];
+const PS_CAT_LABEL = {afirmativa:"AFIRMATIVA", negativa:"NEGATIVA", pregunta:"PREGUNTA", tercera:"3ª PERSONA -S", uso:"USO"};
+const PS_BANK = [
+  // ----- Afirmativa (forma base con I/you/we/they) -----
+  {id:"ps1", cat:"afirmativa", blank:"I ___ coffee every morning.", options:["drink","drinks","drinking"], answer:"drink", note:"Con I/you/we/they el verbo va en su forma base: I drink."},
+  {id:"ps2", cat:"afirmativa", blank:"We ___ in Valencia.", options:["live","lives","living"], answer:"live", note:"Con 'we' no se añade -s: we live."},
+  {id:"ps3", cat:"afirmativa", blank:"They ___ football on Sundays.", options:["play","plays"], answer:"play", note:"Con 'they' el verbo va sin -s: they play."},
+  {id:"ps4", cat:"afirmativa", blank:"You ___ English very well.", options:["speak","speaks"], answer:"speak", note:"Con 'you' el verbo va sin -s: you speak."},
+  {id:"ps5", cat:"afirmativa", blank:"I ___ to the radio in the car.", options:["listen","listens"], answer:"listen", note:"Con 'I' el verbo va sin -s."},
+  // ----- Tercera persona (-s / -es / -ies) -----
+  {id:"ps6", cat:"tercera", blank:"She ___ tennis every week.", options:["play","plays","playes"], answer:"plays", note:"3ª persona: la mayoría de verbos solo añaden -s. play → plays."},
+  {id:"ps7", cat:"tercera", blank:"He ___ to work by bus.", options:["go","goes","gos"], answer:"goes", note:"go, do → añaden -es: goes, does."},
+  {id:"ps8", cat:"tercera", blank:"My sister ___ TV every night.", options:["watch","watchs","watches"], answer:"watches", note:"Verbos en -ch, -sh, -ss, -x, -o añaden -es: watches."},
+  {id:"ps9", cat:"tercera", blank:"The baby ___ a lot at night.", options:["cry","crys","cries"], answer:"cries", note:"Consonante + y → -ies: cry → cries."},
+  {id:"ps10", cat:"tercera", blank:"Tom ___ his teeth twice a day.", options:["brush","brushs","brushes"], answer:"brushes", note:"Verbos en -sh añaden -es: brushes."},
+  {id:"ps11", cat:"tercera", blank:"It ___ a lot here in winter.", options:["rain","rains"], answer:"rains", note:"'It' es tercera persona: rain → rains."},
+  {id:"ps12", cat:"tercera", blank:"My dad ___ the dishes after dinner.", options:["do","does","dos"], answer:"does", note:"do → does (con -es)."},
+  {id:"ps13", cat:"tercera", blank:"She ___ pizza and pasta.", options:["like","likes"], answer:"likes", note:"3ª persona añade -s: likes."},
+  {id:"ps14", cat:"tercera", blank:"He ___ to London every month.", options:["fly","flys","flies"], answer:"flies", note:"Consonante + y → -ies: fly → flies."},
+  {id:"ps15", cat:"tercera", blank:"The shop ___ at nine o'clock.", options:["open","opens"], answer:"opens", note:"'The shop' = it: opens."},
+  {id:"ps16", cat:"tercera", blank:"She ___ a shower every morning.", options:["have","has","haves"], answer:"has", note:"'have' es irregular en 3ª persona: have → has."},
+  {id:"ps17", cat:"tercera", blank:"He ___ his homework after school.", options:["do","does"], answer:"does", note:"do → does en 3ª persona."},
+  {id:"ps18", cat:"tercera", blank:"My mum ___ English at a school.", options:["teach","teaches","teachs"], answer:"teaches", note:"Verbos en -ch añaden -es: teaches."},
+  // ----- Negativa (don't / doesn't + base) -----
+  {id:"ps19", cat:"negativa", blank:"I ___ like coffee.", options:["don't","doesn't"], answer:"don't", note:"I/you/we/they → don't."},
+  {id:"ps20", cat:"negativa", blank:"She ___ eat meat.", options:["don't","doesn't"], answer:"doesn't", note:"he/she/it → doesn't."},
+  {id:"ps21", cat:"negativa", blank:"They ___ live here.", options:["don't","doesn't"], answer:"don't", note:"'they' → don't."},
+  {id:"ps22", cat:"negativa", blank:"He ___ work on Fridays.", options:["don't","doesn't"], answer:"doesn't", note:"'he' → doesn't."},
+  {id:"ps23", cat:"negativa", blank:"She doesn't ___ tennis.", options:["play","plays"], answer:"play", note:"Tras doesn't el verbo va en forma base (sin -s): doesn't play."},
+  {id:"ps24", cat:"negativa", blank:"He doesn't ___ coffee.", options:["like","likes"], answer:"like", note:"Tras doesn't, verbo base: doesn't like."},
+  {id:"ps25", cat:"negativa", blank:"It doesn't ___ much in summer.", options:["rain","rains"], answer:"rain", note:"Tras doesn't, verbo base: doesn't rain."},
+  {id:"ps26", cat:"negativa", blank:"We ___ have a car.", options:["don't","doesn't"], answer:"don't", note:"'we' → don't."},
+  // ----- Preguntas (Do / Does + base) -----
+  {id:"ps27", cat:"pregunta", blank:"___ you like pizza?", options:["Do","Does"], answer:"Do", note:"I/you/we/they → Do."},
+  {id:"ps28", cat:"pregunta", blank:"___ she speak French?", options:["Do","Does"], answer:"Does", note:"he/she/it → Does."},
+  {id:"ps29", cat:"pregunta", blank:"___ they live near you?", options:["Do","Does"], answer:"Do", note:"'they' → Do."},
+  {id:"ps30", cat:"pregunta", blank:"___ he work here?", options:["Do","Does"], answer:"Does", note:"'he' → Does."},
+  {id:"ps31", cat:"pregunta", blank:"Does she ___ a car?", options:["have","has"], answer:"have", note:"Tras Does el verbo va en forma base: Does she have...?"},
+  {id:"ps32", cat:"pregunta", blank:"Do they ___ English?", options:["speak","speaks"], answer:"speak", note:"Tras Do, verbo base: Do they speak...?"},
+  {id:"ps33", cat:"pregunta", blank:"Where ___ she live?", options:["do","does"], answer:"does", note:"En preguntas con wh-, 'does' va antes del sujeto: Where does she live?"},
+  {id:"ps34", cat:"pregunta", blank:"What time ___ the film start?", options:["do","does"], answer:"does", note:"'the film' = it → does."},
+  {id:"ps35", cat:"pregunta", blank:"Why ___ you always arrive late?", options:["do","does"], answer:"do", note:"'you' → do."},
+  {id:"ps36", cat:"pregunta", blank:"___ it cost a lot?", options:["Do","Does"], answer:"Does", note:"'it' → Does."},
+  // ----- Uso (adverbios de frecuencia, verbos de estado) -----
+  {id:"ps37", cat:"uso", blank:"She ___ late for work.", options:["is always","always is"], answer:"is always", note:"Con el verbo 'be', el adverbio de frecuencia va DESPUÉS: she is always late."},
+  {id:"ps38", cat:"uso", blank:"I ___ to the gym after work.", options:["always go","go always"], answer:"always go", note:"Con verbos normales, el adverbio va ANTES del verbo: I always go."},
+  {id:"ps39", cat:"uso", blank:"He ___ tired in the morning.", options:["is usually","usually is"], answer:"is usually", note:"Con 'be', el adverbio va después: he is usually tired."},
+  {id:"ps40", cat:"uso", blank:"I ___ you're right.", options:["think","am thinking"], answer:"think", note:"Los verbos de estado (think, know, like, want...) no van en continuo: I think."},
+  {id:"ps41", cat:"uso", blank:"She ___ this song.", options:["loves","is loving"], answer:"loves", note:"'love' es un verbo de estado: se usa en presente simple, no continuo."},
+  {id:"ps42", cat:"uso", blank:"We ___ two children.", options:["have","are having"], answer:"have", note:"'have' con sentido de posesión no va en continuo: we have."},
+  {id:"ps43", cat:"uso", blank:"This soup ___ delicious.", options:["tastes","is tasting"], answer:"tastes", note:"'taste' (saber a) es verbo de estado: tastes."},
+  {id:"ps44", cat:"uso", blank:"___ you understand the question?", options:["Do","Are"], answer:"Do", note:"'understand' es verbo de estado: pregunta con Do, no con Are."},
+  // ----- Reconocer la frase correcta (errores típicos de hispanohablantes) -----
+  {id:"ps45", cat:"tercera", choose:true, options:["She work in a bank.","She works in a bank.","She working in a bank."], answer:"She works in a bank.", note:"En 3ª persona el verbo necesita -s: works.", errorProne:true},
+  {id:"ps46", cat:"negativa", choose:true, options:["He no like fish.","He doesn't likes fish.","He doesn't like fish."], answer:"He doesn't like fish.", note:"Negativa en 3ª persona: doesn't + verbo base (like).", errorProne:true},
+  {id:"ps47", cat:"pregunta", choose:true, options:["Does she plays tennis?","Does she play tennis?","She does play tennis?"], answer:"Does she play tennis?", note:"Pregunta: Does + sujeto + verbo base (play).", errorProne:true},
+  {id:"ps48", cat:"pregunta", choose:true, options:["Where lives your brother?","Where your brother lives?","Where does your brother live?"], answer:"Where does your brother live?", note:"En preguntas wh-, does va antes del sujeto y el verbo va en base.", errorProne:true},
+  {id:"ps49", cat:"uso", choose:true, options:["I am agree with you.","I agree with you.","I agreeing with you."], answer:"I agree with you.", note:"'agree' es un verbo: no lleva 'be'. Se dice I agree, no I am agree.", errorProne:true},
+  {id:"ps50", cat:"afirmativa", choose:true, options:["Every day I am go to school.","Every day I goes to school.","Every day I go to school."], answer:"Every day I go to school.", note:"Con 'I', el verbo va en base y sin 'be': I go.", errorProne:true},
+  {id:"ps51", cat:"negativa", choose:true, options:["They doesn't work here.","They not work here.","They don't work here."], answer:"They don't work here.", note:"Con they/we/you/I la negativa es don't.", errorProne:true},
+  {id:"ps52", cat:"tercera", choose:true, options:["My brother watch TV a lot.","My brother watchs TV a lot.","My brother watches TV a lot."], answer:"My brother watches TV a lot.", note:"watch termina en -ch → watches.", errorProne:true},
+  {id:"ps53", cat:"uso", choose:true, options:["Always she is happy.","She always is happy.","She is always happy."], answer:"She is always happy.", note:"Con 'be', el adverbio de frecuencia va después del verbo: is always.", errorProne:true},
+  {id:"ps54", cat:"pregunta", choose:true, options:["Do she likes coffee?","Does she like coffee?","Does she likes coffee?"], answer:"Does she like coffee?", note:"Does + sujeto + verbo base: Does she like...?", errorProne:true}
+];
+const PS_BY_ID = {}; PS_BANK.forEach(e => PS_BY_ID[e.id] = e);
+
+let psSessionCounter = 0, psRepeatQueue = [], psRepeatCounts = {}, psLastId = null;
+let psExam = {phase:"intro", queue:null, idx:0, score:0};
+
+function psScheduleSRS(id, correct){
+  const today = todayISO();
+  let entry = psState.srs[id];
+  if(!entry) entry = {stage:0, due:today, reps:0, lapses:0};
+  if(correct){
+    entry.stage = Math.min(entry.stage + 1, STAGE_DAYS.length - 1);
+    entry.reps++; entry.due = addDaysISO(today, STAGE_DAYS[entry.stage]);
+  } else {
+    entry.stage = 0; entry.lapses++; entry.due = today;
+    psRepeatQueue = psRepeatQueue.filter(it => it.id !== id);
+    const t = psRepeatCounts[id] || 0;
+    if(t < MAX_SESSION_REPEATS){ psRepeatCounts[id] = t + 1; psRepeatQueue.push({id:id, availableAfter: psSessionCounter + 3}); }
+  }
+  psState.srs[id] = entry;
+}
+function psRecordAnswer(ex, correct){
+  const cat = ex.cat;
+  if(!psState.categories[cat]) psState.categories[cat] = {correct:0,total:0};
+  psState.categories[cat].total++;
+  if(correct) psState.categories[cat].correct++;
+  psState.totalAnswered++; if(correct) psState.totalCorrect++;
+  psState.history.push({id:ex.id, cat:cat, date:todayISO(), correct:correct});
+  if(psState.history.length > 500) psState.history.splice(0, psState.history.length - 500);
+  psScheduleSRS(ex.id, correct);
+  updateStreak(); saveState();
+}
+function psMasteryStats(){
+  let mastered = 0;
+  Object.keys(psState.srs).forEach(id => { if((psState.srs[id].stage||0) >= 2) mastered++; });
+  return {mastered: mastered, total: PS_BANK.length};
+}
+function psPickNext(){
+  const today = todayISO();
+  const f = psState.practiceFilter || "todo";
+  const pool = f==="todo" ? PS_BANK : PS_BANK.filter(e => e.cat===f);
+  const notLast = e => e.id !== psLastId;
+  const due = pool.filter(e => psState.srs[e.id] && psState.srs[e.id].stage>=1 && psState.srs[e.id].due<=today && notLast(e));
+  if(due.length && Math.random() < 0.35) return pick(due);
+  const reps = [];
+  for(let i=0;i<psRepeatQueue.length;i++){
+    const it = psRepeatQueue[i]; const ex = PS_BY_ID[it.id];
+    if(!ex) continue; if(f!=="todo" && ex.cat!==f) continue;
+    if(it.availableAfter <= psSessionCounter && ex.id !== psLastId) reps.push(i);
+  }
+  if(reps.length && Math.random() < 0.35){
+    const idx = pick(reps); const it = psRepeatQueue[idx]; psRepeatQueue.splice(idx,1); return PS_BY_ID[it.id];
+  }
+  let candidates;
+  if(f==="todo"){
+    const cats = ["afirmativa","negativa","pregunta","tercera","uso"];
+    const weighted = cats.map(c => { const s = psState.categories[c]; const acc = s.total ? s.correct/s.total : 0.5; return {c:c, w:(1-acc)+0.2}; });
+    const tot = weighted.reduce((a,b)=>a+b.w,0);
+    let r = Math.random()*tot, cc = weighted[0].c;
+    for(const w of weighted){ if(r<=w.w){ cc=w.c; break; } r-=w.w; }
+    candidates = PS_BANK.filter(e => e.cat===cc && notLast(e));
+  } else candidates = pool.filter(notLast);
+  if(!candidates.length) candidates = pool.filter(e => e.id !== psLastId);
+  if(!candidates.length) candidates = pool;
+  return pick(candidates);
+}
+function psRenderExercise(mount, ex, handlers){
+  let html = '<div class="exBadgeWrap"><span class="pill ps">'+PS_CAT_LABEL[ex.cat]+'</span></div>';
+  if(ex.choose){
+    html += '<p class="smallMuted" style="margin:0 0 10px;">Elige la frase correcta:</p>';
+  } else {
+    html += '<p class="smallMuted" style="margin:0 0 8px;">Completa la frase:</p>';
+    html += '<div class="sentence">'+ ex.blank.replace("___", '<span class="blank">___</span>') +'</div>';
+  }
+  html += '<div>'+ ex.options.map((o,i)=>'<button class="optionCard" data-i="'+i+'">'+esc(o)+'</button>').join("") +'</div>';
+  html += '<div class="fbArea"></div>';
+  mount.innerHTML = html;
+  let answered = false;
+  mount.querySelectorAll(".optionCard").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if(answered) return; answered = true;
+      const i = parseInt(btn.dataset.i,10); const chosen = ex.options[i];
+      const correct = chosen === ex.answer;
+      mount.querySelectorAll(".optionCard").forEach((b,j) => {
+        b.disabled = true;
+        if(j===i) b.classList.add("selected", correct?"correct":"wrong");
+        if(!correct && ex.options[j] === ex.answer) b.classList.add("reveal-correct");
+      });
+      const full = ex.choose ? ex.answer : capitalizeFirst(ex.blank.replace("___", ex.answer));
+      const fb = mount.querySelector(".fbArea");
+      fb.innerHTML = '<div class="feedback '+(correct?"correct":"wrong")+'">' +
+        '<div class="fbTitle">'+(correct?"✅ ¡Correcto!":"❌ No exactamente")+'</div>' +
+        '<div class="fbAnswer">'+ esc(full) +'</div>' +
+        (ex.note ? '<div class="fbNote">'+ ex.note +'</div>' : "") +
+        '<div class="nextBtnWrap"><button class="btn btn-primary nextBtn">Siguiente →</button></div>' +
+      '</div>';
+      mount.querySelector(".nextBtn").addEventListener("click", () => handlers.onNext());
+      handlers.onAnswer(correct, ex);
+    });
+  });
+}
+function psRenderNav(active){
+  const tabs = [["aprender","📖","Aprender"],["practica","🎯","Práctica"],["examen","👑","Examen"]];
+  document.getElementById("nav-ps").innerHTML = tabs.map(t =>
+    '<button data-ps="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
+  ).join("");
+  document.querySelectorAll("#nav-ps button").forEach(b => b.addEventListener("click", () => psShowView(b.dataset.ps)));
+}
+function psShowView(name){
+  if(["aprender","practica","examen"].indexOf(name) === -1) name = "aprender";
+  psRenderNav(name);
+  if(name==="aprender") psRenderLearn();
+  else if(name==="practica") psRenderPractica();
+  else psRenderExam();
+  window.scrollTo(0,0);
+}
+function psRenderLearn(){
+  document.getElementById("module-ps").innerHTML =
+    '<h2 class="title">🟢 Presente Simple</h2>' +
+    '<p class="subtitle">Rutinas, hechos y cosas que pasan siempre. Domina las 5 piezas y no fallas.</p>' +
+    '<div class="card">' +
+      '<div class="psRule"><div class="h">1 · Afirmativa</div><div class="b">Con <b>I / you / we / they</b> el verbo va en su forma base: <code>I work</code>, <code>they play</code>.</div></div>' +
+      '<div class="psRule"><div class="h">2 · Tercera persona (he / she / it) → +s</div><div class="b">Se añade <b>-s</b>: <code>works</code>, <code>plays</code>.<br>-ch, -sh, -ss, -x, -o → <b>-es</b>: <code>watches</code>, <code>goes</code>.<br>consonante + y → <b>-ies</b>: <code>cry → cries</code>.<br>Irregular: <code>have → has</code>.</div></div>' +
+      '<div class="psRule"><div class="h">3 · Negativa → don\'t / doesn\'t + base</div><div class="b">I/you/we/they → <code>don\'t</code>. he/she/it → <code>doesn\'t</code>.<br>El verbo vuelve a la <b>base</b>: <code>She doesn\'t play</code> (no "doesn\'t plays").</div></div>' +
+      '<div class="psRule"><div class="h">4 · Preguntas → Do / Does + sujeto + base</div><div class="b"><code>Do you like...?</code> · <code>Does she like...?</code><br>Con wh-: <code>Where does she live?</code> El verbo va en base (no "lives").</div></div>' +
+      '<div class="psRule"><div class="h">5 · Uso: adverbios y verbos de estado</div><div class="b">Frecuencia (always, usually, never): <b>antes</b> del verbo normal (<code>I always go</code>) pero <b>después</b> de "be" (<code>She is always late</code>).<br>Verbos de estado (know, like, want, have, understand) van en simple, <b>no</b> en continuo: <code>I think</code>, no "I am thinking" (para opiniones).</div></div>' +
+    '</div>' +
+    '<button class="btn btn-primary" onclick="__psGo(\'practica\')">Empezar a practicar</button>';
+}
+function psRenderPractica(){
+  psSessionCounter = 0; psRepeatQueue = []; psRepeatCounts = {}; psLastId = null;
+  const f = psState.practiceFilter || "todo";
+  const chips = [["todo","Todo"],["afirmativa","Afirm."],["negativa","Neg."],["pregunta","Pregunt."],["tercera","3ª -s"],["uso","Uso"]]
+    .map(c => '<button class="chip'+(f===c[0]?" active":"")+'" data-f="'+c[0]+'">'+c[1]+'</button>').join("");
+  document.getElementById("module-ps").innerHTML =
+    '<h2 class="title">🟢 Presente Simple · Práctica</h2>' +
+    '<p class="subtitle">Más ejercicios de donde fallas. Filtra para machacar un tipo.</p>' +
+    '<div class="filterRow wrap">'+chips+'</div>' +
+    '<div class="card" id="psMount"></div>';
+  document.querySelectorAll("#module-ps .chip").forEach(ch => ch.addEventListener("click", () => {
+    psState.practiceFilter = ch.dataset.f; saveState(); psRenderPractica();
+  }));
+  psLoadNext();
+}
+function psLoadNext(){
+  const mount = document.getElementById("psMount"); if(!mount) return;
+  const ex = psPickNext(); if(!ex){ mount.innerHTML = "<p>No hay ejercicios.</p>"; return; }
+  psLastId = ex.id; psSessionCounter++;
+  psRenderExercise(mount, ex, { onAnswer:(c)=>psRecordAnswer(ex,c), onNext:()=>psLoadNext() });
+}
+function psRenderExam(){
+  const host = document.getElementById("module-ps");
+  if(psExam.phase === "exam"){
+    if(psExam.idx >= psExam.queue.length){
+      const total = psExam.queue.length; const pct = Math.round(psExam.score/total*100);
+      psState.jefe.examResults.push({date:todayISO(), score:psExam.score, total:total, pct:pct});
+      saveState(); psExam.phase = "result"; psRenderExam(); return;
+    }
+    const ex = psExam.queue[psExam.idx];
+    host.innerHTML = '<h2 class="title">👑 Examen</h2><p class="subtitle">Pregunta '+(psExam.idx+1)+' de '+psExam.queue.length+' · Aciertos: '+psExam.score+'</p><div class="card" id="psExamMount"></div>';
+    psRenderExercise(document.getElementById("psExamMount"), ex, {
+      onAnswer:(c)=>{ if(c) psExam.score++; },
+      onNext:()=>{ psExam.idx++; psRenderExam(); }
+    });
+  } else if(psExam.phase === "result"){
+    const last = psState.jefe.examResults[psState.jefe.examResults.length-1];
+    const score = safeInt(last.score,0), total = safeInt(last.total,0), pct = safeInt(last.pct,0);
+    const pass = pct >= 80;
+    host.innerHTML = '<div class="card center">' +
+      '<div style="font-size:48px;">'+(pass?"🏆":"📚")+'</div>' +
+      '<h2 class="title">'+(pass?"¡Presente Simple superado!":"Casi lo tienes")+'</h2>' +
+      '<p class="subtitle">Acertaste '+score+' de '+total+' ('+pct+'%). '+(pass?"Necesitabas 80%.":"Necesitas 80% para aprobar.")+'</p>' +
+      '<button class="btn btn-outline" id="psExamAgain">Repetir examen</button>' +
+    '</div>';
+    document.getElementById("psExamAgain").addEventListener("click", () => {
+      psExam = {phase:"exam", queue:shuffle(PS_BANK).slice(0,20), idx:0, score:0}; psRenderExam();
+    });
+  } else {
+    host.innerHTML = '<h2 class="title">👑 Examen de Presente Simple</h2>' +
+      '<p class="subtitle">20 preguntas de todo: afirmativa, negativa, preguntas, 3ª persona y uso. Necesitas 80% para aprobar.</p>' +
+      '<div class="card"><p class="smallMuted">Si lo necesitas, repasa antes en la pestaña Aprender.</p></div>' +
+      '<button class="btn btn-primary" id="psStartExam">Empezar examen</button>';
+    document.getElementById("psStartExam").addEventListener("click", () => {
+      psExam = {phase:"exam", queue:shuffle(PS_BANK).slice(0,20), idx:0, score:0}; psRenderExam();
+    });
+  }
+}
+function enterPS(){
+  psState = APP.modules["present-simple"];
+  enterModuleUI("module-ps","nav-ps");
+  psExam = {phase:"intro", queue:null, idx:0, score:0};
+  psShowView("aprender");
+}
+function __psGo(v){ psShowView(v); }
+window.__psGo = __psGo;
+
+/* ================= MÓDULO: VOCABULARIO (placeholder) ================= */
+function enterVocab(){
+  enterModuleUI("module-vocab", null);
+  document.getElementById("module-vocab").innerHTML =
+    '<h2 class="title">📚 Vocabulario</h2>' +
+    '<div class="card center">' +
+      '<div style="font-size:44px; margin-bottom:8px;">🚧</div>' +
+      '<h3 class="subtitle2" style="color:var(--text);">Módulo listo para llenarse</h3>' +
+      '<p class="subtitle">Pásame tus listas de palabras (palabra + significado + un ejemplo) y las convierto en tarjetas con repaso espaciado, igual que los otros módulos.</p>' +
+      '<button class="btn btn-outline" id="vocabBack">← Volver a los módulos</button>' +
+    '</div>';
+  document.getElementById("vocabBack").addEventListener("click", showHub);
+}
+
 /* ================= INICIALIZACIÓN ================= */
 function updateStreakChip(){
   const chip = document.getElementById("streakChip");
-  const n = safeInt(state.streak.count, 0);
+  const n = safeInt(APP.streak.count, 0);
   if(chip) chip.textContent = "🔥 " + n + " día" + (n===1?"":"s");
 }
-document.querySelectorAll(".bottomnav button").forEach(b => {
+document.querySelectorAll("#nav-ioa button").forEach(b => {
   b.addEventListener("click", () => showView(b.dataset.view));
 });
+document.getElementById("brand").addEventListener("click", showHub);
 updateStreakChip();
-showView("inicio");
+showHub();
 setInterval(updateStreakChip, 2000);
 
 })();
