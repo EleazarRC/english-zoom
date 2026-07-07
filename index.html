@@ -195,6 +195,11 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 .psRule .h{font-weight:800; font-size:14.5px; margin-bottom:3px;}
 .psRule .b{font-size:13.5px; line-height:1.6;}
 .psRule code{background:#dcfce7; padding:1px 5px; border-radius:5px; font-weight:700;}
+.pill.pc{background:#ede9fe; color:#5b21b6;}
+.pcRule{border-left:4px solid #7c3aed; background:#f5f3ff; padding:9px 12px; margin-bottom:10px; border-radius:10px;}
+.pcRule .h{font-weight:800; font-size:14.5px; margin-bottom:3px;}
+.pcRule .b{font-size:13.5px; line-height:1.6;}
+.pcRule code{background:#ede9fe; padding:1px 5px; border-radius:5px; font-weight:700;}
 </style>
 </head>
 <body>
@@ -297,6 +302,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     </div><!-- /module-ioa -->
 
     <div id="module-ps" class="module"></div>
+    <div id="module-pc" class="module"></div>
     <div id="module-vocab" class="module"></div>
 
   </main>
@@ -311,6 +317,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
   </nav>
 
   <nav class="bottomnav" id="nav-ps" style="display:none;"></nav>
+  <nav class="bottomnav" id="nav-pc" style="display:none;"></nav>
   <nav class="bottomnav" id="nav-vocab" style="display:none;"></nav>
 
 </div>
@@ -671,6 +678,15 @@ const PS_DEFAULT = {   // módulo "Presente Simple"
   history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
   practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
 };
+const PC_DEFAULT = {   // módulo "Presente Continuo"
+  dailyChallenge: {date:null, done:false, correct:null},
+  categories: {
+    afirmativa:{correct:0,total:0}, negativa:{correct:0,total:0}, pregunta:{correct:0,total:0},
+    ortografia:{correct:0,total:0}, uso:{correct:0,total:0}
+  },
+  history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
+  practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
+};
 const VOCAB_DEFAULT = { srs:{}, dir:"es-en" };   // módulo "Chunks" (tarjetas tipo Anki)
 const APP_DEFAULT = { version:2, streak:{count:0,best:0,lastDate:null}, lastModuleId:null, modules:{} };
 
@@ -700,6 +716,7 @@ function ensureModules(app){
   if(!app.modules || typeof app.modules !== "object") app.modules = {};
   app.modules["in-on-at"] = mergeDefaults(IOA_DEFAULT, app.modules["in-on-at"] || {});
   app.modules["present-simple"] = mergeDefaults(PS_DEFAULT, app.modules["present-simple"] || {});
+  app.modules["present-continuous"] = mergeDefaults(PC_DEFAULT, app.modules["present-continuous"] || {});
   app.modules["vocabulary"] = mergeDefaults(VOCAB_DEFAULT, app.modules["vocabulary"] || {});
 }
 function loadApp(){
@@ -1404,12 +1421,15 @@ const MODULES = [
   { id:"present-simple", name:"Presente Simple", icon:"🟢", color:"var(--on)", bg:"var(--on-bg)",
     desc:"Afirmativa, negativa, preguntas y la -s de tercera persona.",
     status:"ready", mastery: () => psMasteryStats(), enter: () => enterPS() },
+  { id:"present-continuous", name:"Presente Continuo", icon:"🟣", color:"#7c3aed", bg:"#ede9fe",
+    desc:"Am/is/are + -ing, ortografía y el contraste con el presente simple.",
+    status:"ready", mastery: () => pcMasteryStats(), enter: () => enterPC() },
   { id:"vocabulary", name:"Chunks", icon:"🧩", color:"var(--at)", bg:"var(--at-bg)",
     desc:"Los chunks (colocaciones y expresiones) más rentables para el B2, tipo Anki.",
     status:"ready", mastery: () => vocabMasteryStats(), enter: () => enterVocab() }
 ];
-function allModuleEls(){ return ["module-ioa","module-ps","module-vocab"].map(id=>document.getElementById(id)); }
-function allNavEls(){ return ["nav-ioa","nav-ps","nav-vocab"].map(id=>document.getElementById(id)); }
+function allModuleEls(){ return ["module-ioa","module-ps","module-pc","module-vocab"].map(id=>document.getElementById(id)); }
+function allNavEls(){ return ["nav-ioa","nav-ps","nav-pc","nav-vocab"].map(id=>document.getElementById(id)); }
 function showHub(){
   APP.lastModuleId = null;
   allModuleEls().forEach(el => { if(el){ el.classList.remove("active"); el.style.display="none"; } });
@@ -1730,6 +1750,266 @@ function enterPS(){
 }
 function __psGo(v){ psShowView(v); }
 window.__psGo = __psGo;
+
+/* ================= MÓDULO: PRESENTE CONTINUO ================= */
+let pcState = APP.modules["present-continuous"];
+const PC_CAT_LABEL = {afirmativa:"AFIRMATIVA", negativa:"NEGATIVA", pregunta:"PREGUNTA", ortografia:"ORTOGRAFÍA -ING", uso:"USO Y CONTRASTE"};
+const PC_BANK = [
+  // ----- Afirmativa (am/is/are + verbo-ing) -----
+  {id:"pc1", cat:"afirmativa", blank:"I ___ dinner right now.", options:["am cooking","cooking","cook"], answer:"am cooking", note:"Presente continuo: am/is/are + verbo-ing. Con 'I' → am."},
+  {id:"pc2", cat:"afirmativa", blank:"She ___ a book at the moment.", options:["is reading","reading","read"], answer:"is reading", note:"he/she/it → is + verbo-ing."},
+  {id:"pc3", cat:"afirmativa", blank:"We ___ for the bus.", options:["are waiting","waiting","wait"], answer:"are waiting", note:"we/you/they → are + verbo-ing."},
+  {id:"pc4", cat:"afirmativa", blank:"They ___ football in the park now.", options:["are playing","is playing","play"], answer:"are playing", note:"'they' → are + verbo-ing."},
+  {id:"pc5", cat:"afirmativa", blank:"He ___ his homework.", options:["is doing","are doing","do"], answer:"is doing", note:"'he' → is + verbo-ing."},
+  {id:"pc6", cat:"afirmativa", blank:"You ___ too fast!", options:["are driving","is driving","drive"], answer:"are driving", note:"'you' → are + verbo-ing."},
+  // ----- Negativa (am not / isn't / aren't + verbo-ing) -----
+  {id:"pc7", cat:"negativa", blank:"I ___ working today.", options:["am not","isn't","aren't"], answer:"am not", note:"'I' → am not + verbo-ing."},
+  {id:"pc8", cat:"negativa", blank:"She ___ listening to me.", options:["isn't","aren't","don't"], answer:"isn't", note:"he/she/it → isn't + verbo-ing."},
+  {id:"pc9", cat:"negativa", blank:"They ___ coming to the party.", options:["aren't","isn't","doesn't"], answer:"aren't", note:"we/you/they → aren't + verbo-ing."},
+  {id:"pc10", cat:"negativa", blank:"It ___ raining anymore.", options:["isn't","aren't","don't"], answer:"isn't", note:"'it' → isn't + verbo-ing."},
+  {id:"pc11", cat:"negativa", blank:"We ___ watching TV, we're studying.", options:["aren't","isn't","don't"], answer:"aren't", note:"'we' → aren't + verbo-ing."},
+  {id:"pc12", cat:"negativa", blank:"He isn't ___ right now.", options:["sleeping","sleep","sleeps"], answer:"sleeping", note:"Tras isn't el verbo va en -ing: isn't sleeping."},
+  // ----- Preguntas (Am/Is/Are + sujeto + verbo-ing) -----
+  {id:"pc13", cat:"pregunta", blank:"___ you listening to me?", options:["Are","Is","Do"], answer:"Are", note:"'you' → Are + verbo-ing."},
+  {id:"pc14", cat:"pregunta", blank:"___ she working today?", options:["Is","Are","Does"], answer:"Is", note:"'she' → Is + verbo-ing."},
+  {id:"pc15", cat:"pregunta", blank:"___ they waiting outside?", options:["Are","Is","Do"], answer:"Are", note:"'they' → Are + verbo-ing."},
+  {id:"pc16", cat:"pregunta", blank:"What ___ you doing?", options:["are","is","do"], answer:"are", note:"'you' → are + verbo-ing."},
+  {id:"pc17", cat:"pregunta", blank:"Why ___ he crying?", options:["is","are","does"], answer:"is", note:"'he' → is + verbo-ing."},
+  {id:"pc18", cat:"pregunta", blank:"Is she ___ to the radio?", options:["listening","listen","listens"], answer:"listening", note:"Tras Is, el verbo va en -ing: listening."},
+  {id:"pc19", cat:"pregunta", blank:"___ it working now?", options:["Is","Are","Does"], answer:"Is", note:"'it' → Is + verbo-ing."},
+  {id:"pc20", cat:"pregunta", blank:"Where ___ we going?", options:["are","is","do"], answer:"are", note:"'we' → are + verbo-ing."},
+  // ----- Ortografía del -ing -----
+  {id:"pc21", cat:"ortografia", blank:"make → ___", options:["making","makeing","makking"], answer:"making", note:"e muda final → se elimina antes de -ing: make → making."},
+  {id:"pc22", cat:"ortografia", blank:"write → ___", options:["writing","writeing","writting"], answer:"writing", note:"e muda final → desaparece: write → writing."},
+  {id:"pc23", cat:"ortografia", blank:"run → ___", options:["runing","running","runeing"], answer:"running", note:"vocal corta + consonante final (una sílaba) → se dobla: run → running."},
+  {id:"pc24", cat:"ortografia", blank:"stop → ___", options:["stoping","stopping","stopeing"], answer:"stopping", note:"consonante final tras vocal corta → se dobla: stop → stopping."},
+  {id:"pc25", cat:"ortografia", blank:"lie → ___", options:["lieing","lying","liing"], answer:"lying", note:"-ie final → cambia a -y: lie → lying."},
+  {id:"pc26", cat:"ortografia", blank:"study → ___", options:["studing","studying","studiing"], answer:"studying", note:"la -y final NO cambia ante -ing (a diferencia de la -s): study → studying."},
+  {id:"pc27", cat:"ortografia", blank:"travel → ___ (inglés británico)", options:["traveling","travelling","traveing"], answer:"travelling", note:"En inglés británico, la 'l' final se dobla: travel → travelling."},
+  {id:"pc28", cat:"ortografia", blank:"begin → ___", options:["begining","beginning","beginnning"], answer:"beginning", note:"acento en la última sílaba + consonante final → se dobla: begin → beginning."},
+  {id:"pc29", cat:"ortografia", blank:"play → ___", options:["playing","playying","plaing"], answer:"playing", note:"tras vocal + y no se dobla ni se cambia: play → playing."},
+  {id:"pc30", cat:"ortografia", blank:"die → ___", options:["dieing","dying","diing"], answer:"dying", note:"-ie final → -y: die → dying."},
+  // ----- Uso y contraste con presente simple -----
+  {id:"pc31", cat:"uso", blank:"I usually ___ tea, but today I ___ coffee.", options:["drink / am drinking","am drinking / drink","drink / drink"], answer:"drink / am drinking", note:"Rutina habitual → presente simple. Ahora mismo, algo distinto de lo habitual → presente continuo."},
+  {id:"pc32", cat:"uso", blank:"She ___ in London these days.", options:["is living","lives","live"], answer:"is living", note:"'These days' señala algo temporal, no permanente: presente continuo."},
+  {id:"pc33", cat:"uso", blank:"Water ___ at 100°C.", options:["boils","is boiling","boil"], answer:"boils", note:"Hechos científicos y verdades generales: presente simple."},
+  {id:"pc34", cat:"uso", blank:"Look! It ___ !", options:["is snowing","snows","snow"], answer:"is snowing", note:"'Look!' señala algo que ocurre justo ahora: presente continuo."},
+  {id:"pc35", cat:"uso", blank:"I ___ what you mean.", options:["understand","am understanding","understands"], answer:"understand", note:"'understand' es un verbo de estado: no va en continuo."},
+  {id:"pc36", cat:"uso", blank:"He ___ to a new city next month.", options:["is moving","moves","move"], answer:"is moving", note:"Planes de futuro ya decididos: presente continuo con valor de futuro."},
+  {id:"pc37", cat:"uso", blank:"This cake ___ amazing!", options:["tastes","is tasting","taste"], answer:"tastes", note:"'taste' (saber a) es verbo de estado: presente simple."},
+  {id:"pc38", cat:"uso", blank:"I ___ this book at the moment; I'll lend it to you when I finish.", options:["am reading","read","reads"], answer:"am reading", note:"'At the moment' = ahora mismo, acción en curso: presente continuo."},
+  {id:"pc39", cat:"uso", blank:"My brother ___ a red car; he's had it for years.", options:["has","is having","have"], answer:"has", note:"'have' con sentido de posesión es verbo de estado: presente simple."},
+  {id:"pc40", cat:"uso", blank:"She ___ her hair right now, so she can't come to the phone.", options:["is washing","washes","wash"], answer:"is washing", note:"Acción en curso en este momento: presente continuo."},
+  {id:"pc41", cat:"uso", blank:"He always ___ his keys!", options:["is forgetting","forgets","forget"], answer:"is forgetting", note:"'Always' + presente continuo = queja por algo que se repite y molesta (no es una rutina neutra)."},
+  {id:"pc42", cat:"uso", blank:"The Earth ___ around the Sun.", options:["goes","is going","go"], answer:"goes", note:"Verdad científica permanente: presente simple."},
+  {id:"pc43", cat:"uso", blank:"I ___ to move to Canada next year.", options:["am planning","plan","plans"], answer:"am planning", note:"Intención/plan en desarrollo: presente continuo."},
+  {id:"pc44", cat:"uso", blank:"She doesn't ___ what I'm saying.", options:["believe","is believing","believes"], answer:"believe", note:"'believe' es verbo de estado: no va en continuo."},
+  // ----- Reconocer la frase correcta (errores típicos de hispanohablantes) -----
+  {id:"pc45", cat:"uso", choose:true, options:["She is knowing the answer.","She knows the answer.","She know the answer."], answer:"She knows the answer.", note:"'know' es un verbo de estado: nunca va en continuo.", errorProne:true},
+  {id:"pc46", cat:"uso", choose:true, options:["I am wanting a coffee.","I want a coffee.","I wants a coffee."], answer:"I want a coffee.", note:"'want' es verbo de estado: presente simple, no continuo.", errorProne:true},
+  {id:"pc47", cat:"pregunta", choose:true, options:["What you are doing?","What are you doing?","What do you doing?"], answer:"What are you doing?", note:"En preguntas wh-, 'are' va antes del sujeto: What are you doing?", errorProne:true},
+  {id:"pc48", cat:"afirmativa", choose:true, options:["He are working today.","He is working today.","He working today."], answer:"He is working today.", note:"'he' necesita 'is', no 'are'.", errorProne:true},
+  {id:"pc49", cat:"negativa", choose:true, options:["I no am studying now.","I not studying now.","I'm not studying now."], answer:"I'm not studying now.", note:"Negativa: sujeto + am/is/are + not + verbo-ing.", errorProne:true},
+  {id:"pc50", cat:"ortografia", choose:true, options:["She's runing in the park.","She's running in the park.","She's runing in the park."], answer:"She's running in the park.", note:"'run' dobla la consonante final: running.", errorProne:true},
+  {id:"pc51", cat:"afirmativa", choose:true, options:["They is playing outside.","They are playing outside.","They be playing outside."], answer:"They are playing outside.", note:"'they' → are, no is.", errorProne:true},
+  {id:"pc52", cat:"uso", choose:true, options:["I am having a car.","I have a car.","I haves a car."], answer:"I have a car.", note:"'have' de posesión es verbo de estado: presente simple.", errorProne:true},
+  {id:"pc53", cat:"uso", choose:true, options:["Right now, she cooks dinner.","Right now, she is cooking dinner.","Right now, she cook dinner."], answer:"Right now, she is cooking dinner.", note:"'Right now' señala una acción en curso: presente continuo.", errorProne:true},
+  {id:"pc54", cat:"uso", choose:true, options:["He always is losing his phone.","He is always losing his phone.","He always losing his phone."], answer:"He is always losing his phone.", note:"Con 'always' + continuo (queja), el orden es: sujeto + is + always + verbo-ing.", errorProne:true}
+];
+const PC_BY_ID = {}; PC_BANK.forEach(e => PC_BY_ID[e.id] = e);
+
+let pcSessionCounter = 0, pcRepeatQueue = [], pcRepeatCounts = {}, pcLastId = null;
+let pcExam = {phase:"intro", queue:null, idx:0, score:0};
+
+function pcScheduleSRS(id, correct){
+  const today = todayISO();
+  let entry = pcState.srs[id];
+  if(!entry) entry = {stage:0, due:today, reps:0, lapses:0};
+  if(correct){
+    entry.stage = Math.min(entry.stage + 1, STAGE_DAYS.length - 1);
+    entry.reps++; entry.due = addDaysISO(today, STAGE_DAYS[entry.stage]);
+  } else {
+    entry.stage = 0; entry.lapses++; entry.due = today;
+    pcRepeatQueue = pcRepeatQueue.filter(it => it.id !== id);
+    const t = pcRepeatCounts[id] || 0;
+    if(t < MAX_SESSION_REPEATS){ pcRepeatCounts[id] = t + 1; pcRepeatQueue.push({id:id, availableAfter: pcSessionCounter + 3}); }
+  }
+  pcState.srs[id] = entry;
+}
+function pcRecordAnswer(ex, correct){
+  const cat = ex.cat;
+  if(!pcState.categories[cat]) pcState.categories[cat] = {correct:0,total:0};
+  pcState.categories[cat].total++;
+  if(correct) pcState.categories[cat].correct++;
+  pcState.totalAnswered++; if(correct) pcState.totalCorrect++;
+  pcState.history.push({id:ex.id, cat:cat, date:todayISO(), correct:correct});
+  if(pcState.history.length > 500) pcState.history.splice(0, pcState.history.length - 500);
+  pcScheduleSRS(ex.id, correct);
+  updateStreak(); saveState();
+}
+function pcMasteryStats(){
+  let mastered = 0;
+  Object.keys(pcState.srs).forEach(id => { if((pcState.srs[id].stage||0) >= 2) mastered++; });
+  return {mastered: mastered, total: PC_BANK.length};
+}
+function pcPickNext(){
+  const today = todayISO();
+  const f = pcState.practiceFilter || "todo";
+  const pool = f==="todo" ? PC_BANK : PC_BANK.filter(e => e.cat===f);
+  const notLast = e => e.id !== pcLastId;
+  const due = pool.filter(e => pcState.srs[e.id] && pcState.srs[e.id].stage>=1 && pcState.srs[e.id].due<=today && notLast(e));
+  if(due.length && Math.random() < 0.35) return pick(due);
+  const reps = [];
+  for(let i=0;i<pcRepeatQueue.length;i++){
+    const it = pcRepeatQueue[i]; const ex = PC_BY_ID[it.id];
+    if(!ex) continue; if(f!=="todo" && ex.cat!==f) continue;
+    if(it.availableAfter <= pcSessionCounter && ex.id !== pcLastId) reps.push(i);
+  }
+  if(reps.length && Math.random() < 0.35){
+    const idx = pick(reps); const it = pcRepeatQueue[idx]; pcRepeatQueue.splice(idx,1); return PC_BY_ID[it.id];
+  }
+  let candidates;
+  if(f==="todo"){
+    const cats = ["afirmativa","negativa","pregunta","ortografia","uso"];
+    const weighted = cats.map(c => { const s = pcState.categories[c]; const acc = s.total ? s.correct/s.total : 0.5; return {c:c, w:(1-acc)+0.2}; });
+    const tot = weighted.reduce((a,b)=>a+b.w,0);
+    let r = Math.random()*tot, cc = weighted[0].c;
+    for(const w of weighted){ if(r<=w.w){ cc=w.c; break; } r-=w.w; }
+    candidates = PC_BANK.filter(e => e.cat===cc && notLast(e));
+  } else candidates = pool.filter(notLast);
+  if(!candidates.length) candidates = pool.filter(e => e.id !== pcLastId);
+  if(!candidates.length) candidates = pool;
+  return pick(candidates);
+}
+function pcRenderExercise(mount, ex, handlers){
+  let html = '<div class="exBadgeWrap"><span class="pill pc">'+PC_CAT_LABEL[ex.cat]+'</span></div>';
+  if(ex.choose){
+    html += '<p class="smallMuted" style="margin:0 0 10px;">Elige la frase correcta:</p>';
+  } else {
+    html += '<p class="smallMuted" style="margin:0 0 8px;">Completa la frase:</p>';
+    html += '<div class="sentence">'+ ex.blank.replace("___", '<span class="blank">___</span>') +'</div>';
+  }
+  html += '<div>'+ ex.options.map((o,i)=>'<button class="optionCard" data-i="'+i+'">'+esc(o)+'</button>').join("") +'</div>';
+  html += '<div class="fbArea"></div>';
+  mount.innerHTML = html;
+  let answered = false;
+  mount.querySelectorAll(".optionCard").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if(answered) return; answered = true;
+      const i = parseInt(btn.dataset.i,10); const chosen = ex.options[i];
+      const correct = chosen === ex.answer;
+      mount.querySelectorAll(".optionCard").forEach((b,j) => {
+        b.disabled = true;
+        if(j===i) b.classList.add("selected", correct?"correct":"wrong");
+        if(!correct && ex.options[j] === ex.answer) b.classList.add("reveal-correct");
+      });
+      const full = ex.choose ? ex.answer : capitalizeFirst(ex.blank.replace("___", ex.answer));
+      const fb = mount.querySelector(".fbArea");
+      fb.innerHTML = '<div class="feedback '+(correct?"correct":"wrong")+'">' +
+        '<div class="fbTitle">'+(correct?"✅ ¡Correcto!":"❌ No exactamente")+'</div>' +
+        '<div class="fbAnswer">'+ esc(full) +'</div>' +
+        (ex.note ? '<div class="fbNote">'+ ex.note +'</div>' : "") +
+        '<div class="nextBtnWrap"><button class="btn btn-primary nextBtn">Siguiente →</button></div>' +
+      '</div>';
+      mount.querySelector(".nextBtn").addEventListener("click", () => handlers.onNext());
+      handlers.onAnswer(correct, ex);
+    });
+  });
+}
+function pcRenderNav(active){
+  const tabs = [["aprender","📖","Aprender"],["practica","🎯","Práctica"],["examen","👑","Examen"]];
+  document.getElementById("nav-pc").innerHTML = tabs.map(t =>
+    '<button data-pc="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
+  ).join("");
+  document.querySelectorAll("#nav-pc button").forEach(b => b.addEventListener("click", () => pcShowView(b.dataset.pc)));
+}
+function pcShowView(name){
+  if(["aprender","practica","examen"].indexOf(name) === -1) name = "aprender";
+  pcRenderNav(name);
+  if(name==="aprender") pcRenderLearn();
+  else if(name==="practica") pcRenderPractica();
+  else pcRenderExam();
+  window.scrollTo(0,0);
+}
+function pcRenderLearn(){
+  document.getElementById("module-pc").innerHTML =
+    '<h2 class="title">🟣 Presente Continuo</h2>' +
+    '<p class="subtitle">Acciones en curso ahora mismo, y el contraste con el presente simple. Aquí es donde de verdad se nota el nivel.</p>' +
+    '<div class="card">' +
+      '<div class="pcRule"><div class="h">1 · Afirmativa → am/is/are + verbo-ing</div><div class="b"><code>I am working</code>, <code>she is working</code>, <code>they are working</code>.</div></div>' +
+      '<div class="pcRule"><div class="h">2 · Negativa → am not / isn\'t / aren\'t + verbo-ing</div><div class="b"><code>I am not working</code>, <code>she isn\'t working</code>, <code>they aren\'t working</code>.</div></div>' +
+      '<div class="pcRule"><div class="h">3 · Preguntas → Am/Is/Are + sujeto + verbo-ing</div><div class="b"><code>Are you working?</code> · <code>What is she doing?</code> El verbo va siempre en -ing.</div></div>' +
+      '<div class="pcRule"><div class="h">4 · Ortografía del -ing</div><div class="b">e muda final se elimina: <code>make → making</code>.<br>vocal corta + consonante final → se dobla: <code>run → running</code>, <code>stop → stopping</code>.<br>-ie final → -y: <code>lie → lying</code>, <code>die → dying</code>.<br>-y no cambia: <code>study → studying</code>, <code>play → playing</code>.</div></div>' +
+      '<div class="pcRule"><div class="h">5 · El contraste que de verdad importa</div><div class="b">Rutina/hecho general → <b>presente simple</b>: <code>I drink tea</code>.<br>Ahora mismo / temporal / plan de futuro → <b>presente continuo</b>: <code>I\'m drinking tea now</code>, <code>She\'s living in Rome these days</code>.<br>Verbos de estado (know, want, like, believe, understand, have de posesión, taste/smell/sound de percepción) casi <b>nunca</b> van en continuo: <code>I understand</code>, no "I am understanding".<br>Truco extra: <code>always</code> + continuo = queja por algo repetitivo (<code>He\'s always losing his keys!</code>).</div></div>' +
+    '</div>' +
+    '<button class="btn btn-primary" onclick="__pcGo(\'practica\')">Empezar a practicar</button>';
+}
+function pcRenderPractica(){
+  pcSessionCounter = 0; pcRepeatQueue = []; pcRepeatCounts = {}; pcLastId = null;
+  const f = pcState.practiceFilter || "todo";
+  const chips = [["todo","Todo"],["afirmativa","Afirm."],["negativa","Neg."],["pregunta","Pregunt."],["ortografia","-ing"],["uso","Uso"]]
+    .map(c => '<button class="chip'+(f===c[0]?" active":"")+'" data-f="'+c[0]+'">'+c[1]+'</button>').join("");
+  document.getElementById("module-pc").innerHTML =
+    '<h2 class="title">🟣 Presente Continuo · Práctica</h2>' +
+    '<p class="subtitle">Más ejercicios de donde fallas. Filtra para machacar un tipo.</p>' +
+    '<div class="filterRow wrap">'+chips+'</div>' +
+    '<div class="card" id="pcMount"></div>';
+  document.querySelectorAll("#module-pc .chip").forEach(ch => ch.addEventListener("click", () => {
+    pcState.practiceFilter = ch.dataset.f; saveState(); pcRenderPractica();
+  }));
+  pcLoadNext();
+}
+function pcLoadNext(){
+  const mount = document.getElementById("pcMount"); if(!mount) return;
+  const ex = pcPickNext(); if(!ex){ mount.innerHTML = "<p>No hay ejercicios.</p>"; return; }
+  pcLastId = ex.id; pcSessionCounter++;
+  pcRenderExercise(mount, ex, { onAnswer:(c)=>pcRecordAnswer(ex,c), onNext:()=>pcLoadNext() });
+}
+function pcRenderExam(){
+  const host = document.getElementById("module-pc");
+  if(pcExam.phase === "exam"){
+    if(pcExam.idx >= pcExam.queue.length){
+      const total = pcExam.queue.length; const pct = Math.round(pcExam.score/total*100);
+      pcState.jefe.examResults.push({date:todayISO(), score:pcExam.score, total:total, pct:pct});
+      saveState(); pcExam.phase = "result"; pcRenderExam(); return;
+    }
+    const ex = pcExam.queue[pcExam.idx];
+    host.innerHTML = '<h2 class="title">👑 Examen</h2><p class="subtitle">Pregunta '+(pcExam.idx+1)+' de '+pcExam.queue.length+' · Aciertos: '+pcExam.score+'</p><div class="card" id="pcExamMount"></div>';
+    pcRenderExercise(document.getElementById("pcExamMount"), ex, {
+      onAnswer:(c)=>{ if(c) pcExam.score++; },
+      onNext:()=>{ pcExam.idx++; pcRenderExam(); }
+    });
+  } else if(pcExam.phase === "result"){
+    const last = pcState.jefe.examResults[pcState.jefe.examResults.length-1];
+    const score = safeInt(last.score,0), total = safeInt(last.total,0), pct = safeInt(last.pct,0);
+    const pass = pct >= 80;
+    host.innerHTML = '<div class="card center">' +
+      '<div style="font-size:48px;">'+(pass?"🏆":"📚")+'</div>' +
+      '<h2 class="title">'+(pass?"¡Presente Continuo superado!":"Casi lo tienes")+'</h2>' +
+      '<p class="subtitle">Acertaste '+score+' de '+total+' ('+pct+'%). '+(pass?"Necesitabas 80%.":"Necesitas 80% para aprobar.")+'</p>' +
+      '<button class="btn btn-outline" id="pcExamAgain">Repetir examen</button>' +
+    '</div>';
+    document.getElementById("pcExamAgain").addEventListener("click", () => {
+      pcExam = {phase:"exam", queue:shuffle(PC_BANK).slice(0,20), idx:0, score:0}; pcRenderExam();
+    });
+  } else {
+    host.innerHTML = '<h2 class="title">👑 Examen de Presente Continuo</h2>' +
+      '<p class="subtitle">20 preguntas de todo: afirmativa, negativa, preguntas, ortografía del -ing y el contraste con el presente simple. Necesitas 80% para aprobar.</p>' +
+      '<div class="card"><p class="smallMuted">Si lo necesitas, repasa antes en la pestaña Aprender.</p></div>' +
+      '<button class="btn btn-primary" id="pcStartExam">Empezar examen</button>';
+    document.getElementById("pcStartExam").addEventListener("click", () => {
+      pcExam = {phase:"exam", queue:shuffle(PC_BANK).slice(0,20), idx:0, score:0}; pcRenderExam();
+    });
+  }
+}
+function enterPC(){
+  pcState = APP.modules["present-continuous"];
+  enterModuleUI("module-pc","nav-pc");
+  pcExam = {phase:"intro", queue:null, idx:0, score:0};
+  pcShowView("aprender");
+}
+function __pcGo(v){ pcShowView(v); }
+window.__pcGo = __pcGo;
 
 /* ================= MÓDULO: CHUNKS (tarjetas tipo Anki) ================= */
 const VOCAB_CAT_LABEL = {opinion:"OPINIÓN", linking:"CONECTORES", verbnoun:"VERBO + NOMBRE", adjnoun:"ADJETIVO + NOMBRE", phrasal:"PHRASAL VERBS", prep:"EXPRESIÓN FIJA", social:"CONVERSACIÓN"};
