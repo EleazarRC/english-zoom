@@ -180,6 +180,17 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 .filterRow.wrap{flex-wrap:wrap;}
 .filterRow.wrap .chip{flex:0 1 calc(33.33% - 6px);}
 .pill.ps{background:var(--on-soft); color:var(--on-dark);}
+.pill.vocab{background:var(--at-soft); color:var(--at-dark);}
+.fcFront{font-size:23px; font-weight:800; text-align:center; margin:14px 0 4px; line-height:1.3;}
+.fcHint{text-align:center; font-size:12.5px; color:var(--muted); margin-bottom:16px;}
+.fcAnswer{font-size:22px; font-weight:800; text-align:center; color:var(--on-dark); margin:8px 0 2px;}
+.fcPair{text-align:center; font-size:13px; color:var(--muted); margin-bottom:10px;}
+.fcEx{font-size:15px; font-style:italic; text-align:center; background:#f8fafc; border-radius:10px; padding:11px; margin-bottom:14px; line-height:1.5;}
+.fcGrades{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+.fcGrades .btn{min-height:50px; font-size:14px; color:#fff;}
+.gAgain{background:var(--at);}
+.gGood{background:var(--on);}
+.gEasy{background:var(--in);}
 .psRule{border-left:4px solid var(--on); background:var(--on-bg); padding:9px 12px; margin-bottom:10px; border-radius:10px;}
 .psRule .h{font-weight:800; font-size:14.5px; margin-bottom:3px;}
 .psRule .b{font-size:13.5px; line-height:1.6;}
@@ -300,6 +311,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
   </nav>
 
   <nav class="bottomnav" id="nav-ps" style="display:none;"></nav>
+  <nav class="bottomnav" id="nav-vocab" style="display:none;"></nav>
 
 </div>
 
@@ -659,6 +671,7 @@ const PS_DEFAULT = {   // módulo "Presente Simple"
   history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
   practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
 };
+const VOCAB_DEFAULT = { srs:{}, dir:"es-en" };   // módulo "Chunks" (tarjetas tipo Anki)
 const APP_DEFAULT = { version:2, streak:{count:0,best:0,lastDate:null}, lastModuleId:null, modules:{} };
 
 function mergeDefaults(base, incoming){
@@ -687,6 +700,7 @@ function ensureModules(app){
   if(!app.modules || typeof app.modules !== "object") app.modules = {};
   app.modules["in-on-at"] = mergeDefaults(IOA_DEFAULT, app.modules["in-on-at"] || {});
   app.modules["present-simple"] = mergeDefaults(PS_DEFAULT, app.modules["present-simple"] || {});
+  app.modules["vocabulary"] = mergeDefaults(VOCAB_DEFAULT, app.modules["vocabulary"] || {});
 }
 function loadApp(){
   try{
@@ -1390,12 +1404,12 @@ const MODULES = [
   { id:"present-simple", name:"Presente Simple", icon:"🟢", color:"var(--on)", bg:"var(--on-bg)",
     desc:"Afirmativa, negativa, preguntas y la -s de tercera persona.",
     status:"ready", mastery: () => psMasteryStats(), enter: () => enterPS() },
-  { id:"vocabulary", name:"Vocabulario", icon:"📚", color:"var(--at)", bg:"var(--at-bg)",
-    desc:"Listas de palabras con tarjetas y repaso espaciado.",
-    status:"ready", mastery: () => ({mastered:0,total:0}), enter: () => enterVocab() }
+  { id:"vocabulary", name:"Chunks", icon:"🧩", color:"var(--at)", bg:"var(--at-bg)",
+    desc:"Los chunks (colocaciones y expresiones) más rentables para el B2, tipo Anki.",
+    status:"ready", mastery: () => vocabMasteryStats(), enter: () => enterVocab() }
 ];
 function allModuleEls(){ return ["module-ioa","module-ps","module-vocab"].map(id=>document.getElementById(id)); }
-function allNavEls(){ return ["nav-ioa","nav-ps"].map(id=>document.getElementById(id)); }
+function allNavEls(){ return ["nav-ioa","nav-ps","nav-vocab"].map(id=>document.getElementById(id)); }
 function showHub(){
   APP.lastModuleId = null;
   allModuleEls().forEach(el => { if(el){ el.classList.remove("active"); el.style.display="none"; } });
@@ -1717,18 +1731,257 @@ function enterPS(){
 function __psGo(v){ psShowView(v); }
 window.__psGo = __psGo;
 
-/* ================= MÓDULO: VOCABULARIO (placeholder) ================= */
-function enterVocab(){
-  enterModuleUI("module-vocab", null);
-  document.getElementById("module-vocab").innerHTML =
-    '<h2 class="title">📚 Vocabulario</h2>' +
-    '<div class="card center">' +
-      '<div style="font-size:44px; margin-bottom:8px;">🚧</div>' +
-      '<h3 class="subtitle2" style="color:var(--text);">Módulo listo para llenarse</h3>' +
-      '<p class="subtitle">Pásame tus listas de palabras (palabra + significado + un ejemplo) y las convierto en tarjetas con repaso espaciado, igual que los otros módulos.</p>' +
-      '<button class="btn btn-outline" id="vocabBack">← Volver a los módulos</button>' +
+/* ================= MÓDULO: CHUNKS (tarjetas tipo Anki) ================= */
+const VOCAB_CAT_LABEL = {opinion:"OPINIÓN", linking:"CONECTORES", verbnoun:"VERBO + NOMBRE", adjnoun:"ADJETIVO + NOMBRE", phrasal:"PHRASAL VERBS", prep:"EXPRESIÓN FIJA", social:"CONVERSACIÓN"};
+const VOCAB_CATS = ["opinion","linking","verbnoun","adjnoun","phrasal","prep","social"];
+const CHUNKS = [
+  // ----- Opinión / acuerdo / desacuerdo -----
+  {id:"ck1", cat:"opinion", en:"in my opinion", es:"en mi opinión", ex:"In my opinion, social media does more harm than good."},
+  {id:"ck2", cat:"opinion", en:"as far as I'm concerned", es:"por lo que a mí respecta", ex:"As far as I'm concerned, the meeting was a waste of time."},
+  {id:"ck3", cat:"opinion", en:"if you ask me", es:"si me preguntas / para mí", ex:"If you ask me, we should leave earlier."},
+  {id:"ck4", cat:"opinion", en:"the way I see it", es:"tal como yo lo veo", ex:"The way I see it, both sides are partly right."},
+  {id:"ck5", cat:"opinion", en:"to be honest", es:"siendo sincero / la verdad", ex:"To be honest, I didn't enjoy the film."},
+  {id:"ck6", cat:"opinion", en:"I couldn't agree more", es:"estoy totalmente de acuerdo", ex:"It's too expensive, and I couldn't agree more."},
+  {id:"ck7", cat:"opinion", en:"I see your point, but", es:"entiendo lo que dices, pero", ex:"I see your point, but I still disagree."},
+  {id:"ck8", cat:"opinion", en:"it depends on", es:"depende de", ex:"It depends on how much time we have."},
+  {id:"ck9", cat:"opinion", en:"on the one hand ... on the other hand", es:"por un lado... por otro lado", ex:"On the one hand it's cheap; on the other hand it's slow."},
+  {id:"ck10", cat:"opinion", en:"there's no doubt that", es:"no hay duda de que", ex:"There's no doubt that exercise is good for you."},
+  {id:"ck11", cat:"opinion", en:"I'm not sure about that", es:"no estoy tan seguro de eso", ex:"I'm not sure about that, actually."},
+  {id:"ck12", cat:"opinion", en:"that's a good point", es:"es una buena observación", ex:"That's a good point, I hadn't thought of it."},
+  {id:"ck13", cat:"opinion", en:"it seems to me that", es:"me parece que", ex:"It seems to me that we need more time."},
+  {id:"ck14", cat:"opinion", en:"from my point of view", es:"desde mi punto de vista", ex:"From my point of view, it's a risk worth taking."},
+  {id:"ck15", cat:"opinion", en:"I'd rather", es:"prefiero (+ infinitivo sin 'to')", ex:"I'd rather stay at home tonight."},
+  {id:"ck16", cat:"opinion", en:"I'm afraid I disagree", es:"me temo que no estoy de acuerdo", ex:"I'm afraid I disagree with that idea."},
+  {id:"ck17", cat:"opinion", en:"to tell you the truth", es:"a decir verdad", ex:"To tell you the truth, I forgot."},
+  {id:"ck18", cat:"opinion", en:"as I said before", es:"como dije antes", ex:"As I said before, it's not that simple."},
+  // ----- Conectores / marcadores del discurso -----
+  {id:"ck19", cat:"linking", en:"however", es:"sin embargo", ex:"It was raining; however, we went out."},
+  {id:"ck20", cat:"linking", en:"therefore", es:"por lo tanto", ex:"He was late; therefore, he missed the start."},
+  {id:"ck21", cat:"linking", en:"as a result", es:"como resultado", ex:"Prices rose, and as a result, sales fell."},
+  {id:"ck22", cat:"linking", en:"in addition", es:"además", ex:"In addition, the hotel has a pool."},
+  {id:"ck23", cat:"linking", en:"for instance", es:"por ejemplo", ex:"Some sports, for instance tennis, are expensive."},
+  {id:"ck24", cat:"linking", en:"in other words", es:"en otras palabras", ex:"He resigned; in other words, he quit."},
+  {id:"ck25", cat:"linking", en:"on the whole", es:"en general / en conjunto", ex:"On the whole, it was a good trip."},
+  {id:"ck26", cat:"linking", en:"all in all", es:"en resumen / en total", ex:"All in all, it wasn't a bad year."},
+  {id:"ck27", cat:"linking", en:"to sum up", es:"para resumir", ex:"To sum up, we need a new plan."},
+  {id:"ck28", cat:"linking", en:"first of all", es:"en primer lugar", ex:"First of all, let me thank you all."},
+  {id:"ck29", cat:"linking", en:"last but not least", es:"por último pero no menos importante", ex:"Last but not least, I'd like to thank my family."},
+  {id:"ck30", cat:"linking", en:"in conclusion", es:"en conclusión", ex:"In conclusion, the project was a success."},
+  {id:"ck31", cat:"linking", en:"apart from that", es:"aparte de eso", ex:"Apart from that, everything is fine."},
+  {id:"ck32", cat:"linking", en:"because of", es:"a causa de (+ sustantivo)", ex:"The flight was delayed because of the storm."},
+  {id:"ck33", cat:"linking", en:"even though", es:"aunque / a pesar de que", ex:"Even though it was late, she kept working."},
+  {id:"ck34", cat:"linking", en:"in spite of", es:"a pesar de (+ sustantivo/-ing)", ex:"In spite of the rain, the match went on."},
+  {id:"ck35", cat:"linking", en:"so that", es:"para que", ex:"I left early so that I wouldn't miss the train."},
+  // ----- Verbo + nombre -----
+  {id:"ck36", cat:"verbnoun", en:"make a decision", es:"tomar una decisión", ex:"We need to make a decision by Friday."},
+  {id:"ck37", cat:"verbnoun", en:"take a break", es:"tomarse un descanso", ex:"Let's take a break for ten minutes."},
+  {id:"ck38", cat:"verbnoun", en:"pay attention", es:"prestar atención", ex:"Please pay attention to the details."},
+  {id:"ck39", cat:"verbnoun", en:"make an effort", es:"hacer un esfuerzo", ex:"She made a real effort to improve."},
+  {id:"ck40", cat:"verbnoun", en:"take part in", es:"participar en", ex:"Many students took part in the survey."},
+  {id:"ck41", cat:"verbnoun", en:"keep in touch", es:"mantener el contacto", ex:"Let's keep in touch after the course."},
+  {id:"ck42", cat:"verbnoun", en:"meet a deadline", es:"cumplir un plazo", ex:"We worked hard to meet the deadline."},
+  {id:"ck43", cat:"verbnoun", en:"make a mistake", es:"cometer un error", ex:"Everyone makes mistakes sometimes."},
+  {id:"ck44", cat:"verbnoun", en:"do research", es:"investigar", ex:"They did research on the topic."},
+  {id:"ck45", cat:"verbnoun", en:"have an impact on", es:"tener un impacto en", ex:"Diet has a big impact on health."},
+  {id:"ck46", cat:"verbnoun", en:"take responsibility for", es:"asumir la responsabilidad de", ex:"He took responsibility for the error."},
+  {id:"ck47", cat:"verbnoun", en:"make progress", es:"progresar / avanzar", ex:"She's making good progress in English."},
+  {id:"ck48", cat:"verbnoun", en:"take advantage of", es:"aprovechar", ex:"Take advantage of the free trial."},
+  {id:"ck49", cat:"verbnoun", en:"give someone a hand", es:"echar una mano", ex:"Can you give me a hand with this?"},
+  {id:"ck50", cat:"verbnoun", en:"make sense", es:"tener sentido", ex:"That explanation makes sense."},
+  {id:"ck51", cat:"verbnoun", en:"have a go", es:"intentarlo", ex:"Why don't you have a go?"},
+  {id:"ck52", cat:"verbnoun", en:"keep an eye on", es:"vigilar / estar pendiente de", ex:"Can you keep an eye on my bag?"},
+  {id:"ck53", cat:"verbnoun", en:"run a business", es:"llevar un negocio", ex:"She runs a small business."},
+  {id:"ck54", cat:"verbnoun", en:"raise awareness", es:"concienciar / sensibilizar", ex:"The campaign raises awareness of the issue."},
+  {id:"ck55", cat:"verbnoun", en:"reach an agreement", es:"llegar a un acuerdo", ex:"After hours of talks, they reached an agreement."},
+  // ----- Adjetivo + nombre -----
+  {id:"ck56", cat:"adjnoun", en:"heavy rain", es:"lluvia intensa", ex:"Heavy rain caused floods across the region."},
+  {id:"ck57", cat:"adjnoun", en:"strong accent", es:"acento marcado", ex:"He speaks with a strong accent."},
+  {id:"ck58", cat:"adjnoun", en:"close friend", es:"amigo íntimo", ex:"She's a close friend of mine."},
+  {id:"ck59", cat:"adjnoun", en:"hard work", es:"trabajo duro / esfuerzo", ex:"Success comes from hard work."},
+  {id:"ck60", cat:"adjnoun", en:"a wide range of", es:"una amplia variedad de", ex:"They offer a wide range of courses."},
+  {id:"ck61", cat:"adjnoun", en:"key role", es:"papel clave", ex:"Sleep plays a key role in health."},
+  {id:"ck62", cat:"adjnoun", en:"major problem", es:"problema importante", ex:"Traffic is a major problem here."},
+  {id:"ck63", cat:"adjnoun", en:"common sense", es:"sentido común", ex:"Just use a bit of common sense."},
+  {id:"ck64", cat:"adjnoun", en:"bright future", es:"futuro prometedor", ex:"She has a bright future ahead of her."},
+  {id:"ck65", cat:"adjnoun", en:"huge difference", es:"diferencia enorme", ex:"A good teacher makes a huge difference."},
+  {id:"ck66", cat:"adjnoun", en:"busy schedule", es:"agenda apretada", ex:"I have a busy schedule this week."},
+  {id:"ck67", cat:"adjnoun", en:"fair chance", es:"oportunidad justa", ex:"Everyone deserves a fair chance."},
+  {id:"ck68", cat:"adjnoun", en:"deep breath", es:"respiración profunda", ex:"Take a deep breath and relax."},
+  {id:"ck69", cat:"adjnoun", en:"main reason", es:"razón principal", ex:"The main reason I called is to say sorry."},
+  // ----- Phrasal verbs -----
+  {id:"ck70", cat:"phrasal", en:"give up", es:"rendirse / dejar (un hábito)", ex:"Don't give up so easily."},
+  {id:"ck71", cat:"phrasal", en:"find out", es:"averiguar / enterarse", ex:"I'll find out what time it starts."},
+  {id:"ck72", cat:"phrasal", en:"look forward to", es:"tener ganas de (+ -ing)", ex:"I'm looking forward to seeing you."},
+  {id:"ck73", cat:"phrasal", en:"put off", es:"posponer / aplazar", ex:"They put off the meeting until Monday."},
+  {id:"ck74", cat:"phrasal", en:"get on with", es:"llevarse bien con", ex:"I get on well with my colleagues."},
+  {id:"ck75", cat:"phrasal", en:"come up with", es:"idear / proponer", ex:"She came up with a great idea."},
+  {id:"ck76", cat:"phrasal", en:"carry out", es:"llevar a cabo / realizar", ex:"They carried out a detailed study."},
+  {id:"ck77", cat:"phrasal", en:"deal with", es:"lidiar con / ocuparse de", ex:"I'll deal with it tomorrow."},
+  {id:"ck78", cat:"phrasal", en:"turn out", es:"resultar (ser)", ex:"It turned out to be a great day."},
+  {id:"ck79", cat:"phrasal", en:"set up", es:"montar / crear / configurar", ex:"They set up a new company last year."},
+  {id:"ck80", cat:"phrasal", en:"point out", es:"señalar / hacer notar", ex:"She pointed out a mistake in my essay."},
+  {id:"ck81", cat:"phrasal", en:"bring up", es:"sacar (un tema) / criar", ex:"He brought up an interesting point."},
+  {id:"ck82", cat:"phrasal", en:"look into", es:"investigar / examinar", ex:"We'll look into the problem right away."},
+  {id:"ck83", cat:"phrasal", en:"run out of", es:"quedarse sin", ex:"We've run out of milk."},
+  {id:"ck84", cat:"phrasal", en:"take up", es:"empezar (una afición) / ocupar", ex:"She took up painting last year."},
+  {id:"ck85", cat:"phrasal", en:"figure out", es:"descifrar / entender", ex:"I can't figure out how it works."},
+  {id:"ck86", cat:"phrasal", en:"put up with", es:"aguantar / soportar", ex:"I won't put up with rudeness."},
+  {id:"ck87", cat:"phrasal", en:"get rid of", es:"deshacerse de", ex:"We need to get rid of these old boxes."},
+  {id:"ck88", cat:"phrasal", en:"come across", es:"encontrarse con (por casualidad)", ex:"I came across an old photo yesterday."},
+  {id:"ck89", cat:"phrasal", en:"end up", es:"acabar / terminar (haciendo)", ex:"We ended up walking home."},
+  {id:"ck90", cat:"phrasal", en:"look after", es:"cuidar de", ex:"She looks after her little brother."},
+  {id:"ck91", cat:"phrasal", en:"sort out", es:"solucionar / ordenar", ex:"Let's sort out this problem together."},
+  {id:"ck92", cat:"phrasal", en:"turn down", es:"rechazar / bajar (volumen)", ex:"He turned down the job offer."},
+  // ----- Expresiones fijas con preposición -----
+  {id:"ck93", cat:"prep", en:"in charge of", es:"a cargo de / encargado de", ex:"She's in charge of the whole project."},
+  {id:"ck94", cat:"prep", en:"on purpose", es:"a propósito", ex:"He did it on purpose."},
+  {id:"ck95", cat:"prep", en:"by mistake", es:"por error", ex:"I sent the email by mistake."},
+  {id:"ck96", cat:"prep", en:"at least", es:"al menos", ex:"It costs at least fifty euros."},
+  {id:"ck97", cat:"prep", en:"in advance", es:"con antelación", ex:"Book your tickets in advance."},
+  {id:"ck98", cat:"prep", en:"on time", es:"puntual / a la hora", ex:"The train arrived on time."},
+  {id:"ck99", cat:"prep", en:"in the end", es:"al final (tras un proceso)", ex:"In the end, we decided to stay."},
+  {id:"ck100", cat:"prep", en:"at first", es:"al principio", ex:"At first, I found it difficult."},
+  {id:"ck101", cat:"prep", en:"by the way", es:"por cierto", ex:"By the way, did you call him?"},
+  {id:"ck102", cat:"prep", en:"in general", es:"en general", ex:"In general, people were friendly."},
+  {id:"ck103", cat:"prep", en:"for a while", es:"durante un rato / un tiempo", ex:"Let's rest for a while."},
+  {id:"ck104", cat:"prep", en:"in a hurry", es:"con prisa", ex:"Sorry, I'm in a hurry."},
+  {id:"ck105", cat:"prep", en:"on average", es:"de media", ex:"I sleep seven hours on average."},
+  {id:"ck106", cat:"prep", en:"in touch with", es:"en contacto con", ex:"Are you still in touch with her?"},
+  {id:"ck107", cat:"prep", en:"out of order", es:"averiado / fuera de servicio", ex:"The lift is out of order again."},
+  {id:"ck108", cat:"prep", en:"in fact", es:"de hecho", ex:"In fact, I've never been there."},
+  {id:"ck109", cat:"prep", en:"up to date", es:"actualizado / al día", ex:"Keep your software up to date."},
+  {id:"ck110", cat:"prep", en:"as usual", es:"como de costumbre", ex:"He was late, as usual."},
+  // ----- Conversación / lenguaje funcional -----
+  {id:"ck111", cat:"social", en:"would you mind", es:"te importaría (+ -ing)", ex:"Would you mind closing the window?"},
+  {id:"ck112", cat:"social", en:"I was wondering if", es:"me preguntaba si (petición educada)", ex:"I was wondering if you could help me."},
+  {id:"ck113", cat:"social", en:"do you fancy", es:"te apetece (+ -ing)", ex:"Do you fancy going out tonight?"},
+  {id:"ck114", cat:"social", en:"how about", es:"qué tal si / qué te parece", ex:"How about meeting at six?"},
+  {id:"ck115", cat:"social", en:"let me know", es:"avísame / hazme saber", ex:"Let me know if you're coming."},
+  {id:"ck116", cat:"social", en:"sorry to bother you", es:"perdona que te moleste", ex:"Sorry to bother you, but I have a question."},
+  {id:"ck117", cat:"social", en:"no worries", es:"no pasa nada / tranquilo", ex:"Thanks for waiting! No worries at all."},
+  {id:"ck118", cat:"social", en:"never mind", es:"no importa / déjalo", ex:"Never mind, I'll do it myself."},
+  {id:"ck119", cat:"social", en:"I can't make it", es:"no puedo ir / asistir", ex:"Sorry, I can't make it on Friday."},
+  {id:"ck120", cat:"social", en:"it's up to you", es:"tú decides / depende de ti", ex:"Where shall we eat? It's up to you."},
+  {id:"ck121", cat:"social", en:"that sounds great", es:"suena genial", ex:"Dinner at eight? That sounds great."},
+  {id:"ck122", cat:"social", en:"to be fair", es:"para ser justos", ex:"To be fair, she did warn us."}
+];
+const CHUNK_BY_ID = {}; CHUNKS.forEach(c => CHUNK_BY_ID[c.id] = c);
+const VOCAB_NEW_PER_SESSION = 12;
+let vocabState = APP.modules["vocabulary"];
+let vocabSession = {queue:[], newAdded:0};
+
+function vocabDueIds(){
+  const today = todayISO();
+  return CHUNKS.filter(c => vocabState.srs[c.id] && vocabState.srs[c.id].stage>=1 && vocabState.srs[c.id].due<=today).map(c=>c.id);
+}
+function vocabNewIds(){ return CHUNKS.filter(c => !vocabState.srs[c.id]).map(c=>c.id); }
+function vocabMasteryStats(){
+  let m=0; Object.keys(vocabState.srs).forEach(id=>{ if((vocabState.srs[id].stage||0)>=2) m++; });
+  return {mastered:m, total:CHUNKS.length};
+}
+function vocabGrade(id, grade){
+  const today = todayISO();
+  let e = vocabState.srs[id] || {stage:0, due:today, reps:0, lapses:0};
+  if(grade==="again"){ e.stage=0; e.lapses++; e.due=today; }
+  else if(grade==="good"){ e.stage=Math.min((e.stage||0)+1, STAGE_DAYS.length-1); e.reps++; e.due=addDaysISO(today, STAGE_DAYS[e.stage]); }
+  else { e.stage=Math.min((e.stage||0)+2, STAGE_DAYS.length-1); e.reps++; e.due=addDaysISO(today, STAGE_DAYS[e.stage]); }
+  vocabState.srs[id]=e; updateStreak(); saveState();
+}
+function vocabBuildSession(){
+  const due = shuffle(vocabDueIds());
+  const news = shuffle(vocabNewIds()).slice(0, VOCAB_NEW_PER_SESSION);
+  vocabSession = {queue: shuffle(due.concat(news)), newAdded: news.length};
+}
+function vocabRenderNav(active){
+  const tabs = [["estudiar","🎴","Estudiar"],["lista","📖","Lista"]];
+  document.getElementById("nav-vocab").innerHTML = tabs.map(t =>
+    '<button data-v="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
+  ).join("");
+  document.querySelectorAll("#nav-vocab button").forEach(b => b.addEventListener("click", () => vocabShowView(b.dataset.v)));
+}
+function vocabShowView(name){
+  if(["estudiar","lista"].indexOf(name) === -1) name = "estudiar";
+  vocabRenderNav(name);
+  if(name==="estudiar") vocabRenderStudy();
+  else vocabRenderList();
+  window.scrollTo(0,0);
+}
+function vocabRenderStudy(){ vocabBuildSession(); vocabShowNextCard(); }
+function vocabShowNextCard(){
+  const host = document.getElementById("module-vocab");
+  if(!vocabSession.queue.length){
+    const ms = vocabMasteryStats();
+    host.innerHTML = '<h2 class="title">🧩 Chunks · Estudiar</h2>' +
+      '<div class="card center"><div style="font-size:44px; margin-bottom:6px;">✅</div>' +
+      '<h3 class="subtitle2" style="color:var(--text);">¡Sesión terminada!</h3>' +
+      '<p class="subtitle">Has repasado todo lo pendiente por hoy. Dominados: <b>'+ms.mastered+' / '+ms.total+'</b>.</p>' +
+      '<button class="btn btn-primary" id="vocabMore">Estudiar más nuevos</button>' +
+      '<button class="btn btn-outline" style="margin-top:8px;" id="vocabToList">Ver la lista completa</button></div>';
+    document.getElementById("vocabMore").addEventListener("click", () => {
+      const news = shuffle(vocabNewIds()).slice(0, VOCAB_NEW_PER_SESSION);
+      if(!news.length){ vocabShowNextCard(); return; }
+      vocabSession.queue = shuffle(news); vocabShowNextCard();
+    });
+    document.getElementById("vocabToList").addEventListener("click", () => vocabShowView("lista"));
+    return;
+  }
+  const c = CHUNK_BY_ID[vocabSession.queue[0]];
+  const dir = vocabState.dir || "es-en";
+  const front = dir==="es-en" ? c.es : c.en;
+  const frontHint = dir==="es-en" ? "Piensa el chunk en inglés" : "¿Qué significa? ¿Cómo se usa?";
+  host.innerHTML = '<h2 class="title">🧩 Chunks · Estudiar</h2>' +
+    '<div class="flexBetween" style="margin-bottom:8px;"><span class="smallMuted">Quedan: '+vocabSession.queue.length+'</span>' +
+      '<button class="chip" id="vocabDir" style="flex:0 0 auto; padding:6px 12px; min-height:32px;">🔁 '+(dir==="es-en"?"ES→EN":"EN→ES")+'</button></div>' +
+    '<div class="card">' +
+      '<div class="exBadgeWrap"><span class="pill vocab">'+VOCAB_CAT_LABEL[c.cat]+'</span></div>' +
+      '<div class="fcFront">'+esc(front)+'</div>' +
+      '<div class="fcHint">'+frontHint+'</div>' +
+      '<div id="fcBack"></div>' +
+      '<button class="btn btn-primary" id="vocabReveal">Ver respuesta</button>' +
     '</div>';
-  document.getElementById("vocabBack").addEventListener("click", showHub);
+  document.getElementById("vocabDir").addEventListener("click", () => { vocabState.dir = dir==="es-en"?"en-es":"es-en"; saveState(); vocabShowNextCard(); });
+  document.getElementById("vocabReveal").addEventListener("click", () => vocabRevealCard(c, dir));
+}
+function vocabRevealCard(c, dir){
+  const back = document.getElementById("fcBack");
+  const reveal = document.getElementById("vocabReveal");
+  const answer = dir==="es-en" ? c.en : c.es;
+  back.innerHTML = '<div class="fcAnswer">'+esc(answer)+'</div>' +
+    '<div class="fcPair">'+esc(c.en)+' — '+esc(c.es)+'</div>' +
+    '<div class="fcEx">“'+esc(c.ex)+'”</div>' +
+    '<div class="fcGrades">' +
+      '<button class="btn gAgain" data-g="again">Otra vez</button>' +
+      '<button class="btn gGood" data-g="good">Bien</button>' +
+      '<button class="btn gEasy" data-g="easy">Fácil</button>' +
+    '</div>';
+  reveal.style.display = "none";
+  back.querySelectorAll("[data-g]").forEach(b => b.addEventListener("click", () => {
+    const g = b.dataset.g;
+    vocabGrade(c.id, g);
+    const id = vocabSession.queue.shift();
+    if(g==="again") vocabSession.queue.push(id);
+    vocabShowNextCard();
+  }));
+}
+function vocabRenderList(){
+  let html = '<h2 class="title">🧩 Chunks · Lista</h2><p class="subtitle">Los '+CHUNKS.length+' chunks del módulo, por categoría. 🟢 dominado · 🟡 en aprendizaje · ⚪ sin empezar.</p>';
+  VOCAB_CATS.forEach(cat => {
+    const items = CHUNKS.filter(c => c.cat===cat);
+    if(!items.length) return;
+    html += '<div class="card"><h3 class="subtitle2">'+VOCAB_CAT_LABEL[cat]+' ('+items.length+')</h3>';
+    items.forEach(c => {
+      const st = vocabState.srs[c.id] ? (vocabState.srs[c.id].stage||0) : -1;
+      const dot = st>=2 ? "🟢" : (st>=0 ? "🟡" : "⚪");
+      html += '<div class="lessonItem"><div class="lessonSentence">'+dot+' '+esc(c.en)+' — <span style="font-weight:600; color:var(--muted);">'+esc(c.es)+'</span></div><div class="lessonNote">'+esc(c.ex)+'</div></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById("module-vocab").innerHTML = html;
+}
+function enterVocab(){
+  vocabState = APP.modules["vocabulary"];
+  enterModuleUI("module-vocab","nav-vocab");
+  vocabShowView("estudiar");
 }
 
 /* ================= INICIALIZACIÓN ================= */
