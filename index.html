@@ -181,6 +181,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 .filterRow.wrap .chip{flex:0 1 calc(33.33% - 6px);}
 .pill.ps{background:var(--on-soft); color:var(--on-dark);}
 .pill.vocab{background:var(--at-soft); color:var(--at-dark);}
+.pill.av{background:#ecfeff; color:#0e7490;}
 .fcFront{font-size:23px; font-weight:800; text-align:center; margin:14px 0 4px; line-height:1.3;}
 .fcHint{text-align:center; font-size:12.5px; color:var(--muted); margin-bottom:16px;}
 .fcAnswer{font-size:22px; font-weight:800; text-align:center; color:var(--on-dark); margin:8px 0 2px;}
@@ -304,6 +305,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     <div id="module-ps" class="module"></div>
     <div id="module-pc" class="module"></div>
     <div id="module-vocab" class="module"></div>
+    <div id="module-av" class="module"></div>
 
   </main>
 
@@ -319,6 +321,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
   <nav class="bottomnav" id="nav-ps" style="display:none;"></nav>
   <nav class="bottomnav" id="nav-pc" style="display:none;"></nav>
   <nav class="bottomnav" id="nav-vocab" style="display:none;"></nav>
+  <nav class="bottomnav" id="nav-av" style="display:none;"></nav>
 
 </div>
 
@@ -688,6 +691,7 @@ const PC_DEFAULT = {   // módulo "Presente Continuo"
   practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
 };
 const VOCAB_DEFAULT = { srs:{}, dir:"es-en" };   // módulo "Chunks" (tarjetas tipo Anki)
+const AV_DEFAULT = { srs:{}, dir:"es-en" };      // módulo "Vocabulario APTIS" (palabras por unidad, tarjetas tipo Anki)
 const APP_DEFAULT = { version:2, streak:{count:0,best:0,lastDate:null}, lastModuleId:null, modules:{} };
 
 function mergeDefaults(base, incoming){
@@ -718,6 +722,7 @@ function ensureModules(app){
   app.modules["present-simple"] = mergeDefaults(PS_DEFAULT, app.modules["present-simple"] || {});
   app.modules["present-continuous"] = mergeDefaults(PC_DEFAULT, app.modules["present-continuous"] || {});
   app.modules["vocabulary"] = mergeDefaults(VOCAB_DEFAULT, app.modules["vocabulary"] || {});
+  app.modules["aptis-vocab"] = mergeDefaults(AV_DEFAULT, app.modules["aptis-vocab"] || {});
 }
 function loadApp(){
   try{
@@ -1426,10 +1431,13 @@ const MODULES = [
     status:"ready", mastery: () => pcMasteryStats(), enter: () => enterPC() },
   { id:"vocabulary", name:"Chunks", icon:"🧩", color:"var(--at)", bg:"var(--at-bg)",
     desc:"Los chunks (colocaciones y expresiones) más rentables para el B2, tipo Anki.",
-    status:"ready", mastery: () => vocabMasteryStats(), enter: () => enterVocab() }
+    status:"ready", mastery: () => vocabMasteryStats(), enter: () => enterVocab() },
+  { id:"aptis-vocab", name:"Vocabulario Aptis", icon:"🗂️", color:"#0e7490", bg:"#ecfeff",
+    desc:"Vocabulario por unidades (de tus hojas de clase), tipo Anki.",
+    status:"ready", mastery: () => avMasteryStats(), enter: () => enterAV() }
 ];
-function allModuleEls(){ return ["module-ioa","module-ps","module-pc","module-vocab"].map(id=>document.getElementById(id)); }
-function allNavEls(){ return ["nav-ioa","nav-ps","nav-pc","nav-vocab"].map(id=>document.getElementById(id)); }
+function allModuleEls(){ return ["module-ioa","module-ps","module-pc","module-vocab","module-av"].map(id=>document.getElementById(id)); }
+function allNavEls(){ return ["nav-ioa","nav-ps","nav-pc","nav-vocab","nav-av"].map(id=>document.getElementById(id)); }
 function showHub(){
   APP.lastModuleId = null;
   allModuleEls().forEach(el => { if(el){ el.classList.remove("active"); el.style.display="none"; } });
@@ -2262,6 +2270,172 @@ function enterVocab(){
   vocabState = APP.modules["vocabulary"];
   enterModuleUI("module-vocab","nav-vocab");
   vocabShowView("estudiar");
+}
+
+/* ================= MÓDULO: VOCABULARIO APTIS (por unidades, tarjetas tipo Anki) ================= */
+// Estructura pensada para ir creciendo: cada palabra pertenece a una unidad (unit) y un tema (topic)
+// dentro de esa unidad. Añadir una unidad nueva es solo añadir más objetos a AV_VOCAB + una entrada
+// en AV_UNIT_LABEL/AV_TOPIC_LABEL si el tema es nuevo.
+const AV_UNIT_LABEL = { 1:"Unit 1 · La casa y la rutina diaria" };
+const AV_TOPIC_LABEL = { rooms:"Habitaciones de la casa", furniture:"Muebles y electrodomésticos", routine:"Rutina diaria" };
+const AV_VOCAB = [
+  // ----- Unit 1 · Habitaciones de la casa -----
+  {id:"av1", unit:1, topic:"rooms", en:"bedroom", es:"dormitorio", ex:"My bedroom is upstairs, next to the bathroom."},
+  {id:"av2", unit:1, topic:"rooms", en:"bathroom", es:"baño", ex:"There's a big mirror in the bathroom."},
+  {id:"av3", unit:1, topic:"rooms", en:"living room", es:"salón", ex:"We watch TV together in the living room."},
+  {id:"av4", unit:1, topic:"rooms", en:"kitchen", es:"cocina (la habitación)", ex:"She's cooking dinner in the kitchen."},
+  {id:"av5", unit:1, topic:"rooms", en:"hall", es:"recibidor / vestíbulo", ex:"Leave your shoes in the hall."},
+  {id:"av6", unit:1, topic:"rooms", en:"garden", es:"jardín", ex:"The kids are playing in the garden."},
+  // ----- Unit 1 · Muebles y electrodomésticos -----
+  {id:"av7", unit:1, topic:"furniture", en:"sofa", es:"sofá", ex:"Let's sit on the sofa and watch a film."},
+  {id:"av8", unit:1, topic:"furniture", en:"armchair", es:"sillón", ex:"Grandpa always sits in that armchair."},
+  {id:"av9", unit:1, topic:"furniture", en:"bookshelf", es:"estantería", ex:"All my books are on the bookshelf."},
+  {id:"av10", unit:1, topic:"furniture", en:"wardrobe", es:"armario (de ropa)", ex:"Hang your coat in the wardrobe."},
+  {id:"av11", unit:1, topic:"furniture", en:"cupboard", es:"armario (de cocina) / alacena", ex:"The plates are in the cupboard."},
+  {id:"av12", unit:1, topic:"furniture", en:"chest of drawers", es:"cómoda", ex:"My socks are in the chest of drawers."},
+  {id:"av13", unit:1, topic:"furniture", en:"washing machine", es:"lavadora", ex:"Put the towels in the washing machine."},
+  {id:"av14", unit:1, topic:"furniture", en:"dishwasher", es:"lavavajillas", ex:"Can you put the dishes in the dishwasher?"},
+  {id:"av15", unit:1, topic:"furniture", en:"cooker", es:"cocina (el electrodoméstico)", ex:"Be careful, the cooker is hot."},
+  {id:"av16", unit:1, topic:"furniture", en:"oven", es:"horno", ex:"The cake is in the oven."},
+  {id:"av17", unit:1, topic:"furniture", en:"microwave", es:"microondas", ex:"Heat the soup in the microwave."},
+  {id:"av18", unit:1, topic:"furniture", en:"fridge", es:"nevera", ex:"The milk is in the fridge."},
+  {id:"av19", unit:1, topic:"furniture", en:"shower", es:"ducha", ex:"I always have a shower in the morning."},
+  {id:"av20", unit:1, topic:"furniture", en:"bath", es:"bañera", ex:"She's having a bath right now."},
+  {id:"av21", unit:1, topic:"furniture", en:"toilet", es:"váter", ex:"The toilet is next to the shower."},
+  // ----- Unit 1 · Rutina diaria -----
+  {id:"av22", unit:1, topic:"routine", en:"get up", es:"levantarse", ex:"I get up at seven every day."},
+  {id:"av23", unit:1, topic:"routine", en:"have a shower", es:"ducharse", ex:"He has a shower before breakfast."},
+  {id:"av24", unit:1, topic:"routine", en:"have breakfast", es:"desayunar", ex:"We have breakfast at half past seven."},
+  {id:"av25", unit:1, topic:"routine", en:"go to school", es:"ir al colegio", ex:"The children go to school by bus."},
+  {id:"av26", unit:1, topic:"routine", en:"finish school", es:"terminar las clases", ex:"School finishes at three o'clock."},
+  {id:"av27", unit:1, topic:"routine", en:"get home", es:"llegar a casa", ex:"I get home at about six."},
+  {id:"av28", unit:1, topic:"routine", en:"have lunch", es:"comer / almorzar", ex:"We have lunch at two."},
+  {id:"av29", unit:1, topic:"routine", en:"have dinner", es:"cenar", ex:"They have dinner at nine."},
+  {id:"av30", unit:1, topic:"routine", en:"watch TV", es:"ver la tele", ex:"I watch TV before I go to bed."},
+  {id:"av31", unit:1, topic:"routine", en:"go to bed", es:"acostarse", ex:"She goes to bed at eleven."}
+];
+const AV_BY_ID = {}; AV_VOCAB.forEach(c => AV_BY_ID[c.id] = c);
+const AV_NEW_PER_SESSION = 12;
+let avState = APP.modules["aptis-vocab"];
+let avSession = {queue:[], newAdded:0};
+
+function avDueIds(){
+  const today = todayISO();
+  return AV_VOCAB.filter(c => avState.srs[c.id] && avState.srs[c.id].stage>=1 && avState.srs[c.id].due<=today).map(c=>c.id);
+}
+function avNewIds(){ return AV_VOCAB.filter(c => !avState.srs[c.id]).map(c=>c.id); }
+function avMasteryStats(){
+  let m=0; Object.keys(avState.srs).forEach(id=>{ if((avState.srs[id].stage||0)>=2) m++; });
+  return {mastered:m, total:AV_VOCAB.length};
+}
+function avGrade(id, grade){
+  const today = todayISO();
+  let e = avState.srs[id] || {stage:0, due:today, reps:0, lapses:0};
+  if(grade==="again"){ e.stage=0; e.lapses++; e.due=today; }
+  else if(grade==="good"){ e.stage=Math.min((e.stage||0)+1, STAGE_DAYS.length-1); e.reps++; e.due=addDaysISO(today, STAGE_DAYS[e.stage]); }
+  else { e.stage=Math.min((e.stage||0)+2, STAGE_DAYS.length-1); e.reps++; e.due=addDaysISO(today, STAGE_DAYS[e.stage]); }
+  avState.srs[id]=e; updateStreak(); saveState();
+}
+function avBuildSession(){
+  const due = shuffle(avDueIds());
+  const news = shuffle(avNewIds()).slice(0, AV_NEW_PER_SESSION);
+  avSession = {queue: shuffle(due.concat(news)), newAdded: news.length};
+}
+function avRenderNav(active){
+  const tabs = [["estudiar","🎴","Estudiar"],["lista","📖","Lista"]];
+  document.getElementById("nav-av").innerHTML = tabs.map(t =>
+    '<button data-v="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
+  ).join("");
+  document.querySelectorAll("#nav-av button").forEach(b => b.addEventListener("click", () => avShowView(b.dataset.v)));
+}
+function avShowView(name){
+  if(["estudiar","lista"].indexOf(name) === -1) name = "estudiar";
+  avRenderNav(name);
+  if(name==="estudiar") avRenderStudy();
+  else avRenderList();
+  window.scrollTo(0,0);
+}
+function avRenderStudy(){ avBuildSession(); avShowNextCard(); }
+function avShowNextCard(){
+  const host = document.getElementById("module-av");
+  if(!avSession.queue.length){
+    const ms = avMasteryStats();
+    host.innerHTML = '<h2 class="title">🗂️ Vocabulario Aptis · Estudiar</h2>' +
+      '<div class="card center"><div style="font-size:44px; margin-bottom:6px;">✅</div>' +
+      '<h3 class="subtitle2" style="color:var(--text);">¡Sesión terminada!</h3>' +
+      '<p class="subtitle">Has repasado todo lo pendiente por hoy. Dominadas: <b>'+ms.mastered+' / '+ms.total+'</b>.</p>' +
+      '<button class="btn btn-primary" id="avMore">Estudiar más nuevas</button>' +
+      '<button class="btn btn-outline" style="margin-top:8px;" id="avToList">Ver la lista completa</button></div>';
+    document.getElementById("avMore").addEventListener("click", () => {
+      const news = shuffle(avNewIds()).slice(0, AV_NEW_PER_SESSION);
+      if(!news.length){ avShowNextCard(); return; }
+      avSession.queue = shuffle(news); avShowNextCard();
+    });
+    document.getElementById("avToList").addEventListener("click", () => avShowView("lista"));
+    return;
+  }
+  const c = AV_BY_ID[avSession.queue[0]];
+  const dir = avState.dir || "es-en";
+  const front = dir==="es-en" ? c.es : c.en;
+  const frontHint = dir==="es-en" ? "Piensa la palabra en inglés" : "¿Qué significa?";
+  host.innerHTML = '<h2 class="title">🗂️ Vocabulario Aptis · Estudiar</h2>' +
+    '<div class="flexBetween" style="margin-bottom:8px;"><span class="smallMuted">Quedan: '+avSession.queue.length+'</span>' +
+      '<button class="chip" id="avDir" style="flex:0 0 auto; padding:6px 12px; min-height:32px;">🔁 '+(dir==="es-en"?"ES→EN":"EN→ES")+'</button></div>' +
+    '<div class="card">' +
+      '<div class="exBadgeWrap"><span class="pill av">'+AV_TOPIC_LABEL[c.topic]+'</span></div>' +
+      '<div class="fcFront">'+esc(front)+'</div>' +
+      '<div class="fcHint">'+frontHint+'</div>' +
+      '<div id="fcBack"></div>' +
+      '<button class="btn btn-primary" id="avReveal">Ver respuesta</button>' +
+    '</div>';
+  document.getElementById("avDir").addEventListener("click", () => { avState.dir = dir==="es-en"?"en-es":"es-en"; saveState(); avShowNextCard(); });
+  document.getElementById("avReveal").addEventListener("click", () => avRevealCard(c, dir));
+}
+function avRevealCard(c, dir){
+  const back = document.getElementById("fcBack");
+  const reveal = document.getElementById("avReveal");
+  const answer = dir==="es-en" ? c.en : c.es;
+  back.innerHTML = '<div class="fcAnswer">'+esc(answer)+'</div>' +
+    '<div class="fcPair">'+esc(c.en)+' — '+esc(c.es)+'</div>' +
+    '<div class="fcEx">“'+esc(c.ex)+'”</div>' +
+    '<div class="fcGrades">' +
+      '<button class="btn gAgain" data-g="again">Otra vez</button>' +
+      '<button class="btn gGood" data-g="good">Bien</button>' +
+      '<button class="btn gEasy" data-g="easy">Fácil</button>' +
+    '</div>';
+  reveal.style.display = "none";
+  back.querySelectorAll("[data-g]").forEach(b => b.addEventListener("click", () => {
+    const g = b.dataset.g;
+    avGrade(c.id, g);
+    const id = avSession.queue.shift();
+    if(g==="again") avSession.queue.push(id);
+    avShowNextCard();
+  }));
+}
+function avRenderList(){
+  let html = '<h2 class="title">🗂️ Vocabulario Aptis · Lista</h2><p class="subtitle">'+AV_VOCAB.length+' palabras, organizadas por unidad y tema. 🟢 dominada · 🟡 en aprendizaje · ⚪ sin empezar.</p>';
+  const units = Array.from(new Set(AV_VOCAB.map(c => c.unit))).sort((a,b)=>a-b);
+  units.forEach(u => {
+    html += '<h3 class="subtitle2" style="margin:14px 2px 6px;">'+ (AV_UNIT_LABEL[u] || ("Unit "+u)) +'</h3>';
+    const topics = Array.from(new Set(AV_VOCAB.filter(c=>c.unit===u).map(c=>c.topic)));
+    topics.forEach(topic => {
+      const items = AV_VOCAB.filter(c => c.unit===u && c.topic===topic);
+      if(!items.length) return;
+      html += '<div class="card"><h3 class="subtitle2">'+(AV_TOPIC_LABEL[topic]||topic)+' ('+items.length+')</h3>';
+      items.forEach(c => {
+        const st = avState.srs[c.id] ? (avState.srs[c.id].stage||0) : -1;
+        const dot = st>=2 ? "🟢" : (st>=0 ? "🟡" : "⚪");
+        html += '<div class="lessonItem"><div class="lessonSentence">'+dot+' '+esc(c.en)+' — <span style="font-weight:600; color:var(--muted);">'+esc(c.es)+'</span></div><div class="lessonNote">'+esc(c.ex)+'</div></div>';
+      });
+      html += '</div>';
+    });
+  });
+  document.getElementById("module-av").innerHTML = html;
+}
+function enterAV(){
+  avState = APP.modules["aptis-vocab"];
+  enterModuleUI("module-av","nav-av");
+  avShowView("estudiar");
 }
 
 /* ================= INICIALIZACIÓN ================= */
