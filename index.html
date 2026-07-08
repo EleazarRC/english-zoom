@@ -2507,14 +2507,14 @@ function avShowNextCard(){
       '<div class="exBadgeWrap"><span class="pill av">'+AV_TOPIC_LABEL[c.topic]+'</span></div>' +
       '<div class="fcFront">'+esc(front)+'</div>' +
       '<div class="fcHint">'+frontHint+'</div>' +
-      '<div id="fcBack"></div>' +
+      '<div id="avFcBack"></div>' +
       '<button class="btn btn-primary" id="avReveal">Ver respuesta</button>' +
     '</div>';
   document.getElementById("avDir").addEventListener("click", () => { avState.dir = dir==="es-en"?"en-es":"es-en"; saveState(); avShowNextCard(); });
   document.getElementById("avReveal").addEventListener("click", () => avRevealCard(c, dir));
 }
 function avRevealCard(c, dir){
-  const back = document.getElementById("fcBack");
+  const back = document.getElementById("avFcBack");
   const reveal = document.getElementById("avReveal");
   const answer = dir==="es-en" ? c.en : c.es;
   back.innerHTML = '<div class="fcAnswer">'+esc(answer)+'</div>' +
