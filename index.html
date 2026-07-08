@@ -182,6 +182,28 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 .pill.ps{background:var(--on-soft); color:var(--on-dark);}
 .pill.vocab{background:var(--at-soft); color:var(--at-dark);}
 .pill.av{background:#ecfeff; color:#0e7490;}
+.pill.rd{background:var(--accent-bg); color:var(--accent-dark);}
+.pill.gt{background:#eef2ff; color:#4338ca;}
+.rdText{font-size:16px; line-height:1.9; background:#f8fafc; border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:14px;}
+.rdText .gapnum{display:inline-block; min-width:26px; height:24px; line-height:24px; text-align:center; font-weight:800; font-size:12.5px; color:var(--accent-dark); background:var(--accent-bg); border-radius:6px; margin:0 2px; vertical-align:middle;}
+.rdText .gapfilled{font-weight:800; padding:0 4px; border-radius:5px;}
+.gapfilled.ok{color:var(--on-dark); background:var(--on-soft);}
+.gapfilled.no{color:var(--at-dark); background:var(--at-soft);}
+.rdGapRow{margin-bottom:12px;}
+.rdGapRow .lbl{font-weight:800; font-size:13.5px; margin-bottom:6px;}
+.rdGapOpts{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+.rdOpt{min-height:44px; border-radius:12px; border:2px solid var(--border); background:#fff; font-weight:700; font-size:14.5px;}
+.rdOpt.sel{border-color:var(--text); background:#eef2f7;}
+.rdOpt.ok{border-color:var(--on); background:var(--on-bg); color:var(--on-dark);}
+.rdOpt.no{border-color:var(--at); background:var(--at-bg); color:var(--at-dark);}
+.rdOrderItem{display:flex; align-items:center; gap:10px; background:#fff; border:2px solid var(--border); border-radius:12px; padding:10px 12px; margin-bottom:9px;}
+.rdOrderItem.ok{border-color:var(--on); background:var(--on-bg);}
+.rdOrderItem.no{border-color:var(--at); background:var(--at-bg);}
+.rdOrderItem select{flex:0 0 auto; min-width:56px; min-height:40px; border-radius:10px; border:2px solid var(--border); font-weight:800; font-size:15px; background:#fff; text-align:center;}
+.rdOrderItem .txt{flex:1; font-size:14.5px; line-height:1.45;}
+.rdResult{margin-top:12px; padding:13px; border-radius:12px; font-weight:700; text-align:center;}
+.rdResult.good{background:var(--on-bg); color:var(--on-dark);}
+.rdResult.bad{background:var(--at-bg); color:var(--at-dark);}
 .fcFront{font-size:23px; font-weight:800; text-align:center; margin:14px 0 4px; line-height:1.3;}
 .fcHint{text-align:center; font-size:12.5px; color:var(--muted); margin-bottom:16px;}
 .fcAnswer{font-size:22px; font-weight:800; text-align:center; color:var(--on-dark); margin:8px 0 2px;}
@@ -306,6 +328,8 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     <div id="module-pc" class="module"></div>
     <div id="module-vocab" class="module"></div>
     <div id="module-av" class="module"></div>
+    <div id="module-rd" class="module"></div>
+    <div id="module-gt" class="module"></div>
 
   </main>
 
@@ -322,6 +346,8 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
   <nav class="bottomnav" id="nav-pc" style="display:none;"></nav>
   <nav class="bottomnav" id="nav-vocab" style="display:none;"></nav>
   <nav class="bottomnav" id="nav-av" style="display:none;"></nav>
+  <nav class="bottomnav" id="nav-rd" style="display:none;"></nav>
+  <nav class="bottomnav" id="nav-gt" style="display:none;"></nav>
 
 </div>
 
@@ -692,6 +718,11 @@ const PC_DEFAULT = {   // módulo "Presente Continuo"
 };
 const VOCAB_DEFAULT = { srs:{}, dir:"es-en" };   // módulo "Chunks" (tarjetas tipo Anki)
 const AV_DEFAULT = { srs:{}, dir:"es-en" };      // módulo "Vocabulario APTIS" (palabras por unidad, tarjetas tipo Anki)
+const RD_DEFAULT = { best:{} };                  // módulo "Reading" (mejor nota por parte)
+const GT_DEFAULT = {                             // módulo "Grammar & Vocabulary Test"
+  categories: { gramatica:{correct:0,total:0}, sinonimo:{correct:0,total:0}, definicion:{correct:0,total:0}, colocacion:{correct:0,total:0} },
+  history: [], srs: {}, jefe: {examResults:[]}, practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
+};
 const APP_DEFAULT = { version:2, streak:{count:0,best:0,lastDate:null}, lastModuleId:null, modules:{} };
 
 function mergeDefaults(base, incoming){
@@ -723,6 +754,8 @@ function ensureModules(app){
   app.modules["present-continuous"] = mergeDefaults(PC_DEFAULT, app.modules["present-continuous"] || {});
   app.modules["vocabulary"] = mergeDefaults(VOCAB_DEFAULT, app.modules["vocabulary"] || {});
   app.modules["aptis-vocab"] = mergeDefaults(AV_DEFAULT, app.modules["aptis-vocab"] || {});
+  app.modules["reading"] = mergeDefaults(RD_DEFAULT, app.modules["reading"] || {});
+  app.modules["grammar-test"] = mergeDefaults(GT_DEFAULT, app.modules["grammar-test"] || {});
 }
 function loadApp(){
   try{
@@ -1434,10 +1467,16 @@ const MODULES = [
     status:"ready", mastery: () => vocabMasteryStats(), enter: () => enterVocab() },
   { id:"aptis-vocab", name:"Vocabulario Aptis", icon:"🗂️", color:"#0e7490", bg:"#ecfeff",
     desc:"Vocabulario por unidades (de tus hojas de clase), tipo Anki.",
-    status:"ready", mastery: () => avMasteryStats(), enter: () => enterAV() }
+    status:"ready", mastery: () => avMasteryStats(), enter: () => enterAV() },
+  { id:"reading", name:"Reading", icon:"📚", color:"var(--accent)", bg:"var(--accent-bg)",
+    desc:"Los 5 tipos de tarea del Reading del Aptis, con corrección al momento.",
+    status:"ready", mastery: () => rdMasteryStats(), enter: () => enterRD() },
+  { id:"grammar-test", name:"Grammar & Vocab Test", icon:"📝", color:"#4338ca", bg:"#eef2ff",
+    desc:"Test de 50 preguntas de gramática y vocabulario, con explicación.",
+    status:"ready", mastery: () => gtMasteryStats(), enter: () => enterGT() }
 ];
-function allModuleEls(){ return ["module-ioa","module-ps","module-pc","module-vocab","module-av"].map(id=>document.getElementById(id)); }
-function allNavEls(){ return ["nav-ioa","nav-ps","nav-pc","nav-vocab","nav-av"].map(id=>document.getElementById(id)); }
+function allModuleEls(){ return ["module-ioa","module-ps","module-pc","module-vocab","module-av","module-rd","module-gt"].map(id=>document.getElementById(id)); }
+function allNavEls(){ return ["nav-ioa","nav-ps","nav-pc","nav-vocab","nav-av","nav-rd","nav-gt"].map(id=>document.getElementById(id)); }
 function showHub(){
   APP.lastModuleId = null;
   allModuleEls().forEach(el => { if(el){ el.classList.remove("active"); el.style.display="none"; } });
@@ -2276,43 +2315,126 @@ function enterVocab(){
 // Estructura pensada para ir creciendo: cada palabra pertenece a una unidad (unit) y un tema (topic)
 // dentro de esa unidad. Añadir una unidad nueva es solo añadir más objetos a AV_VOCAB + una entrada
 // en AV_UNIT_LABEL/AV_TOPIC_LABEL si el tema es nuevo.
-const AV_UNIT_LABEL = { 1:"Unit 1 · La casa y la rutina diaria" };
-const AV_TOPIC_LABEL = { rooms:"Habitaciones de la casa", furniture:"Muebles y electrodomésticos", routine:"Rutina diaria" };
+const AV_UNIT_LABEL = { 1:"Unit 1" };
+const AV_TOPIC_LABEL = { house:"House · La casa", habits:"Habits · Rutinas y hábitos", misc:"Miscellaneous · Vocabulario variado" };
 const AV_VOCAB = [
-  // ----- Unit 1 · Habitaciones de la casa -----
-  {id:"av1", unit:1, topic:"rooms", en:"bedroom", es:"dormitorio", ex:"My bedroom is upstairs, next to the bathroom."},
-  {id:"av2", unit:1, topic:"rooms", en:"bathroom", es:"baño", ex:"There's a big mirror in the bathroom."},
-  {id:"av3", unit:1, topic:"rooms", en:"living room", es:"salón", ex:"We watch TV together in the living room."},
-  {id:"av4", unit:1, topic:"rooms", en:"kitchen", es:"cocina (la habitación)", ex:"She's cooking dinner in the kitchen."},
-  {id:"av5", unit:1, topic:"rooms", en:"hall", es:"recibidor / vestíbulo", ex:"Leave your shoes in the hall."},
-  {id:"av6", unit:1, topic:"rooms", en:"garden", es:"jardín", ex:"The kids are playing in the garden."},
-  // ----- Unit 1 · Muebles y electrodomésticos -----
-  {id:"av7", unit:1, topic:"furniture", en:"sofa", es:"sofá", ex:"Let's sit on the sofa and watch a film."},
-  {id:"av8", unit:1, topic:"furniture", en:"armchair", es:"sillón", ex:"Grandpa always sits in that armchair."},
-  {id:"av9", unit:1, topic:"furniture", en:"bookshelf", es:"estantería", ex:"All my books are on the bookshelf."},
-  {id:"av10", unit:1, topic:"furniture", en:"wardrobe", es:"armario (de ropa)", ex:"Hang your coat in the wardrobe."},
-  {id:"av11", unit:1, topic:"furniture", en:"cupboard", es:"armario (de cocina) / alacena", ex:"The plates are in the cupboard."},
-  {id:"av12", unit:1, topic:"furniture", en:"chest of drawers", es:"cómoda", ex:"My socks are in the chest of drawers."},
-  {id:"av13", unit:1, topic:"furniture", en:"washing machine", es:"lavadora", ex:"Put the towels in the washing machine."},
-  {id:"av14", unit:1, topic:"furniture", en:"dishwasher", es:"lavavajillas", ex:"Can you put the dishes in the dishwasher?"},
-  {id:"av15", unit:1, topic:"furniture", en:"cooker", es:"cocina (el electrodoméstico)", ex:"Be careful, the cooker is hot."},
-  {id:"av16", unit:1, topic:"furniture", en:"oven", es:"horno", ex:"The cake is in the oven."},
-  {id:"av17", unit:1, topic:"furniture", en:"microwave", es:"microondas", ex:"Heat the soup in the microwave."},
-  {id:"av18", unit:1, topic:"furniture", en:"fridge", es:"nevera", ex:"The milk is in the fridge."},
-  {id:"av19", unit:1, topic:"furniture", en:"shower", es:"ducha", ex:"I always have a shower in the morning."},
-  {id:"av20", unit:1, topic:"furniture", en:"bath", es:"bañera", ex:"She's having a bath right now."},
-  {id:"av21", unit:1, topic:"furniture", en:"toilet", es:"váter", ex:"The toilet is next to the shower."},
-  // ----- Unit 1 · Rutina diaria -----
-  {id:"av22", unit:1, topic:"routine", en:"get up", es:"levantarse", ex:"I get up at seven every day."},
-  {id:"av23", unit:1, topic:"routine", en:"have a shower", es:"ducharse", ex:"He has a shower before breakfast."},
-  {id:"av24", unit:1, topic:"routine", en:"have breakfast", es:"desayunar", ex:"We have breakfast at half past seven."},
-  {id:"av25", unit:1, topic:"routine", en:"go to school", es:"ir al colegio", ex:"The children go to school by bus."},
-  {id:"av26", unit:1, topic:"routine", en:"finish school", es:"terminar las clases", ex:"School finishes at three o'clock."},
-  {id:"av27", unit:1, topic:"routine", en:"get home", es:"llegar a casa", ex:"I get home at about six."},
-  {id:"av28", unit:1, topic:"routine", en:"have lunch", es:"comer / almorzar", ex:"We have lunch at two."},
-  {id:"av29", unit:1, topic:"routine", en:"have dinner", es:"cenar", ex:"They have dinner at nine."},
-  {id:"av30", unit:1, topic:"routine", en:"watch TV", es:"ver la tele", ex:"I watch TV before I go to bed."},
-  {id:"av31", unit:1, topic:"routine", en:"go to bed", es:"acostarse", ex:"She goes to bed at eleven."}
+  // ===== Unit 1 · HOUSE =====
+  {id:"av1", unit:1, topic:"house", en:"armchair", es:"sillón", ex:"Grandpa reads the paper in his armchair."},
+  {id:"av2", unit:1, topic:"house", en:"balcony", es:"balcón", ex:"We have coffee on the balcony in summer."},
+  {id:"av3", unit:1, topic:"house", en:"bath", es:"bañera", ex:"The children love playing in the bath."},
+  {id:"av4", unit:1, topic:"house", en:"bathroom", es:"baño (la habitación)", ex:"There's a big mirror in the bathroom."},
+  {id:"av5", unit:1, topic:"house", en:"bedroom", es:"dormitorio", ex:"My bedroom is upstairs."},
+  {id:"av6", unit:1, topic:"house", en:"bell", es:"timbre / campana", ex:"Someone rang the bell."},
+  {id:"av7", unit:1, topic:"house", en:"bin", es:"cubo de basura", ex:"Throw it in the bin, please."},
+  {id:"av8", unit:1, topic:"house", en:"blanket", es:"manta", ex:"She put a warm blanket on the bed."},
+  {id:"av9", unit:1, topic:"house", en:"blind", es:"persiana", ex:"Close the blind, the sun is too bright."},
+  {id:"av10", unit:1, topic:"house", en:"bookshelf", es:"estantería", ex:"All my books are on the bookshelf."},
+  {id:"av11", unit:1, topic:"house", en:"bulb", es:"bombilla", ex:"The bulb in the kitchen has burnt out."},
+  {id:"av12", unit:1, topic:"house", en:"ceiling", es:"techo (interior)", ex:"There's a lamp hanging from the ceiling."},
+  {id:"av13", unit:1, topic:"house", en:"central heating", es:"calefacción central", ex:"The flat has central heating."},
+  {id:"av14", unit:1, topic:"house", en:"chest of drawers", es:"cómoda", ex:"My socks are in the chest of drawers."},
+  {id:"av15", unit:1, topic:"house", en:"chimney", es:"chimenea (tiro)", ex:"Smoke was coming out of the chimney."},
+  {id:"av16", unit:1, topic:"house", en:"cleaning", es:"limpieza", ex:"I do the cleaning on Saturdays."},
+  {id:"av17", unit:1, topic:"house", en:"cooker", es:"cocina (el aparato)", ex:"Be careful, the cooker is still hot."},
+  {id:"av18", unit:1, topic:"house", en:"corridor", es:"pasillo", ex:"The bathroom is at the end of the corridor."},
+  {id:"av19", unit:1, topic:"house", en:"cupboard", es:"armario (de cocina/cosas)", ex:"The cups are in the cupboard."},
+  {id:"av20", unit:1, topic:"house", en:"cushion", es:"cojín", ex:"She put a cushion behind her back."},
+  {id:"av21", unit:1, topic:"house", en:"dining room", es:"comedor", ex:"We have dinner in the dining room."},
+  {id:"av22", unit:1, topic:"house", en:"dish", es:"plato", ex:"Can you wash this dish?"},
+  {id:"av23", unit:1, topic:"house", en:"dishwasher", es:"lavavajillas", ex:"Put the plates in the dishwasher."},
+  {id:"av24", unit:1, topic:"house", en:"downstairs", es:"planta de abajo", ex:"The kitchen is downstairs."},
+  {id:"av25", unit:1, topic:"house", en:"duvet", es:"edredón", ex:"In winter I use a thick duvet."},
+  {id:"av26", unit:1, topic:"house", en:"first floor", es:"primera planta", ex:"Our office is on the first floor."},
+  {id:"av27", unit:1, topic:"house", en:"freezer", es:"congelador", ex:"The ice cream is in the freezer."},
+  {id:"av28", unit:1, topic:"house", en:"fridge", es:"nevera, frigorífico", ex:"The milk is in the fridge."},
+  {id:"av29", unit:1, topic:"house", en:"frying pan", es:"sartén", ex:"Heat some oil in the frying pan."},
+  {id:"av30", unit:1, topic:"house", en:"furniture", es:"muebles (incontable)", ex:"We bought new furniture for the living room."},
+  {id:"av31", unit:1, topic:"house", en:"garage", es:"garaje, cochera", ex:"We park the car in the garage."},
+  {id:"av32", unit:1, topic:"house", en:"garden", es:"jardín", ex:"The kids are playing in the garden."},
+  {id:"av33", unit:1, topic:"house", en:"ground floor", es:"planta baja", ex:"The shop is on the ground floor."},
+  {id:"av34", unit:1, topic:"house", en:"hairdryer", es:"secador", ex:"I dry my hair with a hairdryer."},
+  {id:"av35", unit:1, topic:"house", en:"hall", es:"entrada, recibidor", ex:"Leave your umbrella in the hall."},
+  {id:"av36", unit:1, topic:"house", en:"kettle", es:"hervidor de agua", ex:"I'll put the kettle on for some tea."},
+  {id:"av37", unit:1, topic:"house", en:"kitchen", es:"cocina (la habitación)", ex:"She's cooking in the kitchen."},
+  {id:"av38", unit:1, topic:"house", en:"lavatory", es:"cuarto de baño (formal)", ex:"The lavatory is down the hall."},
+  {id:"av39", unit:1, topic:"house", en:"living room", es:"salón", ex:"We watch TV in the living room."},
+  {id:"av40", unit:1, topic:"house", en:"microwave", es:"microondas", ex:"Heat the soup in the microwave."},
+  {id:"av41", unit:1, topic:"house", en:"mirror", es:"espejo", ex:"She looked at herself in the mirror."},
+  {id:"av42", unit:1, topic:"house", en:"pillow", es:"almohada", ex:"This pillow is too soft."},
+  {id:"av43", unit:1, topic:"house", en:"plug", es:"enchufe (clavija)", ex:"Put the plug in the socket."},
+  {id:"av44", unit:1, topic:"house", en:"rug / carpet", es:"alfombra", ex:"There's a soft rug in front of the sofa."},
+  {id:"av45", unit:1, topic:"house", en:"second floor", es:"segunda planta", ex:"They live on the second floor."},
+  {id:"av46", unit:1, topic:"house", en:"sheets", es:"sábanas", ex:"I change the sheets every week."},
+  {id:"av47", unit:1, topic:"house", en:"sink", es:"fregadero", ex:"The dirty dishes are in the sink."},
+  {id:"av48", unit:1, topic:"house", en:"sofa", es:"sofá", ex:"Let's sit on the sofa."},
+  {id:"av49", unit:1, topic:"house", en:"stairs", es:"escaleras", ex:"Be careful on the stairs."},
+  {id:"av50", unit:1, topic:"house", en:"tap", es:"grifo", ex:"Turn off the tap."},
+  {id:"av51", unit:1, topic:"house", en:"toilet", es:"váter (wc)", ex:"Where is the toilet, please?"},
+  {id:"av52", unit:1, topic:"house", en:"towel", es:"toalla", ex:"Take a clean towel for the shower."},
+  {id:"av53", unit:1, topic:"house", en:"upstairs", es:"planta de arriba", ex:"The bedrooms are upstairs."},
+  {id:"av54", unit:1, topic:"house", en:"wall", es:"pared", ex:"There's a painting on the wall."},
+  {id:"av55", unit:1, topic:"house", en:"wardrobe", es:"armario (de ropa)", ex:"Hang your coat in the wardrobe."},
+  {id:"av56", unit:1, topic:"house", en:"washbasin", es:"lavabo", ex:"Wash your hands in the washbasin."},
+  {id:"av57", unit:1, topic:"house", en:"washing machine", es:"lavadora", ex:"Put the towels in the washing machine."},
+  // ===== Unit 1 · HABITS =====
+  {id:"av58", unit:1, topic:"habits", en:"to brush your teeth", es:"lavarse los dientes", ex:"I brush my teeth after every meal."},
+  {id:"av59", unit:1, topic:"habits", en:"to chat online", es:"chatear", ex:"They chat online every evening."},
+  {id:"av60", unit:1, topic:"habits", en:"to check social media", es:"revisar las redes sociales", ex:"She checks social media first thing in the morning."},
+  {id:"av61", unit:1, topic:"habits", en:"to cook", es:"cocinar", ex:"My dad cooks really well."},
+  {id:"av62", unit:1, topic:"habits", en:"to cook a meal", es:"cocinar una comida", ex:"It takes an hour to cook a meal."},
+  {id:"av63", unit:1, topic:"habits", en:"to finish work/school", es:"acabar de trabajar / el colegio", ex:"I finish work at five."},
+  {id:"av64", unit:1, topic:"habits", en:"to get home", es:"llegar a casa", ex:"We get home at about six."},
+  {id:"av65", unit:1, topic:"habits", en:"to get up", es:"levantarse", ex:"I get up at seven every day."},
+  {id:"av66", unit:1, topic:"habits", en:"to go to work/school", es:"ir al trabajo / colegio", ex:"She goes to work by bus."},
+  {id:"av67", unit:1, topic:"habits", en:"to have a bath", es:"darse un baño", ex:"He has a bath before bed."},
+  {id:"av68", unit:1, topic:"habits", en:"to have a coffee/drink", es:"tomar un café / una bebida", ex:"Let's have a coffee together."},
+  {id:"av69", unit:1, topic:"habits", en:"to have a shower", es:"ducharse", ex:"I have a shower every morning."},
+  {id:"av70", unit:1, topic:"habits", en:"to have breakfast", es:"desayunar", ex:"We have breakfast at half past seven."},
+  {id:"av71", unit:1, topic:"habits", en:"to have dinner", es:"cenar", ex:"They have dinner late."},
+  {id:"av72", unit:1, topic:"habits", en:"to have lunch", es:"almorzar, comer", ex:"I have lunch at two."},
+  {id:"av73", unit:1, topic:"habits", en:"to put on some make-up", es:"ponerse maquillaje", ex:"She puts on some make-up before work."},
+  {id:"av74", unit:1, topic:"habits", en:"to read", es:"leer", ex:"I read for a while before sleeping."},
+  {id:"av75", unit:1, topic:"habits", en:"to send text messages", es:"enviar mensajes de texto", ex:"Stop sending text messages in class!"},
+  {id:"av76", unit:1, topic:"habits", en:"to stay in", es:"quedarse en casa", ex:"Tonight I want to stay in."},
+  {id:"av77", unit:1, topic:"habits", en:"to study", es:"estudiar", ex:"She studies every afternoon."},
+  {id:"av78", unit:1, topic:"habits", en:"to text people", es:"escribir mensajes a la gente", ex:"He texts people all day."},
+  {id:"av79", unit:1, topic:"habits", en:"to tidy your room", es:"ordenar tu habitación", ex:"You must tidy your room."},
+  {id:"av80", unit:1, topic:"habits", en:"to wake up", es:"despertarse", ex:"I wake up before the alarm."},
+  {id:"av81", unit:1, topic:"habits", en:"to watch TV/a film/a series", es:"ver la tele / una película / una serie", ex:"We watch a series after dinner."},
+  {id:"av82", unit:1, topic:"habits", en:"to work", es:"trabajar", ex:"They work from home."},
+  // ===== Unit 1 · MISCELLANEOUS =====
+  {id:"av83", unit:1, topic:"misc", en:"almost", es:"casi", ex:"It's almost midnight."},
+  {id:"av84", unit:1, topic:"misc", en:"cave", es:"cueva", ex:"The bats live in a dark cave."},
+  {id:"av85", unit:1, topic:"misc", en:"cool", es:"fresco", ex:"It's nice and cool in the evening."},
+  {id:"av86", unit:1, topic:"misc", en:"cosy", es:"acogedor", ex:"The cottage was small but cosy."},
+  {id:"av87", unit:1, topic:"misc", en:"cottage", es:"casa de campo, cortijo", ex:"They spent the weekend in a country cottage."},
+  {id:"av88", unit:1, topic:"misc", en:"countryside", es:"campo", ex:"I love walking in the countryside."},
+  {id:"av89", unit:1, topic:"misc", en:"design", es:"diseño / diseñar", ex:"The design of the house is modern."},
+  {id:"av90", unit:1, topic:"misc", en:"kind / sort / type", es:"tipo, clase", ex:"What kind of music do you like?"},
+  {id:"av91", unit:1, topic:"misc", en:"make-up", es:"maquillaje", ex:"She doesn't wear much make-up."},
+  {id:"av92", unit:1, topic:"misc", en:"nowadays", es:"hoy en día, actualmente", ex:"Nowadays everyone has a smartphone."},
+  {id:"av93", unit:1, topic:"misc", en:"tidy", es:"ordenado / ordenar", ex:"Her desk is always tidy."},
+  {id:"av94", unit:1, topic:"misc", en:"sunshine", es:"luz del sol", ex:"Let's sit in the sunshine."},
+  {id:"av95", unit:1, topic:"misc", en:"tiny", es:"diminuto, muy pequeño", ex:"They live in a tiny flat."},
+  {id:"av96", unit:1, topic:"misc", en:"to belong", es:"pertenecer", ex:"This book belongs to me."},
+  {id:"av97", unit:1, topic:"misc", en:"to change", es:"cambiar", ex:"I need to change my plans."},
+  {id:"av98", unit:1, topic:"misc", en:"to consist (of)", es:"consistir (en)", ex:"The course consists of ten lessons."},
+  {id:"av99", unit:1, topic:"misc", en:"to contain", es:"contener", ex:"This drink contains no sugar."},
+  {id:"av100", unit:1, topic:"misc", en:"to dream", es:"soñar", ex:"I often dream about travelling."},
+  {id:"av101", unit:1, topic:"misc", en:"to exist", es:"existir", ex:"Do ghosts really exist?"},
+  {id:"av102", unit:1, topic:"misc", en:"to forget", es:"olvidar", ex:"Don't forget your keys."},
+  {id:"av103", unit:1, topic:"misc", en:"to get better (improve)", es:"mejorar", ex:"I hope you get better soon."},
+  {id:"av104", unit:1, topic:"misc", en:"to go for a swim", es:"ir a nadar", ex:"Let's go for a swim in the sea."},
+  {id:"av105", unit:1, topic:"misc", en:"to guess", es:"adivinar, suponer", ex:"Guess how old I am."},
+  {id:"av106", unit:1, topic:"misc", en:"to improve", es:"mejorar", ex:"She wants to improve her English."},
+  {id:"av107", unit:1, topic:"misc", en:"to include", es:"incluir", ex:"The price includes breakfast."},
+  {id:"av108", unit:1, topic:"misc", en:"to matter", es:"importar", ex:"It doesn't matter."},
+  {id:"av109", unit:1, topic:"misc", en:"to mean", es:"significar", ex:"What does this word mean?"},
+  {id:"av110", unit:1, topic:"misc", en:"to need", es:"necesitar", ex:"I need some help."},
+  {id:"av111", unit:1, topic:"misc", en:"to own", es:"poseer, tener", ex:"They own two houses."},
+  {id:"av112", unit:1, topic:"misc", en:"to remain", es:"permanecer, seguir", ex:"Please remain seated."},
+  {id:"av113", unit:1, topic:"misc", en:"to remember", es:"recordar", ex:"I can't remember his name."},
+  {id:"av114", unit:1, topic:"misc", en:"to seem", es:"parecer", ex:"She seems tired today."}
 ];
 const AV_BY_ID = {}; AV_VOCAB.forEach(c => AV_BY_ID[c.id] = c);
 const AV_NEW_PER_SESSION = 12;
@@ -2436,6 +2558,445 @@ function enterAV(){
   avState = APP.modules["aptis-vocab"];
   enterModuleUI("module-av","nav-av");
   avShowView("estudiar");
+}
+
+/* ================= MÓDULO: GRAMMAR & VOCABULARY TEST ================= */
+let gtState = APP.modules["grammar-test"];
+const GT_CAT_LABEL = {gramatica:"GRAMÁTICA", sinonimo:"SINÓNIMO", definicion:"DEFINICIÓN", colocacion:"COLOCACIÓN"};
+const GT_BANK = [
+  {id:"gt1", cat:"gramatica", blank:"My sister ___ tidies her room.", options:["every day","always","twice a week"], answer:"always", note:"Los adverbios de frecuencia (always, usually, never) van ANTES del verbo. 'every day' y 'twice a week' van al final."},
+  {id:"gt2", cat:"gramatica", blank:"I ___ a teacher.", options:["am","is","are"], answer:"am", note:"Con 'I', el verbo be es 'am'."},
+  {id:"gt3", cat:"gramatica", blank:"___ you go to school by bus?", options:["Does","Are","Do"], answer:"Do", note:"Presente simple, sujeto 'you' → Do."},
+  {id:"gt4", cat:"gramatica", blank:"My parents ___ for a big company.", options:["works","work","workes"], answer:"work", note:"'parents' es plural → work (sin -s)."},
+  {id:"gt5", cat:"gramatica", blank:"My cat is very old. It ___ 15 years old.", options:["has","is","have"], answer:"is", note:"La edad se dice con 'be': it IS 15 years old (no 'has')."},
+  {id:"gt6", cat:"gramatica", blank:"A dishwasher ___ a piece of furniture. It's an appliance.", options:["is","doesn't","isn't"], answer:"isn't", note:"Negación con 'be': isn't. Un lavavajillas NO es un mueble."},
+  {id:"gt7", cat:"gramatica", blank:"My friends ___ play in this park.", options:["don't","doesn't","aren't"], answer:"don't", note:"'friends' plural → don't."},
+  {id:"gt8", cat:"gramatica", blank:"I get up every day ___ 7 o'clock.", options:["at","in","on"], answer:"at", note:"Horas exactas → at."},
+  {id:"gt9", cat:"gramatica", blank:"Does Erick ___ in a hospital?", options:["works","studies","work"], answer:"work", note:"Tras 'Does' el verbo va en forma base: work."},
+  {id:"gt10", cat:"gramatica", blank:"Julia's uncle goes to the gym ___.", options:["always","never","three times a week"], answer:"three times a week", note:"Las expresiones largas de frecuencia van al FINAL; always/never irían antes del verbo."},
+  {id:"gt11", cat:"gramatica", blank:"She ___ two brothers.", options:["has","have","is"], answer:"has", note:"3ª persona: have → has."},
+  {id:"gt12", cat:"gramatica", blank:"The museum ___ at 9 o'clock.", options:["opens","open","close"], answer:"opens", note:"'the museum' = it → opens."},
+  {id:"gt13", cat:"gramatica", blank:"Peter and Megan ___ go to the cinema together.", options:["on Saturdays","in the morning","often"], answer:"often", note:"'often' (adverbio de frecuencia) va antes del verbo; las otras son expresiones de tiempo que irían al final."},
+  {id:"gt14", cat:"gramatica", blank:"We have a big breakfast ___ the morning.", options:["at","in","on"], answer:"in", note:"Partes del día → in the morning."},
+  {id:"gt15", cat:"gramatica", blank:"I always see all my family ___ Christmas.", options:["in","at","on"], answer:"at", note:"Periodos festivos → at Christmas."},
+  {id:"gt16", cat:"gramatica", blank:"___ your dog bark at night?", options:["Does","Do","Is"], answer:"Does", note:"'your dog' = it → Does."},
+  {id:"gt17", cat:"gramatica", blank:"Peter ___ the dishes every night.", options:["washs","wash","washes"], answer:"washes", note:"wash termina en -sh → washes."},
+  {id:"gt18", cat:"gramatica", blank:"What time ___ the lesson start?", options:["does","do","is"], answer:"does", note:"'the lesson' = it → does."},
+  {id:"gt19", cat:"gramatica", blank:"My children never ___ cartoons after 10 p.m.", options:["watches","watch","watchs"], answer:"watch", note:"'children' plural → watch (sin -s)."},
+  {id:"gt20", cat:"gramatica", blank:"Where ___ you live?", options:["does","are","do"], answer:"do", note:"'you' → do."},
+  {id:"gt21", cat:"gramatica", blank:"Whose birthday is ___ May?", options:["at","in","on"], answer:"in", note:"Meses → in May."},
+  {id:"gt22", cat:"gramatica", blank:"John ___ always late.", options:["is","are","does"], answer:"is", note:"'John' → is; con 'be' el adverbio va después: is always late."},
+  {id:"gt23", cat:"gramatica", blank:"My dad ___ with sad films.", options:["crys","cries","cry"], answer:"cries", note:"consonante + y → -ies: cry → cries."},
+  {id:"gt24", cat:"gramatica", blank:"We ___ go to school by car.", options:["usually don't","don't never","don't usually"], answer:"don't usually", note:"El adverbio de frecuencia va DESPUÉS del auxiliar: don't usually. 'don't never' es doble negación (incorrecto)."},
+  {id:"gt25", cat:"gramatica", blank:"Sheep ___ live in the water.", options:["doesn't","do","don't"], answer:"don't", note:"'sheep' es plural aquí → don't."},
+  {id:"gt26", cat:"sinonimo", q:"Sinónimo de: house", options:["bathroom","home","backyard","carpet","supper"], answer:"home", note:"house = home (casa / hogar)."},
+  {id:"gt27", cat:"sinonimo", q:"Sinónimo de: garden", options:["wardrobe","bathroom","backyard","park","hallway"], answer:"backyard", note:"garden ≈ backyard (jardín / patio trasero)."},
+  {id:"gt28", cat:"sinonimo", q:"Sinónimo de: lavatory", options:["bedroom","sink","bathroom","washbasin","hallway"], answer:"bathroom", note:"lavatory (formal) = bathroom / cuarto de baño."},
+  {id:"gt29", cat:"sinonimo", q:"Sinónimo de: chimney", options:["duvet","heating","mirror","fireplace","dish"], answer:"fireplace", note:"chimney ≈ fireplace (chimenea)."},
+  {id:"gt30", cat:"sinonimo", q:"Sinónimo de: corridor", options:["hall","stairs","hallway","balcony","wall"], answer:"hallway", note:"corridor = hallway (pasillo)."},
+  {id:"gt31", cat:"sinonimo", q:"Sinónimo de: fridge", options:["refrigerator","freezer","cupboard","cooker","kitchen"], answer:"refrigerator", note:"fridge = refrigerator."},
+  {id:"gt32", cat:"sinonimo", q:"Sinónimo de: cupboard", options:["sheets","carpet","wardrobe","armchair","cushion"], answer:"wardrobe", note:"cupboard ≈ wardrobe (armario)."},
+  {id:"gt33", cat:"sinonimo", q:"Sinónimo de: rug", options:["mirror","plug","sink","carpet","drawer"], answer:"carpet", note:"rug = carpet (alfombra)."},
+  {id:"gt34", cat:"sinonimo", q:"Sinónimo de: tiny", options:["big","huge","cosy","small","ugly"], answer:"small", note:"tiny = small (pequeño / diminuto)."},
+  {id:"gt35", cat:"sinonimo", q:"Sinónimo de: dinner", options:["supper","lunch","breakfast","cooker","dish"], answer:"supper", note:"dinner = supper (cena)."},
+  {id:"gt36", cat:"definicion", q:"a large rectangular piece of soft fabric, used as a bed covering", options:["bed","blanket","rug","carpet","supper"], answer:"blanket", note:"= blanket (manta)."},
+  {id:"gt37", cat:"definicion", q:"a soft pad or bag, used to sit, lie or lean on", options:["blanket","duvet","cushion","sofa","hallway"], answer:"cushion", note:"= cushion (cojín)."},
+  {id:"gt38", cat:"definicion", q:"a bathroom fixture with taps, used for washing the face and hands", options:["lavatory","sink","washbasin","toilet","bell"], answer:"washbasin", note:"= washbasin (lavabo)."},
+  {id:"gt39", cat:"definicion", q:"a wide, usually shallow metal container used for frying", options:["cooker","microwave","dish","pot","pan"], answer:"pan", note:"= pan / frying pan (sartén)."},
+  {id:"gt40", cat:"definicion", q:"a refrigerator or compartment held at or below 0°C", options:["fridge","refrigerator","ceiling","freezer","balcony"], answer:"freezer", note:"= freezer (congelador)."},
+  {id:"gt41", cat:"definicion", q:"the overhead inside surface of a room", options:["ceiling","roof","chimney","window","wall"], answer:"ceiling", note:"= ceiling (techo interior). 'roof' es el tejado exterior."},
+  {id:"gt42", cat:"definicion", q:"a pot with a spout, handle and lid, used mainly to boil water", options:["glass","pan","kettle","armchair","bath"], answer:"kettle", note:"= kettle (hervidor)."},
+  {id:"gt43", cat:"definicion", q:"a room equipped for cooking and preparing food", options:["hall","kitchen","living room","dining room","lavatory"], answer:"kitchen", note:"= kitchen (cocina)."},
+  {id:"gt44", cat:"definicion", q:"a large rectangular piece of cotton used for bedding", options:["curtain","towel","rug","sheet","plug"], answer:"sheet", note:"= sheet (sábana)."},
+  {id:"gt45", cat:"definicion", q:"a thin, flat slab attached horizontally to a wall for supporting objects", options:["book","frame","blind","furniture","shelf"], answer:"shelf", note:"= shelf (balda / estante)."},
+  {id:"gt46", cat:"colocacion", q:"Colocación: chest of ___", options:["heating","meal","drawers","pan","machine"], answer:"drawers", note:"chest of drawers = cómoda."},
+  {id:"gt47", cat:"colocacion", q:"Colocación: central ___", options:["heating","meal","drawers","pan","machine"], answer:"heating", note:"central heating = calefacción central."},
+  {id:"gt48", cat:"colocacion", q:"Colocación: washing ___", options:["heating","meal","drawers","pan","machine"], answer:"machine", note:"washing machine = lavadora."},
+  {id:"gt49", cat:"colocacion", q:"Colocación: ground ___", options:["heating","floor","drawers","pan","machine"], answer:"floor", note:"ground floor = planta baja."},
+  {id:"gt50", cat:"colocacion", q:"Colocación: frying ___", options:["heating","meal","drawers","pan","machine"], answer:"pan", note:"frying pan = sartén."}
+];
+const GT_BY_ID = {}; GT_BANK.forEach(e => GT_BY_ID[e.id] = e);
+let gtSessionCounter = 0, gtRepeatQueue = [], gtRepeatCounts = {}, gtLastId = null;
+let gtExam = {phase:"intro", queue:null, idx:0, score:0};
+
+function gtScheduleSRS(id, correct){
+  const today = todayISO();
+  let entry = gtState.srs[id];
+  if(!entry) entry = {stage:0, due:today, reps:0, lapses:0};
+  if(correct){
+    entry.stage = Math.min(entry.stage + 1, STAGE_DAYS.length - 1);
+    entry.reps++; entry.due = addDaysISO(today, STAGE_DAYS[entry.stage]);
+  } else {
+    entry.stage = 0; entry.lapses++; entry.due = today;
+    gtRepeatQueue = gtRepeatQueue.filter(it => it.id !== id);
+    const t = gtRepeatCounts[id] || 0;
+    if(t < MAX_SESSION_REPEATS){ gtRepeatCounts[id] = t + 1; gtRepeatQueue.push({id:id, availableAfter: gtSessionCounter + 3}); }
+  }
+  gtState.srs[id] = entry;
+}
+function gtRecordAnswer(ex, correct){
+  const cat = ex.cat;
+  if(!gtState.categories[cat]) gtState.categories[cat] = {correct:0,total:0};
+  gtState.categories[cat].total++;
+  if(correct) gtState.categories[cat].correct++;
+  gtState.totalAnswered++; if(correct) gtState.totalCorrect++;
+  gtState.history.push({id:ex.id, cat:cat, date:todayISO(), correct:correct});
+  if(gtState.history.length > 500) gtState.history.splice(0, gtState.history.length - 500);
+  gtScheduleSRS(ex.id, correct);
+  updateStreak(); saveState();
+}
+function gtMasteryStats(){
+  let mastered = 0;
+  Object.keys(gtState.srs).forEach(id => { if((gtState.srs[id].stage||0) >= 2) mastered++; });
+  return {mastered: mastered, total: GT_BANK.length};
+}
+function gtPickNext(){
+  const today = todayISO();
+  const f = gtState.practiceFilter || "todo";
+  const pool = f==="todo" ? GT_BANK : GT_BANK.filter(e => e.cat===f);
+  const notLast = e => e.id !== gtLastId;
+  const due = pool.filter(e => gtState.srs[e.id] && gtState.srs[e.id].stage>=1 && gtState.srs[e.id].due<=today && notLast(e));
+  if(due.length && Math.random() < 0.35) return pick(due);
+  const reps = [];
+  for(let i=0;i<gtRepeatQueue.length;i++){
+    const it = gtRepeatQueue[i]; const ex = GT_BY_ID[it.id];
+    if(!ex) continue; if(f!=="todo" && ex.cat!==f) continue;
+    if(it.availableAfter <= gtSessionCounter && ex.id !== gtLastId) reps.push(i);
+  }
+  if(reps.length && Math.random() < 0.35){
+    const idx = pick(reps); const it = gtRepeatQueue[idx]; gtRepeatQueue.splice(idx,1); return GT_BY_ID[it.id];
+  }
+  let candidates;
+  if(f==="todo"){
+    const cats = ["gramatica","sinonimo","definicion","colocacion"];
+    const weighted = cats.map(c => { const s = gtState.categories[c]; const acc = s.total ? s.correct/s.total : 0.5; return {c:c, w:(1-acc)+0.2}; });
+    const tot = weighted.reduce((a,b)=>a+b.w,0);
+    let r = Math.random()*tot, cc = weighted[0].c;
+    for(const w of weighted){ if(r<=w.w){ cc=w.c; break; } r-=w.w; }
+    candidates = GT_BANK.filter(e => e.cat===cc && notLast(e));
+  } else candidates = pool.filter(notLast);
+  if(!candidates.length) candidates = pool.filter(e => e.id !== gtLastId);
+  if(!candidates.length) candidates = pool;
+  return pick(candidates);
+}
+function gtRenderExercise(mount, ex, handlers){
+  let html = '<div class="exBadgeWrap"><span class="pill gt">'+GT_CAT_LABEL[ex.cat]+'</span></div>';
+  if(ex.blank){
+    html += '<p class="smallMuted" style="margin:0 0 8px;">Completa la frase:</p>';
+    html += '<div class="sentence">'+ ex.blank.replace("___", '<span class="blank">___</span>') +'</div>';
+  } else {
+    html += '<p class="smallMuted" style="margin:0 0 8px;">Elige la opción correcta:</p>';
+    html += '<div class="sentence">'+ esc(ex.q) +'</div>';
+  }
+  html += '<div>'+ ex.options.map((o,i)=>'<button class="optionCard" data-i="'+i+'">'+esc(o)+'</button>').join("") +'</div>';
+  html += '<div class="fbArea"></div>';
+  mount.innerHTML = html;
+  let answered = false;
+  mount.querySelectorAll(".optionCard").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if(answered) return; answered = true;
+      const i = parseInt(btn.dataset.i,10); const chosen = ex.options[i];
+      const correct = chosen === ex.answer;
+      mount.querySelectorAll(".optionCard").forEach((b,j) => {
+        b.disabled = true;
+        if(j===i) b.classList.add("selected", correct?"correct":"wrong");
+        if(!correct && ex.options[j] === ex.answer) b.classList.add("reveal-correct");
+      });
+      const full = ex.blank ? capitalizeFirst(ex.blank.replace("___", ex.answer)) : ex.answer;
+      const fb = mount.querySelector(".fbArea");
+      fb.innerHTML = '<div class="feedback '+(correct?"correct":"wrong")+'">' +
+        '<div class="fbTitle">'+(correct?"✅ ¡Correcto!":"❌ No exactamente")+'</div>' +
+        '<div class="fbAnswer">'+ esc(full) +'</div>' +
+        (ex.note ? '<div class="fbNote">'+ ex.note +'</div>' : "") +
+        '<div class="nextBtnWrap"><button class="btn btn-primary nextBtn">Siguiente →</button></div>' +
+      '</div>';
+      mount.querySelector(".nextBtn").addEventListener("click", () => handlers.onNext());
+      handlers.onAnswer(correct, ex);
+    });
+  });
+}
+function gtRenderNav(active){
+  const tabs = [["practica","🎯","Práctica"],["test","👑","Test"]];
+  document.getElementById("nav-gt").innerHTML = tabs.map(t =>
+    '<button data-gt="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
+  ).join("");
+  document.querySelectorAll("#nav-gt button").forEach(b => b.addEventListener("click", () => gtShowView(b.dataset.gt)));
+}
+function gtShowView(name){
+  if(["practica","test"].indexOf(name) === -1) name = "practica";
+  gtRenderNav(name);
+  if(name==="practica") gtRenderPractica();
+  else gtRenderExam();
+  window.scrollTo(0,0);
+}
+function gtRenderPractica(){
+  gtSessionCounter = 0; gtRepeatQueue = []; gtRepeatCounts = {}; gtLastId = null;
+  const f = gtState.practiceFilter || "todo";
+  const chips = [["todo","Todo"],["gramatica","Gramát."],["sinonimo","Sinón."],["definicion","Defin."],["colocacion","Coloc."]]
+    .map(c => '<button class="chip'+(f===c[0]?" active":"")+'" data-f="'+c[0]+'">'+c[1]+'</button>').join("");
+  document.getElementById("module-gt").innerHTML =
+    '<h2 class="title">📝 Grammar & Vocab · Práctica</h2>' +
+    '<p class="subtitle">Practica con corrección y explicación al instante. Filtra por tipo.</p>' +
+    '<div class="filterRow wrap">'+chips+'</div>' +
+    '<div class="card" id="gtMount"></div>';
+  document.querySelectorAll("#module-gt .chip").forEach(ch => ch.addEventListener("click", () => {
+    gtState.practiceFilter = ch.dataset.f; saveState(); gtRenderPractica();
+  }));
+  gtLoadNext();
+}
+function gtLoadNext(){
+  const mount = document.getElementById("gtMount"); if(!mount) return;
+  const ex = gtPickNext(); if(!ex){ mount.innerHTML = "<p>No hay preguntas.</p>"; return; }
+  gtLastId = ex.id; gtSessionCounter++;
+  gtRenderExercise(mount, ex, { onAnswer:(c)=>gtRecordAnswer(ex,c), onNext:()=>gtLoadNext() });
+}
+function gtRenderExam(){
+  const host = document.getElementById("module-gt");
+  if(gtExam.phase === "exam"){
+    if(gtExam.idx >= gtExam.queue.length){
+      const total = gtExam.queue.length; const pct = Math.round(gtExam.score/total*100);
+      gtState.jefe.examResults.push({date:todayISO(), score:gtExam.score, total:total, pct:pct});
+      saveState(); gtExam.phase = "result"; gtRenderExam(); return;
+    }
+    const ex = gtExam.queue[gtExam.idx];
+    host.innerHTML = '<h2 class="title">👑 Test</h2><p class="subtitle">Pregunta '+(gtExam.idx+1)+' de '+gtExam.queue.length+' · Aciertos: '+gtExam.score+'</p><div class="card" id="gtExamMount"></div>';
+    gtRenderExercise(document.getElementById("gtExamMount"), ex, {
+      onAnswer:(c)=>{ if(c) gtExam.score++; },
+      onNext:()=>{ gtExam.idx++; gtRenderExam(); }
+    });
+  } else if(gtExam.phase === "result"){
+    const last = gtState.jefe.examResults[gtState.jefe.examResults.length-1];
+    const score = safeInt(last.score,0), total = safeInt(last.total,0), pct = safeInt(last.pct,0);
+    const pass = pct >= 70;
+    host.innerHTML = '<div class="card center">' +
+      '<div style="font-size:48px;">'+(pass?"🏆":"📚")+'</div>' +
+      '<h2 class="title">'+(pass?"¡Test superado!":"Sigue practicando")+'</h2>' +
+      '<p class="subtitle">Acertaste '+score+' de '+total+' ('+pct+'%). '+(pass?"¡Buen nivel!":"Repasa en Práctica lo que falles.")+'</p>' +
+      '<button class="btn btn-outline" id="gtExamAgain">Repetir test</button>' +
+    '</div>';
+    document.getElementById("gtExamAgain").addEventListener("click", () => {
+      gtExam = {phase:"exam", queue:shuffle(GT_BANK), idx:0, score:0}; gtRenderExam();
+    });
+  } else {
+    host.innerHTML = '<h2 class="title">👑 Test 1 · Grammar & Vocabulary</h2>' +
+      '<p class="subtitle">Las 50 preguntas seguidas, en orden aleatorio. Al final ves tu nota. Necesitas 70% para aprobar.</p>' +
+      '<div class="card"><p class="smallMuted">Consejo: practica primero en la otra pestaña; el Test es para medirte.</p></div>' +
+      '<button class="btn btn-primary" id="gtStartExam">Empezar test (50 preguntas)</button>';
+    document.getElementById("gtStartExam").addEventListener("click", () => {
+      gtExam = {phase:"exam", queue:shuffle(GT_BANK), idx:0, score:0}; gtRenderExam();
+    });
+  }
+}
+function enterGT(){
+  gtState = APP.modules["grammar-test"];
+  enterModuleUI("module-gt","nav-gt");
+  gtExam = {phase:"intro", queue:null, idx:0, score:0};
+  gtShowView("practica");
+}
+
+/* ================= MÓDULO: READING ================= */
+let rdState = APP.modules["reading"];
+const RD_PARTS = [
+  { id:"p1", active:true, type:"gap", name:"Parte 1 · Rellenar huecos",
+    desc:"Elige la opción correcta (a, b o c) para cada hueco del texto.",
+    intro:"Hello Mary,",
+    text:"How {1} you? Tomorrow is my brother's birthday and he {2} to invite you to his party. It is in the youth club {3} 8 p.m. I'm making a chocolate cake but my {4} isn't working. Can I go to your house today {5} the afternoon and use yours? Let me know if so. Love, Jane.",
+    gaps:[
+      {options:["do","are","is"], answer:"are"},
+      {options:["wants","want","wantes"], answer:"wants"},
+      {options:["on","in","at"], answer:"at"},
+      {options:["fridge","oven","pan"], answer:"oven"},
+      {options:["at","in","on"], answer:"in"}
+    ]
+  },
+  { id:"p2", active:true, type:"order", name:"Parte 2 · Ordenar el párrafo",
+    desc:"Coloca las frases en el orden correcto para formar un párrafo.",
+    sentences:[
+      "Isabel loves rainy days.",
+      "On those days, she changes her shoes for her blue rain boots; she knows that when it rains she can walk over the puddles.",
+      "She also likes snowy days, making snowballs with the snow she finds on the cars — it's great fun!",
+      "They chase each other throwing snowballs, proving who has the best aim.",
+      "The snow is annoying because it's cold, but it doesn't hurt."
+    ]
+  },
+  { id:"p3", active:true, type:"order", name:"Parte 3 · Ordenar el párrafo",
+    desc:"Coloca las frases en el orden correcto para formar un párrafo.",
+    sentences:[
+      "Fax (short for facsimile), sometimes called telecopying or telefax, is the telephonic transmission of scanned printed material.",
+      "Despite being in existence for more than a century, systems for transmitting facsimile reproductions of documents only became widely used in the 1960s.",
+      "It was not until the 1980s that they reached their peak popularity.",
+      "Today it has become an essential means of communication for companies and professionals.",
+      "However, in spite of its popularity among them, its future is threatened by new technologies, such as email."
+    ]
+  },
+  { id:"p4", active:false, type:"pending", name:"Parte 4 · ¿Qué persona?",
+    desc:"Relaciona cada pregunta con la persona correcta (A–D).",
+    pendingMsg:"Para activar esta parte necesito los textos de las 4 personas (PERSON A, B, C, D) que describen sus casas. Pásamelos y la monto igual que las demás." },
+  { id:"p5", active:false, type:"pending", name:"Parte 5 · Poner títulos",
+    desc:"Pon un título a cada uno de los 5 párrafos.",
+    pendingMsg:"Para activar esta parte necesito los 5 párrafos del texto (el que lleva por título opciones como 'Upside Down House', 'Flexible Spaces'...). Pásamelos y la monto." }
+];
+const RD_BY_ID = {}; RD_PARTS.forEach(p => RD_BY_ID[p.id] = p);
+let rdOrderView = null;   // orden de presentación (barajado) mientras una parte de ordenar está abierta
+let rdGapSel = {};        // selección actual de cada hueco en la parte 1
+
+function rdMasteryStats(){
+  const active = RD_PARTS.filter(p => p.active);
+  let mastered = 0;
+  active.forEach(p => { if((rdState.best[p.id]||0) >= 100) mastered++; });
+  return {mastered:mastered, total:active.length};
+}
+function rdRenderNav(active){
+  const tabs = [["menu","📚","Partes"]];
+  document.getElementById("nav-rd").innerHTML = tabs.map(t =>
+    '<button data-rd="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
+  ).join("");
+  document.querySelectorAll("#nav-rd button").forEach(b => b.addEventListener("click", () => rdRenderMenu()));
+}
+function rdRenderMenu(){
+  rdRenderNav("menu");
+  let html = '<h2 class="title">📚 Reading</h2><p class="subtitle">Las 5 tareas del Reading del Aptis. Elige una, respóndela y corrígela al momento.</p>';
+  RD_PARTS.forEach(p => {
+    const best = rdState.best[p.id];
+    let meta;
+    if(!p.active) meta = '<span class="modSoon">PENDIENTE</span>';
+    else meta = (best!=null) ? '<span>Mejor: '+best+'%</span>' : '<span>Sin hacer</span>';
+    html += '<button class="modCard" data-part="'+p.id+'">' +
+        '<div class="modIcon" style="background:var(--accent-bg);">'+(p.active?"📄":"🔒")+'</div>' +
+        '<div class="modBody"><div class="modName">'+p.name+'</div><div class="modDesc">'+p.desc+'</div>' +
+          '<div class="modMeta">'+meta+'</div></div>' +
+        '<div class="modChevron">›</div>' +
+      '</button>';
+  });
+  document.getElementById("module-rd").innerHTML = html;
+  document.querySelectorAll("#module-rd .modCard").forEach(btn => {
+    btn.addEventListener("click", () => rdOpenPart(btn.dataset.part));
+  });
+}
+function rdOpenPart(id){
+  const p = RD_BY_ID[id]; if(!p) return;
+  if(p.type==="gap") rdRenderGap(p);
+  else if(p.type==="order") rdRenderOrder(p);
+  else rdRenderPending(p);
+  window.scrollTo(0,0);
+}
+function rdRenderPending(p){
+  document.getElementById("module-rd").innerHTML = rdHeader(p) +
+    '<div class="card center"><div style="font-size:40px; margin-bottom:8px;">🚧</div>' +
+    '<p class="subtitle">'+p.pendingMsg+'</p></div>';
+  document.getElementById("rdBack").addEventListener("click", rdRenderMenu);
+}
+function rdHeader(p){
+  return '<button class="btn btn-outline btn-sm" style="width:auto; margin-bottom:12px;" id="rdBack">← Partes</button>' +
+    '<h2 class="title" style="font-size:19px;">'+p.name+'</h2>' +
+    '<p class="subtitle">'+p.desc+'</p>';
+}
+function rdRenderGap(p){
+  rdGapSel = {};
+  let body = p.text;
+  for(let i=0;i<p.gaps.length;i++){
+    body = body.replace("{"+(i+1)+"}", '<span class="gapnum" id="gapslot'+(i+1)+'">'+(i+1)+'</span>');
+  }
+  let rows = "";
+  p.gaps.forEach((g, gi) => {
+    rows += '<div class="rdGapRow"><div class="lbl">Hueco '+(gi+1)+'</div><div class="rdGapOpts" data-gap="'+gi+'">' +
+      g.options.map((o,oi)=>'<button class="rdOpt" data-o="'+oi+'">'+esc(o)+'</button>').join("") + '</div></div>';
+  });
+  document.getElementById("module-rd").innerHTML = rdHeader(p) +
+    '<div class="rdText">'+(p.intro?('<b>'+esc(p.intro)+'</b><br>'):'')+body+'</div>' +
+    rows +
+    '<button class="btn btn-primary" id="rdCheck">Comprobar</button>' +
+    '<div id="rdResult"></div>';
+  document.getElementById("rdBack").addEventListener("click", rdRenderMenu);
+  document.querySelectorAll("#module-rd .rdGapOpts").forEach(row => {
+    const gi = parseInt(row.dataset.gap,10);
+    row.querySelectorAll(".rdOpt").forEach(btn => btn.addEventListener("click", () => {
+      if(row.dataset.locked) return;
+      row.querySelectorAll(".rdOpt").forEach(b => b.classList.remove("sel"));
+      btn.classList.add("sel");
+      rdGapSel[gi] = parseInt(btn.dataset.o,10);
+    }));
+  });
+  document.getElementById("rdCheck").addEventListener("click", () => rdCheckGap(p));
+}
+function rdCheckGap(p){
+  if(Object.keys(rdGapSel).length < p.gaps.length){
+    const res = document.getElementById("rdResult");
+    res.innerHTML = '<div class="rdResult bad">Elige una opción en cada hueco antes de comprobar.</div>';
+    return;
+  }
+  let correct = 0;
+  p.gaps.forEach((g, gi) => {
+    const chosenIdx = rdGapSel[gi];
+    const ok = g.options[chosenIdx] === g.answer;
+    if(ok) correct++;
+    const row = document.querySelector('#module-rd .rdGapOpts[data-gap="'+gi+'"]');
+    row.dataset.locked = "1";
+    row.querySelectorAll(".rdOpt").forEach((b,oi) => {
+      b.disabled = true; b.classList.remove("sel");
+      if(oi===chosenIdx) b.classList.add(ok?"ok":"no");
+      if(!ok && g.options[oi]===g.answer) b.classList.add("ok");
+    });
+    const slot = document.getElementById("gapslot"+(gi+1));
+    if(slot){ slot.outerHTML = '<span class="gapfilled '+(ok?"ok":"no")+'">'+esc(g.answer)+'</span>'; }
+  });
+  const pct = Math.round(correct/p.gaps.length*100);
+  rdState.best[p.id] = Math.max(rdState.best[p.id]||0, pct); saveState();
+  updateStreak(); saveState();
+  const res = document.getElementById("rdResult");
+  res.innerHTML = '<div class="rdResult '+(pct===100?"good":"bad")+'">'+(pct===100?"🎉 ¡Perfecto! ":"")+correct+' / '+p.gaps.length+' correctas ('+pct+'%)</div>' +
+    '<button class="btn btn-outline" id="rdRetry" style="margin-top:10px;">Intentar de nuevo</button>';
+  document.getElementById("rdRetry").addEventListener("click", () => rdRenderGap(p));
+  document.getElementById("rdCheck").style.display = "none";
+}
+function rdRenderOrder(p){
+  rdOrderView = shuffle(p.sentences.map((s,i)=>i));   // índices barajados para presentar
+  const n = p.sentences.length;
+  let items = "";
+  rdOrderView.forEach((origIdx) => {
+    let opts = "";
+    for(let k=1;k<=n;k++) opts += '<option value="'+k+'">'+k+'º</option>';
+    items += '<div class="rdOrderItem" data-orig="'+origIdx+'"><select><option value="">–</option>'+opts+'</select><div class="txt">'+esc(p.sentences[origIdx])+'</div></div>';
+  });
+  document.getElementById("module-rd").innerHTML = rdHeader(p) +
+    '<p class="smallMuted" style="margin:0 0 10px;">Asigna a cada frase su posición (1º a '+n+'º) en el párrafo.</p>' +
+    items +
+    '<button class="btn btn-primary" id="rdCheck">Comprobar</button>' +
+    '<div id="rdResult"></div>';
+  document.getElementById("rdBack").addEventListener("click", rdRenderMenu);
+  document.getElementById("rdCheck").addEventListener("click", () => rdCheckOrder(p));
+}
+function rdCheckOrder(p){
+  const rows = Array.from(document.querySelectorAll("#module-rd .rdOrderItem"));
+  const chosen = rows.map(r => r.querySelector("select").value);
+  if(chosen.some(v => v === "")){
+    document.getElementById("rdResult").innerHTML = '<div class="rdResult bad">Asigna una posición a todas las frases.</div>';
+    return;
+  }
+  let correct = 0;
+  rows.forEach(r => {
+    const origIdx = parseInt(r.dataset.orig,10);
+    const chosenPos = parseInt(r.querySelector("select").value,10);
+    const correctPos = origIdx + 1;   // en p.sentences ya están en el orden correcto (índice 0 → 1º)
+    const ok = chosenPos === correctPos;
+    if(ok) correct++;
+    r.classList.add(ok?"ok":"no");
+    r.querySelector("select").disabled = true;
+    if(!ok){ r.querySelector(".txt").innerHTML += ' <span style="color:var(--at-dark); font-weight:800;">(iba '+correctPos+'º)</span>'; }
+  });
+  const pct = Math.round(correct/p.sentences.length*100);
+  rdState.best[p.id] = Math.max(rdState.best[p.id]||0, pct); saveState();
+  updateStreak(); saveState();
+  const res = document.getElementById("rdResult");
+  res.innerHTML = '<div class="rdResult '+(pct===100?"good":"bad")+'">'+(pct===100?"🎉 ¡Orden perfecto! ":"")+correct+' / '+p.sentences.length+' bien colocadas ('+pct+'%)</div>' +
+    '<button class="btn btn-outline" id="rdRetry" style="margin-top:10px;">Intentar de nuevo</button>';
+  document.getElementById("rdRetry").addEventListener("click", () => rdRenderOrder(p));
+  document.getElementById("rdCheck").style.display = "none";
+}
+function enterRD(){
+  rdState = APP.modules["reading"];
+  enterModuleUI("module-rd","nav-rd");
+  rdRenderMenu();
 }
 
 /* ================= INICIALIZACIÓN ================= */
