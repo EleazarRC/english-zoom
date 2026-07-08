@@ -2829,16 +2829,40 @@ const RD_PARTS = [
       "However, in spite of its popularity among them, its future is threatened by new technologies, such as email."
     ]
   },
-  { id:"p4", active:false, type:"pending", name:"Parte 4 · ¿Qué persona?",
-    desc:"Relaciona cada pregunta con la persona correcta (A–D).",
-    pendingMsg:"Para activar esta parte necesito los textos de las 4 personas (PERSON A, B, C, D) que describen sus casas. Pásamelos y la monto igual que las demás." },
-  { id:"p5", active:false, type:"pending", name:"Parte 5 · Poner títulos",
-    desc:"Pon un título a cada uno de los 5 párrafos.",
-    pendingMsg:"Para activar esta parte necesito los 5 párrafos del texto (el que lleva por título opciones como 'Upside Down House', 'Flexible Spaces'...). Pásamelos y la monto." }
+  { id:"p4", active:true, type:"match", name:"Parte 4 · ¿Qué persona?",
+    desc:"Lee las 4 personas y di a quién se refiere cada pregunta.",
+    persons:[
+      {id:"A", text:"I am in love with my new neighbourhood. Here I have finally found everything I was looking for. My family and I moved out of the city a few months ago in search of peace and quiet since we lived in an apartment in the old town. The school is a few steps from home so I no longer have to drive the children there and that is one of the main advantages as I can save a lot of time every morning. As for the house, there are 3 rooms, which allows my children to sleep in separate rooms and avoids a lot of fights between them. Perhaps the kitchen could be a bit larger, in my old house it was, but maybe later we could raze a wall and merge it with the laundry room."},
+      {id:"B", text:"I've only been living here for a few months but I'm quite happy. I had been wanting to flee the nest for some time; I was looking for a cheap apartment to rent in the city centre but that was an impossible task since I am a student and I juggle my studies with a job in the public library, and my monthly budget was not enough to pay for it. The duplex is fine, it has 2 rooms, one of which I use as a study. If I had to say something negative, it is that I could walk to work before but now it is too far and I have to commute for 40 minutes to get there. Obviously, this will not be my home forever; when I finish my studies I will return to the city, I miss the hustle and bustle of the city."},
+      {id:"C", text:"This place is just fine. My parents and I moved a few years ago and I guess I'm used to it by now. My high school is close by and I have a lot of friends here. On the other hand, maybe sometimes it is too perfect: there are no noises, there are no people in the streets, nothing ever happens. Every time we want to do something we have to go to the city and public transport sucks after 10 at night, so we always go home early. As for my house, I am already 17 and I am still sharing a room with my older brother; luckily, he will soon go to university. I've told my parents that we need a swimming pool in the garden but they don't want to be a nuisance for the neighbours with the work. I'm looking forward to starting university and leaving here."},
+      {id:"D", text:"This is my home for life. I came into it from my parents when they moved to a small penthouse in the city. I have lived here forever and this was a perfect neighbourhood. Apparently, now it has become fashionable and a lot of urbanites are arriving. At first my husband and I thought it would be good to have more activity around, but now we are not so sure. The children with the bikes are always in the street screaming and making noise, the neighbours' barbecues go on until the wee hours and we can't nod off. My house is perfect: 3 bedrooms, a big kitchen, a huge garden, but the neighbourhood is no longer what it used to be. What a pity!"}
+    ],
+    questions:[
+      {q:"Who moved because their house wasn't big enough?", answer:"A"},
+      {q:"Who inherited the house?", answer:"D"},
+      {q:"Whose house was not the first choice?", answer:"B"},
+      {q:"Who wants to do up the house?", answer:"A"},
+      {q:"Who struggles with public transport timetables?", answer:"C"},
+      {q:"Who has a part-time job?", answer:"B"},
+      {q:"Who has lived there longer?", answer:"D"}
+    ]
+  },
+  { id:"p5", active:true, type:"titles", name:"Parte 5 · Poner títulos",
+    desc:"Lee cada párrafo y elige su título. Sobra uno.",
+    options:["Concealed Parking Spaces","A contest from the future","Upside Down House","A new neighbourhood in Britain","Flexible Spaces","Where can you get one?"],
+    paragraphs:[
+      {text:"The 2009 British Homes Awards challenged the industry to design a house that can adapt to different life stages. The participants were asked to rethink the construction and design of individual homes, so that they were easily adaptable to fewer mobile inhabitants, and also to create communities in which ageing occupants could continue to enjoy shared amenities. The top design also had to be attractive to its potential buyers, because the competition was put to the public vote. The winner, gaining 12,000 votes from Mail on Sunday readers, was the strikingly modern SunnySideUp, designed by Kosi Architects.", answer:"A contest from the future"},
+      {text:"The architects took as a starting point the accepted norm for a house: rows of houses facing onto streets crammed with cars, with living rooms on the ground floor and bedrooms above. Then they scrapped it. They ended up with the living room, dining room and kitchen on the top floor where they can benefit from the light and views, and maximise energy efficiency. And they put the bedrooms on the ground floor where the garden aspect gives inhabitants increased privacy, and a cool temperature is maintained throughout the day. The two floors are linked by wide, gentle-gradient stairs, which are designed to allow for a stair lift to be fitted, if necessary, as owners age.", answer:"Upside Down House"},
+      {text:"But the feature that, according to Warren Rosing, one of the Kosi architects responsible for the design, was particularly popular with the public, is actually the parking. In a SunnySideUp development no one has to look out onto a street full of cars, or worry about their kids being run over, because the terrace zone on the first-floor level links all the homes and is a car-free zone. Vehicles are tucked away on the lower floor, leaving safe and pleasant spaces outside the houses for people to meet, and kids to play. A lift takes people directly from garage to living area, so that all residents, including the elderly and those with heavy shopping, can move comfortably between the floors. The natural feel of the front area is enhanced by planters placed outside the kitchens to encourage residents to grow vegetables and flowers where they can be seen.", answer:"Concealed Parking Spaces"},
+      {text:"But it's the fact that the space is designed to adapt to the changing needs, including the fluctuating income of its owners, that makes it a thought-provoking, as well as a winning, design. The lower-floor bedrooms have separate outdoor access so they can be easily let. The idea is that owners can get some extra money to pay for their mortgages during the first years. And later in the future, those bedrooms can be used as a granny flat, or an office, and can easily be converted into a separate one-bed flat if your kids won't leave home. And if more space is required, as well as the usual loft that can be converted, there is potential for a gallery floor to be inserted in the living room.", answer:"Flexible Spaces"},
+      {text:"At the moment the SunnySideUp house is still just a set of drawings. But Warren Rosing says: 'We are hoping to have it built. The organisers are in talks with builders, but due to the economic climate it may take longer than we would like. We're sure it will be worth the wait,' they say.", answer:"Where can you get one?"}
+    ]
+  }
 ];
 const RD_BY_ID = {}; RD_PARTS.forEach(p => RD_BY_ID[p.id] = p);
 let rdOrderView = null;   // orden de presentación (barajado) mientras una parte de ordenar está abierta
 let rdGapSel = {};        // selección actual de cada hueco en la parte 1
+let rdMatchSel = {};      // selección actual de cada pregunta en la parte 4
 
 function rdMasteryStats(){
   const active = RD_PARTS.filter(p => p.active);
@@ -2877,6 +2901,8 @@ function rdOpenPart(id){
   const p = RD_BY_ID[id]; if(!p) return;
   if(p.type==="gap") rdRenderGap(p);
   else if(p.type==="order") rdRenderOrder(p);
+  else if(p.type==="match") rdRenderMatch(p);
+  else if(p.type==="titles") rdRenderTitles(p);
   else rdRenderPending(p);
   window.scrollTo(0,0);
 }
@@ -2991,6 +3017,88 @@ function rdCheckOrder(p){
   res.innerHTML = '<div class="rdResult '+(pct===100?"good":"bad")+'">'+(pct===100?"🎉 ¡Orden perfecto! ":"")+correct+' / '+p.sentences.length+' bien colocadas ('+pct+'%)</div>' +
     '<button class="btn btn-outline" id="rdRetry" style="margin-top:10px;">Intentar de nuevo</button>';
   document.getElementById("rdRetry").addEventListener("click", () => rdRenderOrder(p));
+  document.getElementById("rdCheck").style.display = "none";
+}
+function rdRenderMatch(p){
+  rdMatchSel = {};
+  const persons = p.persons.map(pr => '<div class="rdText" style="line-height:1.7;"><b>PERSON '+pr.id+'</b><br>'+esc(pr.text)+'</div>').join("");
+  let qs = "";
+  p.questions.forEach((q,qi) => {
+    qs += '<div class="rdGapRow"><div class="lbl">'+(qi+1)+'. '+esc(q.q)+'</div>' +
+      '<div class="rdGapOpts" data-q="'+qi+'" style="grid-template-columns:repeat(4,1fr);">' +
+      ["A","B","C","D"].map(l => '<button class="rdOpt" data-p="'+l+'">'+l+'</button>').join("") + '</div></div>';
+  });
+  document.getElementById("module-rd").innerHTML = rdHeader(p) +
+    persons + '<div style="height:4px;"></div>' + qs +
+    '<button class="btn btn-primary" id="rdCheck">Comprobar</button><div id="rdResult"></div>';
+  document.getElementById("rdBack").addEventListener("click", rdRenderMenu);
+  document.querySelectorAll("#module-rd .rdGapOpts").forEach(row => {
+    const qi = parseInt(row.dataset.q,10);
+    row.querySelectorAll(".rdOpt").forEach(btn => btn.addEventListener("click", () => {
+      if(row.dataset.locked) return;
+      row.querySelectorAll(".rdOpt").forEach(b => b.classList.remove("sel"));
+      btn.classList.add("sel"); rdMatchSel[qi] = btn.dataset.p;
+    }));
+  });
+  document.getElementById("rdCheck").addEventListener("click", () => rdCheckMatch(p));
+}
+function rdCheckMatch(p){
+  if(Object.keys(rdMatchSel).length < p.questions.length){
+    document.getElementById("rdResult").innerHTML = '<div class="rdResult bad">Responde a todas las preguntas antes de comprobar.</div>';
+    return;
+  }
+  let correct = 0;
+  p.questions.forEach((q,qi) => {
+    const chosen = rdMatchSel[qi]; const ok = chosen === q.answer; if(ok) correct++;
+    const row = document.querySelector('#module-rd .rdGapOpts[data-q="'+qi+'"]');
+    row.dataset.locked = "1";
+    row.querySelectorAll(".rdOpt").forEach(b => {
+      b.disabled = true; b.classList.remove("sel");
+      if(b.dataset.p===chosen) b.classList.add(ok?"ok":"no");
+      if(!ok && b.dataset.p===q.answer) b.classList.add("ok");
+    });
+  });
+  const pct = Math.round(correct/p.questions.length*100);
+  rdState.best[p.id] = Math.max(rdState.best[p.id]||0, pct); updateStreak(); saveState();
+  document.getElementById("rdResult").innerHTML = '<div class="rdResult '+(pct===100?"good":"bad")+'">'+(pct===100?"🎉 ¡Perfecto! ":"")+correct+' / '+p.questions.length+' correctas ('+pct+'%)</div>' +
+    '<button class="btn btn-outline" id="rdRetry" style="margin-top:10px;">Intentar de nuevo</button>';
+  document.getElementById("rdRetry").addEventListener("click", () => rdRenderMatch(p));
+  document.getElementById("rdCheck").style.display = "none";
+}
+function rdRenderTitles(p){
+  let items = "";
+  p.paragraphs.forEach((para,pi) => {
+    const sel = '<select data-para="'+pi+'"><option value="">– Elige un título –</option>' +
+      p.options.map(o => '<option value="'+esc(o)+'">'+esc(o)+'</option>').join("") + '</select>';
+    items += '<div class="card" data-parawrap="'+pi+'"><div class="lbl" style="font-weight:800; margin-bottom:6px;">Párrafo '+(pi+1)+'</div>' +
+      '<div class="rdText" style="margin-bottom:10px;">'+esc(para.text)+'</div>' +
+      '<div class="rdOrderItem" style="border:none; padding:0; margin:0;">'+sel+'</div>' +
+      '<div class="paraRes"></div></div>';
+  });
+  document.getElementById("module-rd").innerHTML = rdHeader(p) +
+    '<p class="smallMuted" style="margin:0 0 10px;">Solo se usan 5 de los 6 títulos: sobra uno.</p>' +
+    items + '<button class="btn btn-primary" id="rdCheck">Comprobar</button><div id="rdResult"></div>';
+  document.getElementById("rdBack").addEventListener("click", rdRenderMenu);
+  document.getElementById("rdCheck").addEventListener("click", () => rdCheckTitles(p));
+}
+function rdCheckTitles(p){
+  const sels = Array.from(document.querySelectorAll('#module-rd select[data-para]'));
+  if(sels.some(s => s.value === "")){
+    document.getElementById("rdResult").innerHTML = '<div class="rdResult bad">Elige un título para cada párrafo.</div>';
+    return;
+  }
+  let correct = 0;
+  sels.forEach(s => {
+    const pi = parseInt(s.dataset.para,10); const ok = s.value === p.paragraphs[pi].answer; if(ok) correct++;
+    s.disabled = true;
+    const wrap = document.querySelector('#module-rd [data-parawrap="'+pi+'"] .paraRes');
+    wrap.innerHTML = '<div class="rdResult '+(ok?"good":"bad")+'" style="margin-top:8px;">'+(ok?"✅ Correcto":"❌ Era: "+esc(p.paragraphs[pi].answer))+'</div>';
+  });
+  const pct = Math.round(correct/p.paragraphs.length*100);
+  rdState.best[p.id] = Math.max(rdState.best[p.id]||0, pct); updateStreak(); saveState();
+  document.getElementById("rdResult").innerHTML = '<div class="rdResult '+(pct===100?"good":"bad")+'">'+(pct===100?"🎉 ¡Perfecto! ":"")+correct+' / '+p.paragraphs.length+' correctos ('+pct+'%)</div>' +
+    '<button class="btn btn-outline" id="rdRetry" style="margin-top:10px;">Intentar de nuevo</button>';
+  document.getElementById("rdRetry").addEventListener("click", () => rdRenderTitles(p));
   document.getElementById("rdCheck").style.display = "none";
 }
 function enterRD(){
