@@ -2307,6 +2307,354 @@ const PCO_LEARN_HTML =
   '<div class="guRule"><div class="h">3 · Dos acciones en curso a la vez</div><div class="b">Cuando dos cosas pasaban al mismo tiempo, ambas pueden ir en continuo: <code>While I was cooking, she was setting the table.</code></div></div>' +
   '<div class="guRule"><div class="h">4 · Cuándo NO usar el continuo</div><div class="b">Hechos puntuales completos, aunque se repitan (<code>I went to Rome three times</code>), y el verbo <code>be</code> casi nunca van en pasado continuo.</div></div>';
 
+/* ================= CONTENIDO: PRESENT PERFECT 1 (I have done) ================= */
+const PPRF1_CAT_LABEL = {formacion:"FORMACIÓN", experiencia:"EXPERIENCIA", resultado:"RESULTADO / NOTICIA", error:"FRASE CORRECTA"};
+const PPRF1_BANK = [
+  {id:"pprf1-1", cat:"formacion", blank:"I ___ (visit) Paris twice.", options:["have visited","has visited","visited"], answer:"have visited", note:"Presente perfecto: have/has + participio. Con 'I' → have + participio."},
+  {id:"pprf1-2", cat:"formacion", blank:"She ___ (finish) her homework.", options:["has finished","have finished","finished"], answer:"has finished", note:"he/she/it → has + participio."},
+  {id:"pprf1-3", cat:"formacion", blank:"They ___ (travel) to 30 countries.", options:["have travelled","has travelled","travelled"], answer:"have travelled", note:"we/you/they → have + participio."},
+  {id:"pprf1-4", cat:"formacion", blank:"He ___ (break) the window.", options:["has broken","have broken","broke"], answer:"has broken", note:"'he' → has + participio irregular: broken."},
+  {id:"pprf1-5", cat:"formacion", blank:"We ___ just ___ (eat) dinner.", options:["have / eaten","has / eaten","have / ate"], answer:"have / eaten", note:"have + just + participio. 'eat' es irregular: eaten."},
+  {id:"pprf1-6", cat:"formacion", blank:"___ you ever ___ (be) to Japan?", options:["Have / been","Has / been","Have / was"], answer:"Have / been", note:"Have you ever + participio. 'be' → been."},
+  {id:"pprf1-7", cat:"formacion", blank:"I ___ never met anyone famous.", options:["have","has"], answer:"have", note:"I + have + never + participio."},
+  {id:"pprf1-8", cat:"experiencia", blank:"Have you ever ___ (try) Indian food?", options:["tried","try","trying"], answer:"tried", note:"ever + participio. 'try' → tried (y→ied)."},
+  {id:"pprf1-9", cat:"experiencia", blank:"I've never ___ (eat) sushi.", options:["eaten","ate","eating"], answer:"eaten", note:"'eat' es irregular: eaten."},
+  {id:"pprf1-10", cat:"experiencia", blank:"Has she ever ___ (drive) a lorry?", options:["driven","drove","drive"], answer:"driven", note:"'drive' es irregular: driven."},
+  {id:"pprf1-11", cat:"experiencia", blank:"I've never ___ (lose) my passport.", options:["lost","lose","losing"], answer:"lost", note:"'lose' es irregular: lost."},
+  {id:"pprf1-12", cat:"experiencia", blank:"We've ___ been to that restaurant — it's great!", options:["never","ever"], answer:"never", note:"never antes del participio: I've never been = no he ido nunca."},
+  {id:"pprf1-13", cat:"experiencia", blank:"She's ___ to Australia. She got back last month.", options:["been","gone"], answer:"been", note:"been to = fue y volvió (experiencia). gone to = fue y no está aquí."},
+  {id:"pprf1-14", cat:"experiencia", blank:"He's not here — he's ___ to the shop.", options:["gone","been"], answer:"gone", note:"gone to = fue y no ha vuelto todavía."},
+  {id:"pprf1-15", cat:"resultado", blank:"I ___ my keys. I can't open the door!", options:["have lost","lost","has lost"], answer:"have lost", note:"Resultado presente: no tengo las llaves ahora."},
+  {id:"pprf1-16", cat:"resultado", blank:"The president ___ (resign). It's on the news.", options:["has resigned","resigned","have resigned"], answer:"has resigned", note:"Noticia reciente con resultado en el presente."},
+  {id:"pprf1-17", cat:"resultado", blank:"Look! Somebody ___ (break) that window.", options:["has broken","broke","have broken"], answer:"has broken", note:"Resultado visible ahora mismo."},
+  {id:"pprf1-18", cat:"resultado", blank:"I've ___ finished — I only started five minutes ago.", options:["just","yet","already"], answer:"just", note:"just = hace un momento; va entre have/has y el participio."},
+  {id:"pprf1-19", cat:"resultado", blank:"Have you finished ___?", options:["yet","already","just"], answer:"yet", note:"yet en preguntas = ya (¿ya has acabado?). Va al final de la frase."},
+  {id:"pprf1-20", cat:"resultado", blank:"I don't need to read it — I've ___ read it.", options:["already","yet","just"], answer:"already", note:"already = ya, antes de lo esperado. Va entre have y el participio."},
+  {id:"pprf1-21", cat:"resultado", blank:"She hasn't arrived ___.", options:["yet","already","just"], answer:"yet", note:"yet en negaciones = todavía no. Va al final."},
+  {id:"pprf1-22", cat:"resultado", blank:"Don't cook — I've ___ ordered a pizza.", options:["already","yet","never"], answer:"already", note:"already implica que la acción ocurrió más pronto de lo esperado."},
+  {id:"pprf1-23", cat:"error", choose:true, options:["I have saw that film.","I have seen that film.","I seen that film."], answer:"I have seen that film.", note:"Participio de 'see' es 'seen', no 'saw' (que es el pasado simple).", errorProne:true},
+  {id:"pprf1-24", cat:"error", choose:true, options:["She has went to London.","She went to London last week.","She has gone to London."], answer:"She has gone to London.", note:"Participio de 'go' es 'gone', no 'went'.", errorProne:true},
+  {id:"pprf1-25", cat:"error", choose:true, options:["I have seen him yesterday.","I saw him yesterday.","I have saw him yesterday."], answer:"I saw him yesterday.", note:"Con tiempo pasado específico (yesterday), se usa pasado simple.", errorProne:true},
+  {id:"pprf1-26", cat:"error", choose:true, options:["Have you ever go to Japan?","Have you ever been to Japan?","Did you ever been to Japan?"], answer:"Have you ever been to Japan?", note:"ever + participio (been). 'go abroad' → 'been abroad' en presente perfecto.", errorProne:true},
+  {id:"pprf1-27", cat:"error", choose:true, options:["I haven't finished yet already.","I haven't finished yet.","I already haven't finished."], answer:"I haven't finished yet.", note:"yet se usa solo, al final: I haven't finished yet.", errorProne:true}
+];
+const PPRF1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Estructura: have/has + participio pasado</div><div class="b">I/you/we/they + <code>have</code>. He/she/it + <code>has</code>.<br>Negativa: <code>haven\'t / hasn\'t + participio</code>.<br>Pregunta: <code>Have/Has + sujeto + participio?</code><br>Participios irregulares clave: <code>see→seen, go→gone, do→done, write→written, break→broken, eat→eaten, take→taken</code>.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Uso 1: experiencias de vida (ever/never)</div><div class="b">Para decir si algo ha ocurrido en la vida, sin especificar cuándo:<br><code>Have you ever tried sushi?</code><br><code>I\'ve never been to Australia.</code><br>⚠️ En cuanto aparece un tiempo específico (yesterday, in 2019…), cambia a pasado simple: <code>I saw him yesterday.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Uso 2: resultado presente (just/already/yet)</div><div class="b">Acción pasada con resultado o consecuencia en el presente:<br><code>I\'ve lost my keys</code> (no las tengo ahora).<br>• <b>just</b> (hace un momento): <code>She\'s just called.</code><br>• <b>already</b> (antes de lo esperado): <code>I\'ve already done it.</code><br>• <b>yet</b> (preguntas y negaciones, al final): <code>Have you finished yet?</code> / <code>I haven\'t finished yet.</code></div></div>' +
+  '<div class="psRule"><div class="h">4 · gone vs. been</div><div class="b"><code>He has gone to London</code> = fue y no está aquí (no ha vuelto).<br><code>He has been to London</code> = fue en algún momento y volvió (experiencia de vida).</div></div>';
+
+/* ================= CONTENIDO: PRESENT PERFECT 2 ================= */
+const PPRF2_CAT_LABEL = {reciente:"ACCIÓN RECIENTE", superlativo:"SUPERLATIVO + EVER", primera_vez:"PRIMERA VEZ", for_since:"FOR / SINCE", error:"FRASE CORRECTA"};
+const PPRF2_BANK = [
+  {id:"pprf2-1", cat:"reciente", blank:"I ___ (move) to a new flat recently.", options:["have moved","moved","has moved"], answer:"have moved", note:"'recently' sin fecha exacta → presente perfecto."},
+  {id:"pprf2-2", cat:"reciente", blank:"Have you heard? They ___ (get) married!", options:["have got","got","has got"], answer:"have got", note:"Noticia reciente sin tiempo específico."},
+  {id:"pprf2-3", cat:"reciente", blank:"I ___ (not / see) Tom lately. Is he OK?", options:["haven't seen","didn't see","hasn't seen"], answer:"haven't seen", note:"lately = últimamente; con presente perfecto negativo."},
+  {id:"pprf2-4", cat:"reciente", blank:"I ___ (read) three books this month.", options:["have read","read","has read"], answer:"have read", note:"'this month' (mes aún no terminado) → presente perfecto."},
+  {id:"pprf2-5", cat:"reciente", blank:"Sales ___ (increase) in the last few weeks.", options:["have increased","increased","has increased"], answer:"have increased", note:"'in the last few weeks' → periodo reciente aún relevante."},
+  {id:"pprf2-6", cat:"superlativo", blank:"This is the best film I ___ (ever/see).", options:["have ever seen","ever saw","has ever seen"], answer:"have ever seen", note:"Superlativo + I have ever + participio."},
+  {id:"pprf2-7", cat:"superlativo", blank:"She's the most interesting person I ___ (ever/meet).", options:["have ever met","ever met","has ever met"], answer:"have ever met", note:"Superlativo + that + I have ever + participio."},
+  {id:"pprf2-8", cat:"superlativo", blank:"It's the worst meal I ___ (ever/have).", options:["have ever had","ever had","has ever had"], answer:"have ever had", note:"have ever + participio después de superlativo."},
+  {id:"pprf2-9", cat:"primera_vez", blank:"It's the first time I ___ (drive) a lorry.", options:["have driven","drove","has driven"], answer:"have driven", note:"'It's the first time + I have + participio' (experiencia nueva)."},
+  {id:"pprf2-10", cat:"primera_vez", blank:"This is the second time she ___ (cancel) the meeting.", options:["has cancelled","cancelled","have cancelled"], answer:"has cancelled", note:"'This is the nth time + has + participio'."},
+  {id:"pprf2-11", cat:"primera_vez", blank:"It's the first time we ___ here.", options:["have been","have gone","were"], answer:"have been", note:"been = estamos aquí (experiencia). been to: I've been to Paris."},
+  {id:"pprf2-12", cat:"for_since", blank:"I have lived here ___ ten years.", options:["for","since"], answer:"for", note:"for + periodo de tiempo: for ten years, for a long time."},
+  {id:"pprf2-13", cat:"for_since", blank:"She has worked here ___ 2018.", options:["since","for"], answer:"since", note:"since + punto de inicio: since 2018, since Monday."},
+  {id:"pprf2-14", cat:"for_since", blank:"They've been married ___ a long time.", options:["for","since"], answer:"for", note:"for + duración: a long time."},
+  {id:"pprf2-15", cat:"for_since", blank:"He hasn't eaten ___ this morning.", options:["since","for"], answer:"since", note:"since + punto en el tiempo (this morning)."},
+  {id:"pprf2-16", cat:"for_since", blank:"I haven't seen her ___ two months.", options:["for","since"], answer:"for", note:"for + duración: two months."},
+  {id:"pprf2-17", cat:"for_since", blank:"We have known each other ___ we were children.", options:["since","for"], answer:"since", note:"since + cláusula con punto de inicio."},
+  {id:"pprf2-18", cat:"error", choose:true, options:["This is the first time I drive a bus.","This is the first time I have driven a bus.","This is the first time I drove a bus."], answer:"This is the first time I have driven a bus.", note:"'first time' + presente perfecto.", errorProne:true},
+  {id:"pprf2-19", cat:"error", choose:true, options:["It's the best I ever ate.","It's the best I have ever eaten.","It's the best I ever eat."], answer:"It's the best I have ever eaten.", note:"Superlativo + have ever + participio.", errorProne:true},
+  {id:"pprf2-20", cat:"error", choose:true, options:["I have lived here since ten years.","I have lived here for ten years.","I live here for ten years."], answer:"I have lived here for ten years.", note:"for + periodo de duración. since se usa con puntos temporales.", errorProne:true},
+  {id:"pprf2-21", cat:"error", choose:true, options:["She hasn't seen him since two days.","She hasn't seen him for two days.","She didn't see him for two days."], answer:"She hasn't seen him for two days.", note:"for + duración (two days). La situación continúa → presente perfecto.", errorProne:true},
+  {id:"pprf2-22", cat:"error", choose:true, options:["Have you seen anything good lately?","Did you see anything good lately?","You have seen anything good lately?"], answer:"Have you seen anything good lately?", note:"lately → presente perfecto. Pregunta: Have + sujeto + participio.", errorProne:true}
+];
+const PPRF2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Acciones recientes (lately, recently, in the last few…)</div><div class="b">Sin fecha exacta → presente perfecto:<br><code>I\'ve recently moved.</code> / <code>Sales have increased in the last few weeks.</code><br>⚠️ lately y recently no van con pasado simple.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Superlativo + ever y primera vez</div><div class="b">Después de un superlativo o de "the first/second time", se usa el presente perfecto:<br><code>It\'s the best film I\'ve ever seen.</code><br><code>It\'s the first time I\'ve done this.</code><br><code>She\'s the most interesting person I\'ve ever met.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · for vs. since</div><div class="b"><b>for</b> + duración (cuánto tiempo): <code>for two years, for a long time</code>.<br><b>since</b> + punto de inicio (desde cuándo): <code>since 2018, since Monday, since I was a child</code>.<br>Las dos van con presente perfecto cuando la situación continúa:<br><code>I\'ve lived here for ten years.</code> / <code>I\'ve lived here since 2015.</code></div></div>';
+
+/* ================= CONTENIDO: PRESENT PERFECT CONTINUOUS ================= */
+const PPRC_CAT_LABEL = {afirmativa:"AFIRMATIVA", negativa:"NEGATIVA", pregunta:"PREGUNTA", uso:"USO Y CONTRASTE", error:"FRASE CORRECTA"};
+const PPRC_BANK = [
+  {id:"pprc-1", cat:"afirmativa", blank:"I ___ (work) all morning.", options:["have been working","have worked","am working"], answer:"have been working", note:"Presente perfecto continuo: have/has + been + verbo-ing."},
+  {id:"pprc-2", cat:"afirmativa", blank:"She ___ (study) for three hours.", options:["has been studying","have been studying","has studied"], answer:"has been studying", note:"he/she/it → has + been + verbo-ing."},
+  {id:"pprc-3", cat:"afirmativa", blank:"They ___ (wait) since 9 o'clock.", options:["have been waiting","has been waiting","have waited"], answer:"have been waiting", note:"they → have + been + verbo-ing."},
+  {id:"pprc-4", cat:"afirmativa", blank:"He ___ (run). Look how tired he is!", options:["has been running","has run","was running"], answer:"has been running", note:"La actividad continua explica el resultado visible."},
+  {id:"pprc-5", cat:"afirmativa", blank:"We ___ (try) to fix it all day.", options:["have been trying","have tried","are trying"], answer:"have been trying", note:"have been + verbo-ing para acción en proceso."},
+  {id:"pprc-6", cat:"negativa", blank:"I ___ (feel) well lately.", options:["haven't been feeling","haven't felt","am not feeling"], answer:"haven't been feeling", note:"haven't been + verbo-ing."},
+  {id:"pprc-7", cat:"negativa", blank:"She ___ (sleep) well this week.", options:["hasn't been sleeping","hasn't slept","isn't sleeping"], answer:"hasn't been sleeping", note:"hasn't been + verbo-ing."},
+  {id:"pprc-8", cat:"negativa", blank:"They ___ (work) very hard recently.", options:["haven't been working","haven't worked","aren't working"], answer:"haven't been working", note:"haven't been + verbo-ing."},
+  {id:"pprc-9", cat:"pregunta", blank:"How long ___ you ___ (wait)?", options:["have / been waiting","has / been waiting","are / waiting"], answer:"have / been waiting", note:"How long + have/has + sujeto + been + verbo-ing?"},
+  {id:"pprc-10", cat:"pregunta", blank:"___ she ___ (cry)?", options:["Has / been crying","Have / been crying","Is / crying"], answer:"Has / been crying", note:"has + sujeto + been + verbo-ing para preguntas."},
+  {id:"pprc-11", cat:"pregunta", blank:"How long ___ it ___ (rain)?", options:["has / been raining","have / been raining","is / raining"], answer:"has / been raining", note:"'it' → has been raining."},
+  {id:"pprc-12", cat:"uso", blank:"Your eyes are red. ___ you ___?", options:["Have / been crying","Have / cried","Are / crying"], answer:"Have / been crying", note:"La razón visible del resultado → presente perfecto continuo."},
+  {id:"pprc-13", cat:"uso", blank:"I'm tired because I ___ (run) for an hour.", options:["have been running","have run","ran"], answer:"have been running", note:"Explica la causa del estado presente con duración."},
+  {id:"pprc-14", cat:"uso", blank:"The ground is wet. It ___ (rain).", options:["has been raining","has rained","was raining"], answer:"has been raining", note:"La lluvia explica el resultado visible."},
+  {id:"pprc-15", cat:"uso", blank:"She ___ (learn) English for two years.", options:["has been learning","has learned","is learning"], answer:"has been learning", note:"Actividad en curso desde hace dos años."},
+  {id:"pprc-16", cat:"uso", blank:"I ___ (try) to reach you all day!", options:["have been trying","have tried","tried"], answer:"have been trying", note:"Énfasis en la duración y el esfuerzo continuo."},
+  {id:"pprc-17", cat:"error", choose:true, options:["I have been knowing her for years.","I have known her for years.","I am knowing her for years."], answer:"I have known her for years.", note:"'know' es verbo de estado: no va en continuo.", errorProne:true},
+  {id:"pprc-18", cat:"error", choose:true, options:["She has been working here since two years.","She has been working here for two years.","She is working here for two years."], answer:"She has been working here for two years.", note:"for + duración (two years). since + punto de inicio.", errorProne:true},
+  {id:"pprc-19", cat:"error", choose:true, options:["I working all day.","I have been working all day.","I was working all day."], answer:"I have been working all day.", note:"Presente perfecto continuo: have been + verbo-ing.", errorProne:true},
+  {id:"pprc-20", cat:"error", choose:true, options:["How long have you waited here?","How long are you waiting here?","How long have you been waiting here?"], answer:"How long have you been waiting here?", note:"How long + have been + -ing para duración de acción en curso.", errorProne:true}
+];
+const PPRC_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Estructura: have/has + been + verbo-ing</div><div class="b">I/you/we/they → <code>have been working</code>.<br>He/she/it → <code>has been working</code>.<br>Negativa: <code>haven\'t / hasn\'t been working</code>.<br>Pregunta: <code>Have/Has + sujeto + been + verbo-ing?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Uso: acción que dura hasta el presente</div><div class="b">Para acciones que empezaron en el pasado y siguen en marcha ahora (o acaban de terminar con resultado visible):<br><code>I\'ve been studying for two hours.</code><br><code>He\'s been running — look how tired he is!</code><br>Normalmente responde a "how long" o acompaña a for/since.</div></div>' +
+  '<div class="psRule"><div class="h">3 · Verbos de estado: no van en continuo</div><div class="b">Con verbos de estado (know, like, want, belong, understand…) se usa el presente perfecto simple:<br><code>I\'ve known her for years</code> (no "I\'ve been knowing her").</div></div>';
+
+/* ================= CONTENIDO: PRESENT PERFECT CONTINUOUS AND SIMPLE ================= */
+const PPRCS_CAT_LABEL = {duracion:"DURACIÓN (CONTINUO)", resultado:"RESULTADO (SIMPLE)", cuantas_veces:"¿CUÁNTAS VECES?", estado:"VERBOS DE ESTADO", error:"FRASE CORRECTA"};
+const PPRCS_BANK = [
+  {id:"pprcs-1", cat:"duracion", blank:"I ___ (write) this essay all morning.", options:["have been writing","have written"], answer:"have been writing", note:"Énfasis en la duración (all morning) → presente perfecto continuo."},
+  {id:"pprcs-2", cat:"duracion", blank:"How long ___ you ___ (study) English?", options:["have / been studying","have / studied"], answer:"have / been studying", note:"How long...? → cuánto tiempo llevas haciendo algo → continuo."},
+  {id:"pprcs-3", cat:"duracion", blank:"She ___ (practise) the piano for an hour.", options:["has been practising","has practised"], answer:"has been practising", note:"Duración (for an hour) → continuo."},
+  {id:"pprcs-4", cat:"duracion", blank:"He ___ (read) since this morning.", options:["has been reading","has read"], answer:"has been reading", note:"since + punto de inicio → acción que continúa: continuo."},
+  {id:"pprcs-5", cat:"resultado", blank:"I ___ (write) three essays this month.", options:["have written","have been writing"], answer:"have written", note:"Número de veces / cantidad completada → presente perfecto simple."},
+  {id:"pprcs-6", cat:"resultado", blank:"She ___ (read) five books this year.", options:["has read","has been reading"], answer:"has read", note:"Cuántos libros (número) → simple."},
+  {id:"pprcs-7", cat:"resultado", blank:"I ___ (finish) my homework. Let's go!", options:["have finished","have been finishing"], answer:"have finished", note:"Acción completada con resultado → simple."},
+  {id:"pprcs-8", cat:"resultado", blank:"They ___ (build) three houses this summer.", options:["have built","have been building"], answer:"have built", note:"Número de cosas completadas → simple."},
+  {id:"pprcs-9", cat:"cuantas_veces", blank:"I ___ (call) her three times today.", options:["have called","have been calling"], answer:"have called", note:"Número de veces → simple (tres llamadas completas)."},
+  {id:"pprcs-10", cat:"cuantas_veces", blank:"He ___ (visit) London twice this year.", options:["has visited","has been visiting"], answer:"has visited", note:"Dos visitas completas → simple."},
+  {id:"pprcs-11", cat:"duracion", blank:"Your hands are dirty! What ___ you ___ (do)?", options:["have / been doing","have / done"], answer:"have / been doing", note:"Estado visible del que hay que explicar la actividad → continuo."},
+  {id:"pprcs-12", cat:"resultado", blank:"I ___ (do) my homework. You can check it now.", options:["have done","have been doing"], answer:"have done", note:"Tarea completada lista para revisar → simple."},
+  {id:"pprcs-13", cat:"duracion", blank:"The teacher ___ (explain) this point for twenty minutes.", options:["has been explaining","has explained"], answer:"has been explaining", note:"Actividad en curso durante veinte minutos → continuo."},
+  {id:"pprcs-14", cat:"resultado", blank:"She ___ (explain) the grammar point twice already.", options:["has explained","has been explaining"], answer:"has explained", note:"Dos veces completas (resultado) → simple."},
+  {id:"pprcs-15", cat:"estado", blank:"I ___ (know) her for ten years.", options:["have known","have been knowing"], answer:"have known", note:"'know' es verbo de estado: solo puede ir en presente perfecto simple."},
+  {id:"pprcs-16", cat:"estado", blank:"He ___ (have) that car since 2015.", options:["has had","has been having"], answer:"has had", note:"'have' de posesión es verbo de estado: presente perfecto simple."},
+  {id:"pprcs-17", cat:"estado", blank:"They ___ (like) jazz for years.", options:["have liked","have been liking"], answer:"have liked", note:"'like' es verbo de estado: simple, no continuo."},
+  {id:"pprcs-18", cat:"error", choose:true, options:["I have been writing four reports.","I have written four reports.","I wrote four reports now."], answer:"I have written four reports.", note:"Número de resultados completados → presente perfecto simple.", errorProne:true},
+  {id:"pprcs-19", cat:"error", choose:true, options:["She has been knowing him since school.","She has known him since school.","She knows him since school."], answer:"She has known him since school.", note:"'know' es estado: solo presente perfecto simple.", errorProne:true},
+  {id:"pprcs-20", cat:"error", choose:true, options:["How long have you read this book?","How long have you been reading this book?","How long are you reading this book?"], answer:"How long have you been reading this book?", note:"Duración de acción en curso → presente perfecto continuo.", errorProne:true},
+  {id:"pprcs-21", cat:"error", choose:true, options:["I've been finishing my homework.","I've finished my homework.","I've finish my homework."], answer:"I've finished my homework.", note:"Resultado completado, acción puntual → simple.", errorProne:true}
+];
+const PPRCS_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Continuo → énfasis en la duración</div><div class="b">Responde a "how long?" y expresa que la actividad lleva tiempo en curso:<br><code>I\'ve been writing this essay all morning.</code><br><code>How long have you been studying English?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Simple → énfasis en el resultado o la cantidad</div><div class="b">Usa el presente perfecto simple cuando:<br>• la acción está completada: <code>I\'ve finished the essay.</code><br>• hay un número de resultados: <code>I\'ve written three essays this month.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Verbos de estado → siempre simple</div><div class="b">Con verbos de estado (know, like, love, want, understand, have de posesión…) nunca se usa el continuo:<br><code>I\'ve known her for years</code> (no "I\'ve been knowing her").</div></div>';
+
+/* ================= CONTENIDO: HOW LONG HAVE YOU (BEEN) ...? ================= */
+const PPHOW_CAT_LABEL = {how_long:"HOW LONG?", simple_continuo:"SIMPLE VS CONTINUO", for_since:"FOR / SINCE", error:"FRASE CORRECTA"};
+const PPHOW_BANK = [
+  {id:"pphow-1", cat:"how_long", blank:"___ long have you lived here?", options:["How","What"], answer:"How", note:"How long + presente perfecto (simple o continuo) para duración."},
+  {id:"pphow-2", cat:"how_long", blank:"How long ___ she been married?", options:["has","have"], answer:"has", note:"he/she/it → has."},
+  {id:"pphow-3", cat:"how_long", blank:"How long have they ___ waiting?", options:["been","be"], answer:"been", note:"How long + have/has + sujeto + been + verbo-ing?"},
+  {id:"pphow-4", cat:"how_long", blank:"How long ___ he ___ this job?", options:["has / had","has / have","have / had"], answer:"has / had", note:"How long has + sujeto + participio? (have → had)"},
+  {id:"pphow-5", cat:"how_long", blank:"How long have you been ___ (drive)?", options:["driving","driven","drive"], answer:"driving", note:"been + verbo-ing."},
+  {id:"pphow-6", cat:"simple_continuo", blank:"I ___ (live) here since I was a child.", options:["have lived","have been living"], answer:"have lived", note:"Con 'live' y for/since, simple y continuo son igualmente correctos; simple es el más habitual."},
+  {id:"pphow-7", cat:"simple_continuo", blank:"How long have you ___ (know) her?", options:["known","been knowing"], answer:"known", note:"'know' es estado → solo simple: have known."},
+  {id:"pphow-8", cat:"simple_continuo", blank:"She ___ (study) medicine for three years.", options:["has been studying","has studied"], answer:"has been studying", note:"Acción activa y en curso: continuo es más habitual."},
+  {id:"pphow-9", cat:"simple_continuo", blank:"They ___ (work) on this project since Monday.", options:["have been working","have worked"], answer:"have been working", note:"Actividad en curso → continuo."},
+  {id:"pphow-10", cat:"for_since", blank:"I've been waiting ___ half an hour.", options:["for","since"], answer:"for", note:"for + duración (half an hour)."},
+  {id:"pphow-11", cat:"for_since", blank:"He's been asleep ___ 10 o'clock.", options:["since","for"], answer:"since", note:"since + punto de inicio (10 o'clock)."},
+  {id:"pphow-12", cat:"for_since", blank:"They've known each other ___ they were at school.", options:["since","for"], answer:"since", note:"since + cláusula (they were at school)."},
+  {id:"pphow-13", cat:"for_since", blank:"She hasn't called me ___ last Friday.", options:["since","for"], answer:"since", note:"since + momento específico del pasado."},
+  {id:"pphow-14", cat:"for_since", blank:"I've had this phone ___ six months.", options:["for","since"], answer:"for", note:"for + duración (six months)."},
+  {id:"pphow-15", cat:"error", choose:true, options:["How long do you work here?","How long have you worked here?","How long did you work here?"], answer:"How long have you worked here?", note:"Situación que continúa en el presente → presente perfecto.", errorProne:true},
+  {id:"pphow-16", cat:"error", choose:true, options:["I know her since five years.","I have known her for five years.","I know her for five years."], answer:"I have known her for five years.", note:"for + duración; y presente perfecto con 'know'.", errorProne:true},
+  {id:"pphow-17", cat:"error", choose:true, options:["How long are you waiting?","How long have you been waiting?","How long did you wait?"], answer:"How long have you been waiting?", note:"Duración de acción en curso → present perfect continuous.", errorProne:true},
+  {id:"pphow-18", cat:"error", choose:true, options:["She has been knowing him for years.","She has known him for years.","She is knowing him for years."], answer:"She has known him for years.", note:"'know' es verbo de estado: solo present perfect simple.", errorProne:true}
+];
+const PPHOW_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · How long...? → presente perfecto</div><div class="b">Para preguntar sobre algo que empezó en el pasado y sigue en el presente:<br><code>How long have you lived here?</code><br><code>How long have you been waiting?</code><br>⚠️ NO se usa presente simple: How long <s>do</s> you live here? ❌</div></div>' +
+  '<div class="psRule"><div class="h">2 · Simple o continuo con "how long"</div><div class="b">• Verbos de estado (live, work, know, have) → simple: <code>I\'ve known her for years.</code><br>• Verbos de acción (study, wait, read, write) → continuo es más natural: <code>I\'ve been studying for an hour.</code><br>Con live/work ambos son igualmente correctos.</div></div>' +
+  '<div class="psRule"><div class="h">3 · for y since</div><div class="b"><b>for</b> + duración: <code>for two years, for a long time, for six months</code>.<br><b>since</b> + punto de inicio: <code>since 2018, since Monday, since I was a child</code>.</div></div>';
+
+/* ================= CONTENIDO: FOR AND SINCE ================= */
+const PPFS_CAT_LABEL = {for_since:"FOR VS SINCE", when_howlong:"WHEN vs HOW LONG", ago:"AGO", error:"FRASE CORRECTA"};
+const PPFS_BANK = [
+  {id:"ppfs-1", cat:"for_since", blank:"I haven't seen her ___ last Tuesday.", options:["since","for"], answer:"since", note:"since + punto en el tiempo: last Tuesday."},
+  {id:"ppfs-2", cat:"for_since", blank:"They've been friends ___ twenty years.", options:["for","since"], answer:"for", note:"for + duración: twenty years."},
+  {id:"ppfs-3", cat:"for_since", blank:"She's worked here ___ she finished university.", options:["since","for"], answer:"since", note:"since + cláusula (punto de inicio)."},
+  {id:"ppfs-4", cat:"for_since", blank:"He hasn't eaten anything ___ this morning.", options:["since","for"], answer:"since", note:"since + punto temporal: this morning."},
+  {id:"ppfs-5", cat:"for_since", blank:"I've had a headache ___ three hours.", options:["for","since"], answer:"for", note:"for + duración: three hours."},
+  {id:"ppfs-6", cat:"for_since", blank:"She's been off work ___ Monday.", options:["since","for"], answer:"since", note:"since + día de la semana (punto de inicio)."},
+  {id:"ppfs-7", cat:"for_since", blank:"They haven't spoken ___ their argument.", options:["since","for"], answer:"since", note:"since + evento pasado (punto de inicio)."},
+  {id:"ppfs-8", cat:"for_since", blank:"I've been learning French ___ ages.", options:["for","since"], answer:"for", note:"for + ages (mucho tiempo)."},
+  {id:"ppfs-9", cat:"when_howlong", blank:"'___ did you buy your car?' 'Three years ago.'", options:["When","How long"], answer:"When", note:"'When?' pide el momento exacto → respuesta con pasado simple + ago."},
+  {id:"ppfs-10", cat:"when_howlong", blank:"'___ have you had your car?' 'For three years.'", options:["How long","When"], answer:"How long", note:"'How long?' pide la duración → respuesta con presente perfecto + for."},
+  {id:"ppfs-11", cat:"when_howlong", blank:"'___ did you start this job?' 'In 2020.'", options:["When","How long"], answer:"When", note:"'When?' + pasado simple + fecha."},
+  {id:"ppfs-12", cat:"when_howlong", blank:"'___ have you been doing this job?' 'For five years.'", options:["How long","When"], answer:"How long", note:"'How long?' + presente perfecto + for."},
+  {id:"ppfs-13", cat:"ago", blank:"She left ten minutes ___.", options:["ago","before","since"], answer:"ago", note:"ago = hace (X tiempo). Se usa con pasado simple."},
+  {id:"ppfs-14", cat:"ago", blank:"I saw him three days ___.", options:["ago","since","for"], answer:"ago", note:"ago + pasado simple: I saw him three days ago."},
+  {id:"ppfs-15", cat:"ago", blank:"They got married a long time ___.", options:["ago","before","since"], answer:"ago", note:"a long time ago = hace mucho tiempo."},
+  {id:"ppfs-16", cat:"ago", blank:"'When did you arrive?' 'About an hour ___.'", options:["ago","since","for"], answer:"ago", note:"Respuesta a 'when?' con pasado simple y ago."},
+  {id:"ppfs-17", cat:"error", choose:true, options:["I have seen him three days ago.","I saw him three days ago.","I see him three days ago."], answer:"I saw him three days ago.", note:"ago siempre va con pasado simple, no con presente perfecto.", errorProne:true},
+  {id:"ppfs-18", cat:"error", choose:true, options:["She's worked here since three years.","She's worked here for three years.","She works here for three years."], answer:"She's worked here for three years.", note:"for + duración (three years). since se usa con puntos temporales.", errorProne:true},
+  {id:"ppfs-19", cat:"error", choose:true, options:["When have you arrived?","When did you arrive?","How long have you arrived?"], answer:"When did you arrive?", note:"'When?' pide el momento pasado → pasado simple.", errorProne:true},
+  {id:"ppfs-20", cat:"error", choose:true, options:["I know her since we were children.","I have known her since we were children.","I know her for a long time."], answer:"I have known her since we were children.", note:"Situación que empezó antes y continúa ahora → presente perfecto.", errorProne:true},
+  {id:"ppfs-21", cat:"error", choose:true, options:["He's been living here since five months.","He's been living here for five months.","He lives here since five months."], answer:"He's been living here for five months.", note:"for + duración (five months). since + punto de inicio.", errorProne:true}
+];
+const PPFS_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · for y since</div><div class="b"><b>for</b> + duración (tiempo transcurrido): <code>for two hours / for six months / for a long time</code>.<br><b>since</b> + punto de inicio: <code>since Monday / since 2019 / since I was born</code>.<br>Ambas van con presente perfecto cuando la situación sigue en el presente.</div></div>' +
+  '<div class="psRule"><div class="h">2 · when? vs. how long?</div><div class="b"><b>When did it happen?</b> → el momento concreto → pasado simple: <code>I bought it in 2020.</code><br><b>How long have you had it?</b> → la duración → presente perfecto: <code>I\'ve had it for three years.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · ago = hace X tiempo → siempre pasado simple</div><div class="b"><code>ago</code> indica un punto en el pasado y siempre va con pasado simple:<br><code>I saw him three days ago.</code> (no "I have seen him three days ago")</div></div>';
+
+/* ================= CONTENIDO: PRESENT PERFECT AND PAST 1 ================= */
+const PPP1_CAT_LABEL = {pp_reciente:"PP: SIN TIEMPO ESPECÍFICO", past_especifico:"PASADO SIMPLE: TIEMPO ESPECÍFICO", contraste:"CONTRASTE PP / PASADO SIMPLE", error:"FRASE CORRECTA"};
+const PPP1_BANK = [
+  {id:"ppp1-1", cat:"pp_reciente", blank:"I ___ (hear) the news. It's terrible!", options:["have heard","heard"], answer:"have heard", note:"Resultado presente relevante (sin tiempo específico) → presente perfecto."},
+  {id:"ppp1-2", cat:"pp_reciente", blank:"Somebody ___ (steal) my bag!", options:["has stolen","stole","have stolen"], answer:"has stolen", note:"Resultado actual (no tengo el bolso) → presente perfecto."},
+  {id:"ppp1-3", cat:"pp_reciente", blank:"Have you seen the news? The president ___.", options:["has resigned","resigned"], answer:"has resigned", note:"Noticia reciente sin tiempo específico → presente perfecto."},
+  {id:"ppp1-4", cat:"past_especifico", blank:"He ___ (call) me this morning at 9 o'clock.", options:["called","has called"], answer:"called", note:"Hora exacta (9 o'clock) → pasado simple."},
+  {id:"ppp1-5", cat:"past_especifico", blank:"I ___ (see) a good film last night.", options:["saw","have seen"], answer:"saw", note:"last night → tiempo pasado terminado → pasado simple."},
+  {id:"ppp1-6", cat:"past_especifico", blank:"She ___ (move) to London in 2019.", options:["moved","has moved"], answer:"moved", note:"in 2019 es un tiempo específico → pasado simple."},
+  {id:"ppp1-7", cat:"past_especifico", blank:"We ___ (meet) three years ago.", options:["met","have met"], answer:"met", note:"three years ago → tiempo específico → pasado simple."},
+  {id:"ppp1-8", cat:"contraste", blank:"'Have you seen this film?' — 'Yes, I ___ it last week.'", options:["saw","have seen"], answer:"saw", note:"La segunda respuesta da el momento específico (last week) → pasado simple."},
+  {id:"ppp1-9", cat:"contraste", blank:"'Have you been to Paris?' — 'Yes, I ___ there in 2018.'", options:["went","have been"], answer:"went", note:"Con tiempo específico (in 2018) → pasado simple."},
+  {id:"ppp1-10", cat:"contraste", blank:"I ___ (read) that book and I loved it.", options:["have read","read"], answer:"have read", note:"Sin tiempo específico → presente perfecto (experiencia que sigo recordando)."},
+  {id:"ppp1-11", cat:"contraste", blank:"I ___ (read) that book two years ago and loved it.", options:["read","have read"], answer:"read", note:"Tiempo específico (two years ago) → pasado simple."},
+  {id:"ppp1-12", cat:"contraste", blank:"She ___ (live) in three countries. She has a lot of stories.", options:["has lived","lived"], answer:"has lived", note:"Sin tiempo específico, experiencias de vida → presente perfecto."},
+  {id:"ppp1-13", cat:"contraste", blank:"She ___ (live) in France from 2010 to 2015.", options:["lived","has lived"], answer:"lived", note:"Periodo pasado cerrado (2010 to 2015) → pasado simple."},
+  {id:"ppp1-14", cat:"pp_reciente", blank:"Did you know? Scientists ___ (discover) a new planet.", options:["have discovered","discovered"], answer:"have discovered", note:"Noticia reciente sin tiempo específico → presente perfecto."},
+  {id:"ppp1-15", cat:"past_especifico", blank:"'When ___ you ___ (last/see) her?' 'On Friday.'", options:["did / see","have / seen"], answer:"did / see", note:"when? + tiempo específico → pasado simple."},
+  {id:"ppp1-16", cat:"error", choose:true, options:["I have seen him yesterday.","I saw him yesterday.","I see him yesterday."], answer:"I saw him yesterday.", note:"yesterday → tiempo pasado específico → pasado simple.", errorProne:true},
+  {id:"ppp1-17", cat:"error", choose:true, options:["Did you ever try Thai food?","Have you ever tried Thai food?","Have you ever try Thai food?"], answer:"Have you ever tried Thai food?", note:"ever sin tiempo específico → presente perfecto.", errorProne:true},
+  {id:"ppp1-18", cat:"error", choose:true, options:["I have met him last night.","I met him last night.","I have met him the last night."], answer:"I met him last night.", note:"last night → tiempo específico → pasado simple.", errorProne:true},
+  {id:"ppp1-19", cat:"error", choose:true, options:["When did she arrived?","When has she arrived?","When did she arrive?"], answer:"When did she arrive?", note:"Did + sujeto + verbo base (no past participle).", errorProne:true}
+];
+const PPP1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · La regla de oro</div><div class="b"><b>Presente perfecto</b> = sin tiempo específico, el cuándo no importa o es irrelevante:<br><code>I\'ve seen that film.</code> / <code>Scientists have discovered a new planet.</code><br><b>Pasado simple</b> = con tiempo específico (yesterday, last week, at 9pm, in 2019, ago…):<br><code>I saw that film last Sunday.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · El patrón pregunta → respuesta</div><div class="b">La pregunta puede estar en presente perfecto, pero la respuesta con tiempo específico va en pasado simple:<br><code>Have you seen her? — Yes, I saw her this morning.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Periodos abiertos vs. cerrados</div><div class="b">Periodo abierto (desde entonces hasta hoy) → presente perfecto: <code>She has lived in three countries.</code><br>Periodo cerrado (terminado) → pasado simple: <code>She lived in France from 2010 to 2015.</code></div></div>';
+
+/* ================= CONTENIDO: PRESENT PERFECT AND PAST 2 ================= */
+const PPP2_CAT_LABEL = {ago:"AGO", today_this:"TODAY / THIS WEEK", just_yet:"JUST / YET / ALREADY", error:"FRASE CORRECTA"};
+const PPP2_BANK = [
+  {id:"ppp2-1", cat:"ago", blank:"She called me an hour ___.", options:["ago","before","since"], answer:"ago", note:"ago = hace X tiempo. Siempre con pasado simple."},
+  {id:"ppp2-2", cat:"ago", blank:"I saw him a few minutes ___.", options:["ago","since","before"], answer:"ago", note:"a few minutes ago + pasado simple."},
+  {id:"ppp2-3", cat:"ago", blank:"She ___ (leave) a month ago.", options:["left","has left"], answer:"left", note:"ago → tiempo específico → pasado simple."},
+  {id:"ppp2-4", cat:"ago", blank:"How long ___ you last speak to him?", options:["did","have"], answer:"did", note:"Pregunta sobre tiempo pasado específico → pasado simple."},
+  {id:"ppp2-5", cat:"today_this", blank:"I ___ (not / see) Tom today.", options:["haven't seen","didn't see"], answer:"haven't seen", note:"today aún no ha terminado → presente perfecto."},
+  {id:"ppp2-6", cat:"today_this", blank:"She ___ (send) me five emails this week.", options:["has sent","sent"], answer:"has sent", note:"this week (periodo que incluye el presente) → presente perfecto."},
+  {id:"ppp2-7", cat:"today_this", blank:"I ___ (read) a lot of books this year.", options:["have read","read"], answer:"have read", note:"this year (año no terminado) → presente perfecto."},
+  {id:"ppp2-8", cat:"today_this", blank:"It ___ (be) a great holiday last year.", options:["was","has been"], answer:"was", note:"last year (año cerrado) → pasado simple."},
+  {id:"ppp2-9", cat:"today_this", blank:"It ___ (be) a great holiday so far!", options:["has been","was"], answer:"has been", note:"so far (hasta ahora) → presente perfecto."},
+  {id:"ppp2-10", cat:"just_yet", blank:"I ___ just ___ (get) home.", options:["have / got","had / got"], answer:"have / got", note:"just → presente perfecto: I've just got home."},
+  {id:"ppp2-11", cat:"just_yet", blank:"Has she called you ___?", options:["yet","already"], answer:"yet", note:"yet en preguntas: ¿ya te ha llamado?"},
+  {id:"ppp2-12", cat:"just_yet", blank:"I don't need to see that film — I've ___ seen it.", options:["already","yet"], answer:"already", note:"already: ya lo he visto (antes de lo esperado)."},
+  {id:"ppp2-13", cat:"just_yet", blank:"I ___ finished the book — it's brilliant!", options:["have just","have already"], answer:"have just", note:"have just → hace un momento."},
+  {id:"ppp2-14", cat:"error", choose:true, options:["I have seen her ago two days.","I saw her two days ago.","I have saw her two days ago."], answer:"I saw her two days ago.", note:"ago + pasado simple. El orden es: X time + ago.", errorProne:true},
+  {id:"ppp2-15", cat:"error", choose:true, options:["I haven't eaten since this morning.","I haven't eaten from this morning.","I didn't eat since this morning."], answer:"I haven't eaten since this morning.", note:"since + punto de inicio; presente perfecto para situación que continúa.", errorProne:true},
+  {id:"ppp2-16", cat:"error", choose:true, options:["Have you eaten anything today?","Did you eat anything today?","Have you ate anything today?"], answer:"Have you eaten anything today?", note:"today (periodo no terminado) → presente perfecto preferible.", errorProne:true},
+  {id:"ppp2-17", cat:"error", choose:true, options:["She has just left.","She just left.","She has just leave."], answer:"She has just left.", note:"have + just + participio: has just left.", errorProne:true}
+];
+const PPP2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · ago → siempre pasado simple</div><div class="b"><code>ago</code> señala un momento en el pasado (hace X tiempo) y siempre va con pasado simple:<br><code>I saw him an hour ago.</code> (no "I have seen him an hour ago")</div></div>' +
+  '<div class="psRule"><div class="h">2 · today / this week / this year</div><div class="b">Si el periodo todavía no ha terminado → presente perfecto:<br><code>I\'ve read three books this year.</code><br>Si el periodo ya terminó → pasado simple:<br><code>We had a great time last year.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · just / already / yet</div><div class="b">• <b>just</b>: hace un momento → <code>I\'ve just got home.</code><br>• <b>already</b>: antes de lo esperado → <code>I\'ve already done it.</code><br>• <b>yet</b>: en preguntas y negaciones → <code>Have you eaten yet?</code> / <code>I haven\'t eaten yet.</code></div></div>';
+
+/* ================= CONTENIDO: PAST PERFECT (I had done) ================= */
+const PPPERF_CAT_LABEL = {formacion:"FORMACIÓN", secuencia:"SECUENCIA DE EVENTOS", already_just:"ALREADY / JUST / NEVER", error:"FRASE CORRECTA"};
+const PPPERF_BANK = [
+  {id:"ppperf-1", cat:"formacion", blank:"By the time I arrived, the film ___.", options:["had started","has started","started"], answer:"had started", note:"Pasado perfecto: had + participio. La película empezó ANTES de que yo llegara."},
+  {id:"ppperf-2", cat:"formacion", blank:"When she got to the station, the train ___.", options:["had left","has left","left"], answer:"had left", note:"had + participio: el tren se fue antes de que ella llegara."},
+  {id:"ppperf-3", cat:"formacion", blank:"They ___ (never/see) the sea before.", options:["had never seen","never saw","have never seen"], answer:"had never seen", note:"had never + participio: experiencia hasta un punto en el pasado."},
+  {id:"ppperf-4", cat:"formacion", blank:"I ___ (already/finish) the test when the teacher said 'stop'.", options:["had already finished","already finished","have already finished"], answer:"had already finished", note:"had + already + participio."},
+  {id:"ppperf-5", cat:"formacion", blank:"She ___ (not/eat) anything since the day before.", options:["hadn't eaten","didn't eat","hasn't eaten"], answer:"hadn't eaten", note:"hadn't + participio: negativa del pasado perfecto."},
+  {id:"ppperf-6", cat:"formacion", blank:"___ he ever worked abroad before that job?", options:["Had","Has","Did"], answer:"Had", note:"Pregunta en pasado perfecto: Had + sujeto + participio?"},
+  {id:"ppperf-7", cat:"secuencia", blank:"When I got to the party, Tom ___ (already / leave).", options:["had already left","already left","has already left"], answer:"had already left", note:"Evento A (Tom se fue) ocurrió antes de evento B (yo llegué)."},
+  {id:"ppperf-8", cat:"secuencia", blank:"She felt sick because she ___ (eat) too much.", options:["had eaten","has eaten","ate"], answer:"had eaten", note:"La causa (comer mucho) ocurrió antes del resultado (sentirse mal)."},
+  {id:"ppperf-9", cat:"secuencia", blank:"He couldn't pay because he ___ (leave) his wallet at home.", options:["had left","left","has left"], answer:"had left", note:"La razón ocurrió antes del problema."},
+  {id:"ppperf-10", cat:"secuencia", blank:"After they ___ (have) dinner, they went for a walk.", options:["had had","have had","had"], answer:"had had", note:"after + past perfect: la cena ocurrió primero."},
+  {id:"ppperf-11", cat:"secuencia", blank:"I didn't know the word because I ___ (never/hear) it before.", options:["had never heard","never heard","haven't heard"], answer:"had never heard", note:"had never + participio para experiencias hasta ese momento."},
+  {id:"ppperf-12", cat:"secuencia", blank:"By the time we arrived, everyone ___.", options:["had gone","went","has gone"], answer:"had gone", note:"By the time + simple → pasado perfecto."},
+  {id:"ppperf-13", cat:"secuencia", blank:"I was nervous because I ___ (never/do) a presentation before.", options:["had never done","never did","never have done"], answer:"had never done", note:"Primera vez que hacía algo: had never + participio."},
+  {id:"ppperf-14", cat:"already_just", blank:"When he called, she ___ (just/leave).", options:["had just left","just left","has just left"], answer:"had just left", note:"had + just + participio: acababa de irse."},
+  {id:"ppperf-15", cat:"already_just", blank:"I ___ (already/see) the film, so I didn't want to go again.", options:["had already seen","already saw","have already seen"], answer:"had already seen", note:"had already + participio: ya lo había visto."},
+  {id:"ppperf-16", cat:"secuencia", blank:"When I ___ (arrive), Tom ___ (already/go) home.", options:["arrived / had already gone","had arrived / already went"], answer:"arrived / had already gone", note:"Evento B (llegada, simple); evento A previo (irse, past perfect)."},
+  {id:"ppperf-17", cat:"error", choose:true, options:["When I arrived, the meeting has already started.","When I arrived, the meeting had already started.","When I had arrived, the meeting already started."], answer:"When I arrived, the meeting had already started.", note:"La llegada (arrived) ocurre después; la reunión (had started) ocurrió antes: past perfect.", errorProne:true},
+  {id:"ppperf-18", cat:"error", choose:true, options:["I never seen that film before.","I had never seen that film before.","I have never see that film before."], answer:"I had never seen that film before.", note:"Experiencias hasta un punto en el pasado: had never + participio.", errorProne:true},
+  {id:"ppperf-19", cat:"error", choose:true, options:["She was tired because she worked all day.","She was tired because she had worked all day.","She was tired because she has worked all day."], answer:"She was tired because she had worked all day.", note:"La causa (trabajar) ocurrió antes del resultado (estar cansada): past perfect.", errorProne:true}
+];
+const PPPERF_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Estructura: had + participio</div><div class="b">Para todos los sujetos: <code>had + participio pasado</code>.<br>Negativa: <code>hadn\'t + participio</code>.<br>Pregunta: <code>Had + sujeto + participio?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Uso: pasado anterior a otro pasado</div><div class="b">Se usa para aclarar que un evento ocurrió ANTES que otro en el pasado:<br><code>When I arrived, the film had already started.</code><br>(primero empezó la película, luego llegué yo)</div></div>' +
+  '<div class="psRule"><div class="h">3 · had never / had already / had just</div><div class="b"><code>I had never done anything like that before.</code><br><code>When he called, she had just left.</code><br><code>By the time we arrived, everyone had already gone.</code></div></div>';
+
+/* ================= CONTENIDO: PAST PERFECT CONTINUOUS (I had been doing) ================= */
+const PPPERFCO_CAT_LABEL = {formacion:"FORMACIÓN", duracion:"DURACIÓN ANTES DE", simple_cont:"SIMPLE VS CONTINUO", error:"FRASE CORRECTA"};
+const PPPERFCO_BANK = [
+  {id:"ppperfco-1", cat:"formacion", blank:"She was exhausted because she ___ (run).", options:["had been running","was running","had run"], answer:"had been running", note:"Pasado perfecto continuo: had + been + verbo-ing."},
+  {id:"ppperfco-2", cat:"formacion", blank:"I ___ (wait) for two hours when she finally arrived.", options:["had been waiting","was waiting","had waited"], answer:"had been waiting", note:"had been + verbo-ing para duración antes de un punto pasado."},
+  {id:"ppperfco-3", cat:"formacion", blank:"They ___ (argue) before I came in.", options:["had been arguing","were arguing","had argued"], answer:"had been arguing", note:"Actividad en curso justo antes de otro evento pasado."},
+  {id:"ppperfco-4", cat:"formacion", blank:"___ he been working there long when the company went bankrupt?", options:["Had","Was","Has"], answer:"Had", note:"Pregunta en pasado perfecto continuo: Had + sujeto + been + verbo-ing?"},
+  {id:"ppperfco-5", cat:"formacion", blank:"She ___ (not/sleep) well for weeks before the exam.", options:["hadn't been sleeping","wasn't sleeping","hadn't slept"], answer:"hadn't been sleeping", note:"hadn't been + verbo-ing: negativa."},
+  {id:"ppperfco-6", cat:"duracion", blank:"His hands were dirty because he ___ (repair) his bike.", options:["had been repairing","was repairing","had repaired"], answer:"had been repairing", note:"La actividad (reparar) explica el resultado visible (manos sucias)."},
+  {id:"ppperfco-7", cat:"duracion", blank:"I was happy because I ___ (look) for that book for months.", options:["had been looking","looked","was looking"], answer:"had been looking", note:"Duración de la búsqueda antes de encontrar el libro."},
+  {id:"ppperfco-8", cat:"duracion", blank:"By the time the ambulance arrived, he ___ (lie) there for an hour.", options:["had been lying","had lied","was lying"], answer:"had been lying", note:"Duración hasta el momento del evento: had been + verbo-ing."},
+  {id:"ppperfco-9", cat:"duracion", blank:"When I met him, he ___ (work) as a teacher for ten years.", options:["had been working","was working","had worked"], answer:"had been working", note:"Cuánto tiempo llevaba haciendo algo antes de otro evento pasado."},
+  {id:"ppperfco-10", cat:"simple_cont", blank:"He was sweaty because he ___ (exercise).", options:["had been exercising","had exercised"], answer:"had been exercising", note:"Énfasis en la duración/actividad continua → pasado perfecto continuo."},
+  {id:"ppperfco-11", cat:"simple_cont", blank:"He was proud because he ___ (finish) the race.", options:["had finished","had been finishing"], answer:"had finished", note:"Logro puntual completado → pasado perfecto simple."},
+  {id:"ppperfco-12", cat:"simple_cont", blank:"I was angry because I ___ (wait) for over an hour.", options:["had been waiting","had waited"], answer:"had been waiting", note:"La duración de la espera es lo importante → continuo."},
+  {id:"ppperfco-13", cat:"error", choose:true, options:["She was tired because she has been working all day.","She was tired because she had been working all day.","She was tired because she had working all day."], answer:"She was tired because she had been working all day.", note:"Pasado de la situación: had been + verbo-ing.", errorProne:true},
+  {id:"ppperfco-14", cat:"error", choose:true, options:["I had been knowing her for years.","I had known her for years.","I was knowing her for years."], answer:"I had known her for years.", note:"'know' es verbo de estado: solo pasado perfecto simple.", errorProne:true},
+  {id:"ppperfco-15", cat:"error", choose:true, options:["It had been raining, so the ground was wet.","It has been raining, so the ground was wet.","It had rained, so the ground was wet."], answer:"It had been raining, so the ground was wet.", note:"Resultado visible de actividad continua previa: had been + verbo-ing.", errorProne:true}
+];
+const PPPERFCO_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Estructura: had + been + verbo-ing</div><div class="b">Para todos los sujetos: <code>had been + verbo-ing</code>.<br>Negativa: <code>hadn\'t been + verbo-ing</code>.<br>Pregunta: <code>Had + sujeto + been + verbo-ing?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Uso: duración de actividad antes de otro punto pasado</div><div class="b">Para expresar que una actividad llevaba cierto tiempo en curso justo antes de otro evento pasado:<br><code>I had been waiting for two hours when she arrived.</code><br><code>She was tired because she had been working all day.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Continuo vs. simple</div><div class="b">• Énfasis en la <b>duración/actividad</b> → <b>continuo</b>: <code>I\'d been waiting for an hour.</code><br>• Énfasis en el <b>logro completado</b> → <b>simple</b>: <code>I\'d written three chapters by 9pm.</code><br>Verbos de estado → siempre simple: <code>I\'d known her for years</code>.</div></div>';
+
+/* ================= CONTENIDO: HAVE AND HAVE GOT ================= */
+const PPHG_CAT_LABEL = {have_got:"HAVE / HAVE GOT", negativa:"NEGATIVA", pregunta:"PREGUNTA", diferencias:"DIFERENCIAS", error:"FRASE CORRECTA"};
+const PPHG_BANK = [
+  {id:"pphg-1", cat:"have_got", blank:"I ___ a new car.", options:["have got","have get","am having"], answer:"have got", note:"have got = tener (posesión). Es la forma habitual en inglés británico."},
+  {id:"pphg-2", cat:"have_got", blank:"She ___ a bad headache.", options:["has got","have got","has get"], answer:"has got", note:"he/she/it → has got."},
+  {id:"pphg-3", cat:"have_got", blank:"They ___ two cats and a dog.", options:["have got","have get","has got"], answer:"have got", note:"we/you/they → have got."},
+  {id:"pphg-4", cat:"have_got", blank:"I've ___ a great idea.", options:["got","get","have"], answer:"got", note:"I've got = I have got. Contraída: 've got."},
+  {id:"pphg-5", cat:"have_got", blank:"She's ___ brown eyes.", options:["got","get","have"], answer:"got", note:"she's got = she has got."},
+  {id:"pphg-6", cat:"negativa", blank:"I ___ a car.", options:["haven't got","haven't get","don't got"], answer:"haven't got", note:"Negativa: haven't got (brit.) o don't have (americ.)."},
+  {id:"pphg-7", cat:"negativa", blank:"He ___ any brothers or sisters.", options:["hasn't got","haven't got","doesn't got"], answer:"hasn't got", note:"hasn't got (brit.) o doesn't have (americ.)."},
+  {id:"pphg-8", cat:"negativa", blank:"They ___ any money.", options:["haven't got","hasn't got","don't got"], answer:"haven't got", note:"haven't got: negativa plural."},
+  {id:"pphg-9", cat:"pregunta", blank:"___ you got a pen?", options:["Have","Has","Do"], answer:"Have", note:"Pregunta: Have/Has + sujeto + got...?"},
+  {id:"pphg-10", cat:"pregunta", blank:"___ she got any siblings?", options:["Has","Have","Does"], answer:"Has", note:"he/she/it → Has + sujeto + got?"},
+  {id:"pphg-11", cat:"pregunta", blank:"___ they got a garden?", options:["Have","Has","Do"], answer:"Have", note:"we/you/they → Have + sujeto + got?"},
+  {id:"pphg-12", cat:"diferencias", blank:"I ___ a shower every morning.", options:["have","have got"], answer:"have", note:"'have a shower/breakfast/a look' son ACCIONES: no se usa 'have got'."},
+  {id:"pphg-13", cat:"diferencias", blank:"We ___ a meeting tomorrow.", options:["have","have got"], answer:"have", note:"'have a meeting' es una acción (evento): solo 'have', no 'have got'."},
+  {id:"pphg-14", cat:"diferencias", blank:"She ___ a great car.", options:["has got","has get"], answer:"has got", note:"Posesión → have got es correcto."},
+  {id:"pphg-15", cat:"diferencias", blank:"Did you ___ a good time?", options:["have","have got"], answer:"have", note:"'have a good time' es expresión de acción, no posesión."},
+  {id:"pphg-16", cat:"diferencias", blank:"I ___ a dream last night.", options:["had","had got"], answer:"had", note:"En pasado, 'have got' no se usa. En pasado solo se usa 'had'."},
+  {id:"pphg-17", cat:"error", choose:true, options:["Have you got any questions?","Do you got any questions?","Got you any questions?"], answer:"Have you got any questions?", note:"Pregunta: Have + sujeto + got?", errorProne:true},
+  {id:"pphg-18", cat:"error", choose:true, options:["She hasn't got no car.","She hasn't got a car.","She not got a car."], answer:"She hasn't got a car.", note:"No se usa doble negativo: hasn't got a car.", errorProne:true},
+  {id:"pphg-19", cat:"error", choose:true, options:["I've got a shower this morning.","I had a shower this morning.","I have got a shower this morning."], answer:"I had a shower this morning.", note:"'have a shower' es una acción: en pasado → 'had'. No se usa 'have got'.", errorProne:true},
+  {id:"pphg-20", cat:"error", choose:true, options:["Has she got two children?","Have she got two children?","Does she got two children?"], answer:"Has she got two children?", note:"she → Has + sujeto + got?", errorProne:true}
+];
+const PPHG_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · have got = have (posesión)</div><div class="b"><code>I have a car</code> = <code>I\'ve got a car</code>.<br>he/she/it → <code>has got</code>: <code>She has got (She\'s got) a cat.</code><br>we/you/they → <code>have got</code>.<br>⚠️ En inglés americano es más habitual <code>do you have?</code> en vez de <code>have you got?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Negativa y pregunta</div><div class="b">Negativa: <code>haven\'t got / hasn\'t got</code>.<br>Pregunta: <code>Have you got...? / Has she got...?</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · have got solo para posesión</div><div class="b"><code>have got</code> solo indica posesión, no acción:<br>✅ <code>She\'s got a car</code> (posesión)<br>❌ <code>I\'ve got a shower</code> → ✅ <code>I have a shower / I had a shower</code><br>En pasado, solo se usa <code>had</code> (nunca "had got").</div></div>';
+
+/* ================= CONTENIDO: USED TO (DO) ================= */
+const PPUSED_CAT_LABEL = {afirmativa:"AFIRMATIVA", negativa:"NEGATIVA", pregunta:"PREGUNTA", contraste:"CONTRASTE CON PASADO SIMPLE", error:"FRASE CORRECTA"};
+const PPUSED_BANK = [
+  {id:"ppused-1", cat:"afirmativa", blank:"I ___ (smoke) but I gave up ten years ago.", options:["used to smoke","use to smoke","was used to smoke"], answer:"used to smoke", note:"used to + infinitivo: hábito del pasado que ya no existe."},
+  {id:"ppused-2", cat:"afirmativa", blank:"She ___ (be) very shy when she was a child.", options:["used to be","use to be","was used to be"], answer:"used to be", note:"used to + infinitivo para estado o carácter del pasado."},
+  {id:"ppused-3", cat:"afirmativa", blank:"They ___ (live) in the countryside before moving to the city.", options:["used to live","use to live","were used to live"], answer:"used to live", note:"Situación pasada que ya no existe."},
+  {id:"ppused-4", cat:"afirmativa", blank:"He ___ (play) football every weekend.", options:["used to play","use to play","used play"], answer:"used to play", note:"Actividad habitual del pasado: used to + infinitivo."},
+  {id:"ppused-5", cat:"afirmativa", blank:"We ___ go out every Friday when we were students.", options:["used to","use to","were used to"], answer:"used to", note:"used to + infinitivo."},
+  {id:"ppused-6", cat:"negativa", blank:"I ___ like jazz, but now I love it.", options:["didn't use to","didn't used to","not used to"], answer:"didn't use to", note:"Negativa: didn't use to + infinitivo."},
+  {id:"ppused-7", cat:"negativa", blank:"She ___ enjoy cooking, but she does now.", options:["didn't use to","didn't used to"], answer:"didn't use to", note:"didn't use to + infinitivo."},
+  {id:"ppused-8", cat:"negativa", blank:"He didn't use to ___ any sport.", options:["do","doing","did"], answer:"do", note:"Tras 'didn't use to', el verbo va en infinitivo base."},
+  {id:"ppused-9", cat:"pregunta", blank:"___ you use to walk to school?", options:["Did","Was","Used"], answer:"Did", note:"Pregunta: Did + sujeto + use to + infinitivo?"},
+  {id:"ppused-10", cat:"pregunta", blank:"Did he use to ___ as a teacher?", options:["work","worked","working"], answer:"work", note:"use to + infinitivo base."},
+  {id:"ppused-11", cat:"pregunta", blank:"Where ___ you use to go on holiday?", options:["did","used","were"], answer:"did", note:"Pregunta wh-: Where did + sujeto + use to + infinitivo?"},
+  {id:"ppused-12", cat:"contraste", blank:"She ___ play tennis every week, but she doesn't play anymore.", options:["used to","has used to","was used to"], answer:"used to", note:"used to: hábito en el pasado que ya terminó."},
+  {id:"ppused-13", cat:"contraste", blank:"He ___ smoke 20 cigarettes a day. Now he doesn't smoke at all.", options:["used to","is used to","gets used to"], answer:"used to", note:"used to + infinitivo, no confundir con 'be used to + -ing' (estar acostumbrado a)."},
+  {id:"ppused-14", cat:"contraste", blank:"I'm ___ getting up early — it doesn't bother me.", options:["used to","use to"], answer:"used to", note:"be used to + -ing = estar acostumbrado a (hábito presente). ≠ used to (hábito pasado)."},
+  {id:"ppused-15", cat:"contraste", blank:"He ___ working long hours — it doesn't bother him.", options:["is used to","used to"], answer:"is used to", note:"is used to + -ing = está acostumbrado a. No es hábito pasado."},
+  {id:"ppused-16", cat:"error", choose:true, options:["I used to lived here.","I used to live here.","I use to live here."], answer:"I used to live here.", note:"used to + infinitivo base (no past: 'lived').", errorProne:true},
+  {id:"ppused-17", cat:"error", choose:true, options:["Did you used to smoke?","Did you use to smoke?","Used you to smoke?"], answer:"Did you use to smoke?", note:"Pregunta: Did + sujeto + use to (no 'used').", errorProne:true},
+  {id:"ppused-18", cat:"error", choose:true, options:["I didn't used to like vegetables.","I didn't use to like vegetables.","I not used to like vegetables."], answer:"I didn't use to like vegetables.", note:"Negativa: didn't use to (no 'didn't used to').", errorProne:true},
+  {id:"ppused-19", cat:"error", choose:true, options:["I'm used to wake up early.","I'm used to waking up early.","I'm used to woke up early."], answer:"I'm used to waking up early.", note:"be used to + -ing (estar acostumbrado a), no infinitivo.", errorProne:true},
+  {id:"ppused-20", cat:"error", choose:true, options:["She used to works in a bank.","She used to work in a bank.","She uses to work in a bank."], answer:"She used to work in a bank.", note:"used to + infinitivo base (no -s).", errorProne:true}
+];
+const PPUSED_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · used to + infinitivo = hábito o estado pasado que ya no existe</div><div class="b">Para hablar de algo que hacías regularmente o que era cierto antes, pero ya no:<br><code>I used to smoke.</code> (pero ya no fumo)<br><code>She used to be shy.</code> (pero ya no lo es)<br>La forma es la misma para todos los sujetos.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Negativa y pregunta</div><div class="b">Negativa: <code>didn\'t use to + infinitivo</code> (sin -d en use): <code>I didn\'t use to like jazz.</code><br>Pregunta: <code>Did + sujeto + use to + infinitivo?</code>: <code>Did you use to play tennis?</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · used to ≠ be used to</div><div class="b"><code>I used to get up early</code> = antes me levantaba temprano (hábito pasado terminado).<br><code>I\'m used to getting up early</code> = estoy acostumbrado a levantarme temprano (ahora).<br>⚠️ Clave: "used to" + infinitivo; "be used to" + -ing.</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -2344,6 +2692,78 @@ const GU_UNITS = {
     color:"#db2777", pillBg:"#fce7f3", pillColor:"#9d174d",
     subtitle:"Acciones en curso en un momento del pasado, y cómo se interrumpen con el pasado simple.",
     learnHtml: PCO_LEARN_HTML, catLabel: PCO_CAT_LABEL, bank: PCO_BANK
+  },
+  "pp-1": {
+    id:"pp-1", name:"Present perfect 1 (I have done)", icon:"✅",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"La estructura, los participios irregulares, ever/never, just/already/yet y la diferencia entre gone y been.",
+    learnHtml: PPRF1_LEARN_HTML, catLabel: PPRF1_CAT_LABEL, bank: PPRF1_BANK
+  },
+  "pp-2": {
+    id:"pp-2", name:"Present perfect 2 (I have done)", icon:"🔵",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"Acciones recientes, superlativo + ever, primera vez que..., y los primeros pasos con for y since.",
+    learnHtml: PPRF2_LEARN_HTML, catLabel: PPRF2_CAT_LABEL, bank: PPRF2_BANK
+  },
+  "pp-continuous": {
+    id:"pp-continuous", name:"Present perfect continuous (I have been doing)", icon:"🔄",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Acciones que empezaron antes y siguen ahora, o que explican un resultado visible. Con have/has been + -ing.",
+    learnHtml: PPRC_LEARN_HTML, catLabel: PPRC_CAT_LABEL, bank: PPRC_BANK
+  },
+  "pp-continuous-simple": {
+    id:"pp-continuous-simple", name:"Present perfect continuous and simple", icon:"⚖️",
+    color:"#d97706", pillBg:"#fef3c7", pillColor:"#78350f",
+    subtitle:"Cuándo usar el continuo (duración) y cuándo el simple (resultado o cantidad). Verbos de estado: siempre simple.",
+    learnHtml: PPRCS_LEARN_HTML, catLabel: PPRCS_CAT_LABEL, bank: PPRCS_BANK
+  },
+  "how-long": {
+    id:"how-long", name:"How long have you (been) …?", icon:"⏱️",
+    color:"#059669", pillBg:"#d1fae5", pillColor:"#064e3b",
+    subtitle:"How long + presente perfecto. Simple o continuo según el verbo. For y since para medir la duración.",
+    learnHtml: PPHOW_LEARN_HTML, catLabel: PPHOW_CAT_LABEL, bank: PPHOW_BANK
+  },
+  "for-since": {
+    id:"for-since", name:"for and since, when …? and how long …?", icon:"📅",
+    color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
+    subtitle:"for + duración vs. since + punto de inicio. La trampa de ago. When? vs. How long?",
+    learnHtml: PPFS_LEARN_HTML, catLabel: PPFS_CAT_LABEL, bank: PPFS_BANK
+  },
+  "pp-past-1": {
+    id:"pp-past-1", name:"Present perfect and past 1 (I have done and I did)", icon:"🔀",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"La regla de oro: presente perfecto sin tiempo específico, pasado simple con tiempo específico.",
+    learnHtml: PPP1_LEARN_HTML, catLabel: PPP1_CAT_LABEL, bank: PPP1_BANK
+  },
+  "pp-past-2": {
+    id:"pp-past-2", name:"Present perfect and past 2 (I have done and I did)", icon:"🗓️",
+    color:"#15803d", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"ago siempre pasado simple. Today/this week: abierto → perfecto, cerrado → simple. just/already/yet en contexto.",
+    learnHtml: PPP2_LEARN_HTML, catLabel: PPP2_CAT_LABEL, bank: PPP2_BANK
+  },
+  "past-perfect": {
+    id:"past-perfect", name:"Past perfect (I had done)", icon:"⏪",
+    color:"#4338ca", pillBg:"#e0e7ff", pillColor:"#1e1b4b",
+    subtitle:"had + participio para eventos anteriores a otro punto en el pasado. had already/just/never.",
+    learnHtml: PPPERF_LEARN_HTML, catLabel: PPPERF_CAT_LABEL, bank: PPPERF_BANK
+  },
+  "past-perfect-c": {
+    id:"past-perfect-c", name:"Past perfect continuous (I had been doing)", icon:"⏳",
+    color:"#9333ea", pillBg:"#f3e8ff", pillColor:"#4a1d96",
+    subtitle:"had been + -ing para la duración de una actividad previa a otro evento pasado. Énfasis en el proceso.",
+    learnHtml: PPPERFCO_LEARN_HTML, catLabel: PPPERFCO_CAT_LABEL, bank: PPPERFCO_BANK
+  },
+  "have-got": {
+    id:"have-got", name:"have and have got", icon:"🤝",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#134e4a",
+    subtitle:"have got = tener (posesión). Cómo se usa en afirmativa, negativa y pregunta. Diferencias con have de acción.",
+    learnHtml: PPHG_LEARN_HTML, catLabel: PPHG_CAT_LABEL, bank: PPHG_BANK
+  },
+  "used-to": {
+    id:"used-to", name:"used to (do)", icon:"🔙",
+    color:"#92400e", pillBg:"#fef3c7", pillColor:"#78350f",
+    subtitle:"Hábitos y estados pasados que ya no existen. Negativa (didn't use to) y pregunta (did you use to?). No confundir con be used to.",
+    learnHtml: PPUSED_LEARN_HTML, catLabel: PPUSED_CAT_LABEL, bank: PPUSED_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
