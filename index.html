@@ -223,6 +223,10 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
 .pcRule .h{font-weight:800; font-size:14.5px; margin-bottom:3px;}
 .pcRule .b{font-size:13.5px; line-height:1.6;}
 .pcRule code{background:#ede9fe; padding:1px 5px; border-radius:5px; font-weight:700;}
+.guRule{border-left:4px solid #94a3b8; background:#f8fafc; padding:9px 12px; margin-bottom:10px; border-radius:10px;}
+.guRule .h{font-weight:800; font-size:14.5px; margin-bottom:3px;}
+.guRule .b{font-size:13.5px; line-height:1.6;}
+.guRule code{background:#e2e8f0; padding:1px 5px; border-radius:5px; font-weight:700;}
 </style>
 </head>
 <body>
@@ -324,8 +328,8 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     <section id="view-stats" class="view"></section>
     </div><!-- /module-ioa -->
 
-    <div id="module-ps" class="module"></div>
-    <div id="module-pc" class="module"></div>
+    <div id="module-catmenu" class="module"></div>
+    <div id="module-gu" class="module"></div>
     <div id="module-vocab" class="module"></div>
     <div id="module-av" class="module"></div>
     <div id="module-rd" class="module"></div>
@@ -342,8 +346,7 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     <button data-view="stats"><span class="ic">📊</span><span>Stats</span></button>
   </nav>
 
-  <nav class="bottomnav" id="nav-ps" style="display:none;"></nav>
-  <nav class="bottomnav" id="nav-pc" style="display:none;"></nav>
+  <nav class="bottomnav" id="nav-gu" style="display:none;"></nav>
   <nav class="bottomnav" id="nav-vocab" style="display:none;"></nav>
   <nav class="bottomnav" id="nav-av" style="display:none;"></nav>
   <nav class="bottomnav" id="nav-rd" style="display:none;"></nav>
@@ -698,22 +701,9 @@ const IOA_DEFAULT = {   // módulo "IN / ON / AT" (progreso propio, sin racha: l
   history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
   practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
 };
-const PS_DEFAULT = {   // módulo "Presente Simple"
+const GU_DEFAULT = {   // plantilla genérica para cualquier unidad de gramática (gu:<unitId>)
   dailyChallenge: {date:null, done:false, correct:null},
-  categories: {
-    afirmativa:{correct:0,total:0}, negativa:{correct:0,total:0}, pregunta:{correct:0,total:0},
-    tercera:{correct:0,total:0}, uso:{correct:0,total:0}
-  },
-  history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
-  practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
-};
-const PC_DEFAULT = {   // módulo "Presente Continuo"
-  dailyChallenge: {date:null, done:false, correct:null},
-  categories: {
-    afirmativa:{correct:0,total:0}, negativa:{correct:0,total:0}, pregunta:{correct:0,total:0},
-    ortografia:{correct:0,total:0}, uso:{correct:0,total:0}
-  },
-  history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
+  categories: {}, history: [], srs: {}, diagnostic: {done:false, results:null}, jefe: {examResults:[]},
   practiceFilter: "todo", totalAnswered: 0, totalCorrect: 0
 };
 const VOCAB_DEFAULT = { srs:{}, dir:"es-en" };   // módulo "Chunks" (tarjetas tipo Anki)
@@ -750,8 +740,6 @@ function mergeDefaults(base, incoming){
 function ensureModules(app){
   if(!app.modules || typeof app.modules !== "object") app.modules = {};
   app.modules["in-on-at"] = mergeDefaults(IOA_DEFAULT, app.modules["in-on-at"] || {});
-  app.modules["present-simple"] = mergeDefaults(PS_DEFAULT, app.modules["present-simple"] || {});
-  app.modules["present-continuous"] = mergeDefaults(PC_DEFAULT, app.modules["present-continuous"] || {});
   app.modules["vocabulary"] = mergeDefaults(VOCAB_DEFAULT, app.modules["vocabulary"] || {});
   app.modules["aptis-vocab"] = mergeDefaults(AV_DEFAULT, app.modules["aptis-vocab"] || {});
   app.modules["reading"] = mergeDefaults(RD_DEFAULT, app.modules["reading"] || {});
@@ -1451,17 +1439,255 @@ function openResetModal(){
   document.getElementById("cancelReset").addEventListener("click", closeModal);
 }
 
+/* ================= HOJA DE RUTA DE GRAMÁTICA (estilo Murphy) ================= */
+// units:[{id,name}] — id coincide con una clave de GU_UNITS cuando ya está implementada.
+// Las unidades sin contenido en GU_UNITS aparecen automáticamente como "Próximamente".
+const CATEGORY_TREE = [
+  { id:"present-past", name:"Present and Past", icon:"🕐", color:"#16a34a", bg:"#dcfce7",
+    desc:"Presente simple, presente continuo, pasado simple y pasado continuo — la base de todo.",
+    units:[
+      {id:"present-continuous", name:"Present continuous (I am doing)"},
+      {id:"present-simple", name:"Present simple (I do)"},
+      {id:"ps-pc-1", name:"Present continuous and present simple 1"},
+      {id:"ps-pc-2", name:"Present continuous and present simple 2"},
+      {id:"past-simple", name:"Past simple (I did)"},
+      {id:"past-continuous", name:"Past continuous (I was doing)"}
+    ] },
+  { id:"perfect-past", name:"Present perfect and past", icon:"⏳", color:"#ea580c", bg:"#ffedd5",
+    desc:"Present perfect, past perfect, for/since, have got, used to...",
+    units:[
+      {id:"pp-1", name:"Present perfect 1 (I have done)"},
+      {id:"pp-2", name:"Present perfect 2 (I have done)"},
+      {id:"pp-continuous", name:"Present perfect continuous (I have been doing)"},
+      {id:"pp-continuous-simple", name:"Present perfect continuous and simple"},
+      {id:"how-long", name:"How long have you (been) …?"},
+      {id:"for-since", name:"for and since, when …? and how long …?"},
+      {id:"pp-past-1", name:"Present perfect and past 1 (I have done and I did)"},
+      {id:"pp-past-2", name:"Present perfect and past 2 (I have done and I did)"},
+      {id:"past-perfect", name:"Past perfect (I had done)"},
+      {id:"past-perfect-c", name:"Past perfect continuous (I had been doing)"},
+      {id:"have-got", name:"have and have got"},
+      {id:"used-to", name:"used to (do)"}
+    ] },
+  { id:"future", name:"Future", icon:"🔮", color:"#2563eb", bg:"#dbeafe",
+    desc:"Presente con valor de futuro, going to, will/shall...",
+    units:[
+      {id:"future-present", name:"Present tenses for the future"},
+      {id:"going-to", name:"I'm going to (do)"},
+      {id:"will-1", name:"will and shall 1"},
+      {id:"will-2", name:"will and shall 2"},
+      {id:"will-vs-going-to", name:"I will and I'm going to"},
+      {id:"will-be-doing", name:"will be doing and will have done"},
+      {id:"when-if", name:"when I do / when I've done, if and when"}
+    ] },
+  { id:"modals", name:"Modals", icon:"🧠", color:"#7c3aed", bg:"#ede9fe",
+    desc:"can/could/must/may/might/should/would y sus usos.",
+    units:[
+      {id:"can-able", name:"can, could and (be) able to"},
+      {id:"could-have", name:"could (do) and could have (done)"},
+      {id:"must-cant", name:"must and can't"},
+      {id:"may-might-1", name:"may and might 1"},
+      {id:"may-might-2", name:"may and might 2"},
+      {id:"have-to", name:"have to and must"},
+      {id:"mustnt-neednt", name:"must, mustn't, needn't"},
+      {id:"should-1", name:"should 1"},
+      {id:"should-2", name:"should 2"},
+      {id:"better-time", name:"I'd better…, it's time…"},
+      {id:"would", name:"would"},
+      {id:"requests", name:"can/could/would you…? (requests, offers, permission)"}
+    ] },
+  { id:"if-wish", name:"If and wish", icon:"🌀", color:"#db2777", bg:"#fce7f3",
+    desc:"Condicionales y wish.",
+    units:[
+      {id:"if-do-did", name:"if I do… and if I did…"},
+      {id:"if-knew", name:"if I knew…, I wish I knew…"},
+      {id:"if-had-known", name:"if I had known…, I wish I had known…"},
+      {id:"wish", name:"wish"}
+    ] },
+  { id:"passive", name:"Passive", icon:"🛠️", color:"#0891b2", bg:"#cffafe",
+    desc:"Voz pasiva en todos sus tiempos.",
+    units:[
+      {id:"passive-1", name:"Passive 1 (is done / was done)"},
+      {id:"passive-2", name:"Passive 2 (be done / been done / being done)"},
+      {id:"passive-3", name:"Passive 3"},
+      {id:"said-to", name:"it is said that…, he is said to…, supposed to…"},
+      {id:"have-done", name:"have something done"}
+    ] },
+  { id:"reported", name:"Reported speech", icon:"🗣️", color:"#ca8a04", bg:"#fef9c3",
+    desc:"Estilo indirecto.",
+    units:[
+      {id:"reported-1", name:"Reported speech 1 (he said that…)"},
+      {id:"reported-2", name:"Reported speech 2"}
+    ] },
+  { id:"questions", name:"Questions and auxiliary verbs", icon:"❓", color:"#4338ca", bg:"#e0e7ff",
+    desc:"Preguntas, verbos auxiliares y question tags.",
+    units:[
+      {id:"questions-1", name:"Questions 1"},
+      {id:"questions-2", name:"Questions 2 (do you know where…?)"},
+      {id:"auxiliary", name:"Auxiliary verbs, I think so / I hope so"},
+      {id:"tags", name:"Question tags (do you? isn't it?)"}
+    ] },
+  { id:"ing-to", name:"-ing and to…", icon:"🔗", color:"#059669", bg:"#d1fae5",
+    desc:"Verbo + -ing, verbo + to, y todos sus matices.",
+    units:[
+      {id:"verb-ing", name:"Verb + -ing (enjoy doing, stop doing)"},
+      {id:"verb-to", name:"Verb + to… (decide to, forget to)"},
+      {id:"verb-obj-to", name:"Verb (+ object) + to… (I want you to)"},
+      {id:"ing-to-1", name:"Verb + -ing or to… 1 (remember, regret)"},
+      {id:"ing-to-2", name:"Verb + -ing or to… 2 (try, need, help)"},
+      {id:"ing-to-3", name:"Verb + -ing or to… 3 (like, would like)"},
+      {id:"prefer", name:"prefer and would rather"},
+      {id:"prep-ing", name:"Preposition + -ing"},
+      {id:"used-to-ing", name:"be/get used to… (I'm used to…)"},
+      {id:"verb-prep-ing", name:"Verb + preposition + -ing"},
+      {id:"no-point", name:"there's no point in -ing, it's worth -ing"},
+      {id:"to-for-so-that", name:"to…, for… and so that…"},
+      {id:"adj-to", name:"Adjective + to…"},
+      {id:"afraid-to", name:"afraid to do / afraid of -ing"},
+      {id:"see-somebody", name:"see somebody do / see somebody doing"},
+      {id:"ing-clauses", name:"-ing clauses (He hurt his knee playing football)"}
+    ] },
+  { id:"articles-nouns", name:"Articles and nouns", icon:"🔤", color:"#b91c1c", bg:"#fee2e2",
+    desc:"Contables, incontables, a/an/the, plurales...",
+    units:[
+      {id:"count-1", name:"Countable and uncountable 1"},
+      {id:"count-2", name:"Countable and uncountable 2"},
+      {id:"a-some", name:"Countable nouns with a/an and some"},
+      {id:"a-the", name:"a/an and the"},
+      {id:"the-1", name:"the 1"},
+      {id:"the-2", name:"the 2 (school / the school)"},
+      {id:"the-3", name:"the 3 (children / the children)"},
+      {id:"the-4", name:"the 4 (the giraffe / the old)"},
+      {id:"names-1", name:"Names with and without the 1"},
+      {id:"names-2", name:"Names with and without the 2"},
+      {id:"singular-plural", name:"Singular and plural"},
+      {id:"noun-noun", name:"Noun + noun (a bus driver)"},
+      {id:"apostrophe-s", name:"'s and of…"}
+    ] },
+  { id:"pronouns", name:"Pronouns and determiners", icon:"👥", color:"#0d9488", bg:"#ccfbf1",
+    desc:"myself, some/any, much/many, all/every...",
+    units:[
+      {id:"reflexive", name:"myself/yourself/themselves etc."},
+      {id:"friend-of-mine", name:"a friend of mine, my own house, by myself"},
+      {id:"there-it", name:"there… and it…"},
+      {id:"some-any", name:"some and any"},
+      {id:"no-none", name:"no/none/any, nothing/nobody"},
+      {id:"much-many", name:"much, many, little, few, a lot, plenty"},
+      {id:"all-most", name:"all/all of, most/most of, no/none of"},
+      {id:"both-neither", name:"both/both of, neither/neither of, either/either of"},
+      {id:"all-every", name:"all, every, whole"},
+      {id:"each-every", name:"each and every"}
+    ] },
+  { id:"relative", name:"Relative clauses", icon:"🧵", color:"#9333ea", bg:"#f3e8ff",
+    desc:"who/that/which, whose/whom/where...",
+    units:[
+      {id:"rel-1", name:"Relative clauses 1: who/that/which"},
+      {id:"rel-2", name:"Relative clauses 2: with and without who/that/which"},
+      {id:"rel-3", name:"Relative clauses 3: whose/whom/where"},
+      {id:"rel-4", name:"Relative clauses 4: extra information (1)"},
+      {id:"rel-5", name:"Relative clauses 5: extra information (2)"},
+      {id:"ing-ed-clauses", name:"-ing and -ed clauses"}
+    ] },
+  { id:"adj-adv", name:"Adjectives and adverbs", icon:"🎨", color:"#c2410c", bg:"#ffedd5",
+    desc:"Comparativos, superlativos, orden de palabras...",
+    units:[
+      {id:"ing-ed-adj", name:"Adjectives ending in -ing and -ed"},
+      {id:"adj-order", name:"Adjectives: a nice new house, you look tired"},
+      {id:"adj-adv-1", name:"Adjectives and adverbs 1 (quick/quickly)"},
+      {id:"adj-adv-2", name:"Adjectives and adverbs 2 (well, fast, hard/hardly)"},
+      {id:"so-such", name:"so and such"},
+      {id:"enough-too", name:"enough and too"},
+      {id:"quite-rather", name:"quite, pretty, rather and fairly"},
+      {id:"comparative-1", name:"Comparative 1 (cheaper, more expensive)"},
+      {id:"comparative-2", name:"Comparative 2 (much better / any better)"},
+      {id:"comparative-3", name:"Comparative 3 (as…as / than)"},
+      {id:"superlative", name:"Superlative (the longest, the most enjoyable)"},
+      {id:"word-order-1", name:"Word order 1: verb + object; place and time"},
+      {id:"word-order-2", name:"Word order 2: adverbs with the verb"},
+      {id:"still-yet", name:"still, any more, yet, already"},
+      {id:"even", name:"even"}
+    ] },
+  { id:"conj-prep", name:"Conjunctions and prepositions", icon:"🔀", color:"#1d4ed8", bg:"#dbeafe",
+    desc:"although, in case, unless, as, like, by, until...",
+    units:[
+      {id:"although", name:"although, though, even though, in spite of, despite"},
+      {id:"in-case", name:"in case"},
+      {id:"unless", name:"unless, as long as, provided"},
+      {id:"as-time", name:"as (as I walked… / as I was…)"},
+      {id:"like-as", name:"like and as"},
+      {id:"like-as-if", name:"like, as if"},
+      {id:"during-while", name:"during, for, while"},
+      {id:"by-until", name:"by and until, by the time…"}
+    ] },
+  { id:"prepositions", name:"Prepositions", icon:"📍", color:"#be123c", bg:"#ffe4e6",
+    desc:"at/on/in, to/into, by, y preposiciones con verbos y adjetivos.",
+    units:[
+      {id:"prep-time", name:"at/on/in (time)"},
+      {id:"on-in-time", name:"on time / in time, at the end / in the end"},
+      {id:"position-1", name:"in/at/on (position) 1"},
+      {id:"position-2", name:"in/at/on (position) 2"},
+      {id:"position-3", name:"in/at/on (position) 3"},
+      {id:"to-into", name:"to, at, in and into"},
+      {id:"other-uses", name:"in/on/at (other uses)"},
+      {id:"by", name:"by"},
+      {id:"noun-prep", name:"Noun + preposition (reason for, cause of)"},
+      {id:"adj-prep-1", name:"Adjective + preposition 1"},
+      {id:"adj-prep-2", name:"Adjective + preposition 2"},
+      {id:"verb-prep-1", name:"Verb + preposition 1 (to and at)"},
+      {id:"verb-prep-2", name:"Verb + preposition 2 (about/for/of/after)"},
+      {id:"verb-prep-3", name:"Verb + preposition 3 (about and of)"},
+      {id:"verb-prep-4", name:"Verb + preposition 4 (of/for/from/on)"},
+      {id:"verb-prep-5", name:"Verb + preposition 5 (in/into/with/to/on)"}
+    ] },
+  { id:"phrasal", name:"Phrasal verbs", icon:"🧲", color:"#4d7c0f", bg:"#ecfccb",
+    desc:"in/out, on/off, up/down, away/back...",
+    units:[
+      {id:"phrasal-1", name:"Phrasal verbs 1: introduction"},
+      {id:"phrasal-2", name:"Phrasal verbs 2: in/out"},
+      {id:"phrasal-3", name:"Phrasal verbs 3: out"},
+      {id:"phrasal-4", name:"Phrasal verbs 4: on/off (1)"},
+      {id:"phrasal-5", name:"Phrasal verbs 5: on/off (2)"},
+      {id:"phrasal-6", name:"Phrasal verbs 6: up/down"},
+      {id:"phrasal-7", name:"Phrasal verbs 7: up (1)"},
+      {id:"phrasal-8", name:"Phrasal verbs 8: up (2)"},
+      {id:"phrasal-9", name:"Phrasal verbs 9: away/back"}
+    ] },
+  { id:"appendices", name:"Appendices", icon:"📎", color:"#475569", bg:"#f1f5f9",
+    desc:"Verbos irregulares, resumen de tiempos, formas cortas, ortografía e inglés americano.",
+    units:[
+      {id:"app-1-verbs", name:"Appendix 1: Regular and irregular verbs"},
+      {id:"app-2-tenses", name:"Appendix 2: Present and past tenses"},
+      {id:"app-3-future", name:"Appendix 3: The future"},
+      {id:"app-4-modals", name:"Appendix 4: Modal verbs (can/could/will/would etc.)"},
+      {id:"app-5-shortforms", name:"Appendix 5: Short forms (I'm / you've / didn't etc.)"},
+      {id:"app-6-spelling", name:"Appendix 6: Spelling"},
+      {id:"app-7-american", name:"Appendix 7: American English"}
+    ] }
+];
+function guCategoryMastery(catId){
+  const cat = CATEGORY_TREE.find(c => c.id===catId);
+  if(!cat) return {mastered:0,total:0};
+  let mastered=0, total=0;
+  cat.units.forEach(u => {
+    const unit = (typeof GU_UNITS!=="undefined") ? GU_UNITS[u.id] : null;
+    if(!unit) return;
+    const ms = guMasteryStats(unit);
+    mastered += ms.mastered; total += ms.total;
+  });
+  return {mastered:mastered, total:total};
+}
+
 /* ================= REGISTRO DE MÓDULOS + HUB ================= */
 const MODULES = [
   { id:"in-on-at", name:"IN · ON · AT", icon:"🔎", color:"var(--in)", bg:"var(--in-bg)",
     desc:"Preposiciones de tiempo y lugar con la metáfora del zoom.",
     status:"ready", mastery: () => masteryStats(), enter: () => enterIOA() },
-  { id:"present-simple", name:"Presente Simple", icon:"🟢", color:"var(--on)", bg:"var(--on-bg)",
-    desc:"Afirmativa, negativa, preguntas y la -s de tercera persona.",
-    status:"ready", mastery: () => psMasteryStats(), enter: () => enterPS() },
-  { id:"present-continuous", name:"Presente Continuo", icon:"🟣", color:"#7c3aed", bg:"#ede9fe",
-    desc:"Am/is/are + -ing, ortografía y el contraste con el presente simple.",
-    status:"ready", mastery: () => pcMasteryStats(), enter: () => enterPC() },
+].concat(CATEGORY_TREE.map(cat => ({
+    id: cat.id, name: cat.name, icon: cat.icon, color: cat.color, bg: cat.bg, desc: cat.desc,
+    get status(){ return cat.units.some(u => (typeof GU_UNITS!=="undefined") && GU_UNITS[u.id]) ? "ready" : "soon"; },
+    mastery: () => guCategoryMastery(cat.id),
+    enter: () => enterCategory(cat.id)
+  }))).concat([
   { id:"vocabulary", name:"Chunks", icon:"🧩", color:"var(--at)", bg:"var(--at-bg)",
     desc:"Los chunks (colocaciones y expresiones) más rentables para el B2, tipo Anki.",
     status:"ready", mastery: () => vocabMasteryStats(), enter: () => enterVocab() },
@@ -1474,26 +1700,67 @@ const MODULES = [
   { id:"grammar-test", name:"Grammar & Vocab Test", icon:"📝", color:"#4338ca", bg:"#eef2ff",
     desc:"Test de 50 preguntas de gramática y vocabulario, con explicación.",
     status:"ready", mastery: () => gtMasteryStats(), enter: () => enterGT() }
-];
-function allModuleEls(){ return ["module-ioa","module-ps","module-pc","module-vocab","module-av","module-rd","module-gt"].map(id=>document.getElementById(id)); }
-function allNavEls(){ return ["nav-ioa","nav-ps","nav-pc","nav-vocab","nav-av","nav-rd","nav-gt"].map(id=>document.getElementById(id)); }
+]);
+function enterCategory(catId){
+  const cat = CATEGORY_TREE.find(c => c.id===catId);
+  if(!cat) return;
+  currentCategoryId = catId;
+  enterModuleUI("module-catmenu", null, "‹ Módulos", showHub);
+  renderCategoryMenu(catId);
+}
+function renderCategoryMenu(catId){
+  const cat = CATEGORY_TREE.find(c => c.id===catId);
+  const host = document.getElementById("module-catmenu");
+  if(!cat){ host.innerHTML = "<p>Categoría no encontrada.</p>"; return; }
+  const cards = cat.units.map((u,i) => {
+    const unit = GU_UNITS[u.id];
+    const ready = !!unit;
+    const ms = ready ? guMasteryStats(unit) : {mastered:0,total:0};
+    const pct = ms.total ? Math.round(ms.mastered/ms.total*100) : 0;
+    let meta, bar;
+    if(!ready){ meta = '<span class="modSoon">PRÓXIMAMENTE</span>'; bar=''; }
+    else if(ms.total===0){ meta = '<span>Sin empezar</span>'; bar=''; }
+    else { meta = '<span>'+ms.mastered+' / '+ms.total+' dominadas</span><span>'+pct+'%</span>'; bar = '<div class="modProg"><div style="width:'+pct+'%; background:'+unit.color+';"></div></div>'; }
+    return '<button class="modCard" data-u="'+u.id+'"'+(ready?'':' disabled')+'>' +
+        '<div class="modIcon" style="background:'+(ready?unit.pillBg:'#f1f5f9')+';">'+(ready?unit.icon:(i+1))+'</div>' +
+        '<div class="modBody">' +
+          '<div class="modName">'+esc(u.name)+'</div>' + bar +
+          '<div class="modMeta">'+meta+'</div>' +
+        '</div>' + (ready ? '<div class="modChevron">›</div>' : '') +
+      '</button>';
+  }).join("");
+  host.innerHTML =
+    '<div class="hubHead">'+esc(cat.name)+'</div>' +
+    '<p class="hubSub">'+esc(cat.desc)+'</p>' +
+    cards;
+  host.querySelectorAll(".modCard").forEach(btn => {
+    if(btn.disabled) return;
+    btn.addEventListener("click", () => enterGU(btn.dataset.u));
+  });
+}
+let currentCategoryId = null;
+function allModuleEls(){ return ["module-ioa","module-catmenu","module-gu","module-vocab","module-av","module-rd","module-gt"].map(id=>document.getElementById(id)); }
+function allNavEls(){ return ["nav-ioa","nav-gu","nav-vocab","nav-av","nav-rd","nav-gt"].map(id=>document.getElementById(id)); }
+let brandBackAction = showHub;
 function showHub(){
   APP.lastModuleId = null;
   allModuleEls().forEach(el => { if(el){ el.classList.remove("active"); el.style.display="none"; } });
   allNavEls().forEach(el => { if(el) el.style.display="none"; });
   document.getElementById("screen-hub").classList.add("active");
   document.getElementById("brand").textContent = "🔎 El Zoom del Inglés";
+  brandBackAction = showHub;
   renderHub();
   window.scrollTo(0,0);
 }
-function enterModuleUI(moduleElId, navElId){
+function enterModuleUI(moduleElId, navElId, backLabel, backAction){
   document.getElementById("screen-hub").classList.remove("active");
   allModuleEls().forEach(el => { if(el){ el.classList.remove("active"); el.style.display="none"; } });
   allNavEls().forEach(el => { if(el) el.style.display="none"; });
   const mEl = document.getElementById(moduleElId);
   if(mEl){ mEl.classList.add("active"); mEl.style.display="block"; }
   if(navElId){ const n=document.getElementById(navElId); if(n) n.style.display="flex"; }
-  document.getElementById("brand").textContent = "‹ Módulos";
+  document.getElementById("brand").textContent = backLabel || "‹ Módulos";
+  brandBackAction = backAction || showHub;
   window.scrollTo(0,0);
 }
 function enterModule(id){
@@ -1538,8 +1805,210 @@ function enterIOA(){
   showView("inicio");
 }
 
-/* ================= MÓDULO: PRESENTE SIMPLE ================= */
-let psState = APP.modules["present-simple"];
+/* ================= MOTOR GENÉRICO DE UNIDADES DE GRAMÁTICA (GU) ================= */
+// Cada unidad (present-simple, past-continuous, etc.) es solo DATOS: {id,name,icon,color,pillBg,pillColor,
+// subtitle,learnHtml,catLabel,catChip,bank}. La lógica de aprender/practicar/examen es una sola vez para todas.
+let guUnit = null, guState = null;
+let guSessionCounter = 0, guRepeatQueue = [], guRepeatCounts = {}, guLastId = null;
+let guExam = {phase:"intro", queue:null, idx:0, score:0};
+
+function getGUState(unit){
+  const key = unit.stateKey || ("gu:" + unit.id);
+  APP.modules[key] = mergeDefaults(GU_DEFAULT, APP.modules[key] || {});
+  return APP.modules[key];
+}
+function guScheduleSRS(id, correct){
+  const today = todayISO();
+  let entry = guState.srs[id];
+  if(!entry) entry = {stage:0, due:today, reps:0, lapses:0};
+  if(correct){
+    entry.stage = Math.min(entry.stage + 1, STAGE_DAYS.length - 1);
+    entry.reps++; entry.due = addDaysISO(today, STAGE_DAYS[entry.stage]);
+  } else {
+    entry.stage = 0; entry.lapses++; entry.due = today;
+    guRepeatQueue = guRepeatQueue.filter(it => it.id !== id);
+    const t = guRepeatCounts[id] || 0;
+    if(t < MAX_SESSION_REPEATS){ guRepeatCounts[id] = t + 1; guRepeatQueue.push({id:id, availableAfter: guSessionCounter + 3}); }
+  }
+  guState.srs[id] = entry;
+}
+function guRecordAnswer(ex, correct){
+  const cat = ex.cat;
+  if(!guState.categories[cat]) guState.categories[cat] = {correct:0,total:0};
+  guState.categories[cat].total++;
+  if(correct) guState.categories[cat].correct++;
+  guState.totalAnswered++; if(correct) guState.totalCorrect++;
+  guState.history.push({id:ex.id, cat:cat, date:todayISO(), correct:correct});
+  if(guState.history.length > 500) guState.history.splice(0, guState.history.length - 500);
+  guScheduleSRS(ex.id, correct);
+  updateStreak(); saveState();
+}
+function guMasteryStats(unit){
+  const st = getGUState(unit);
+  let mastered = 0;
+  Object.keys(st.srs).forEach(id => { if((st.srs[id].stage||0) >= 2) mastered++; });
+  return {mastered: mastered, total: unit.bank.length};
+}
+function guPickNext(){
+  const bank = guUnit.bank, byId = guUnit.byId;
+  const today = todayISO();
+  const f = guState.practiceFilter || "todo";
+  const pool = f==="todo" ? bank : bank.filter(e => e.cat===f);
+  const notLast = e => e.id !== guLastId;
+  const due = pool.filter(e => guState.srs[e.id] && guState.srs[e.id].stage>=1 && guState.srs[e.id].due<=today && notLast(e));
+  if(due.length && Math.random() < 0.35) return pick(due);
+  const reps = [];
+  for(let i=0;i<guRepeatQueue.length;i++){
+    const it = guRepeatQueue[i]; const ex = byId[it.id];
+    if(!ex) continue; if(f!=="todo" && ex.cat!==f) continue;
+    if(it.availableAfter <= guSessionCounter && ex.id !== guLastId) reps.push(i);
+  }
+  if(reps.length && Math.random() < 0.35){
+    const idx = pick(reps); const it = guRepeatQueue[idx]; guRepeatQueue.splice(idx,1); return byId[it.id];
+  }
+  let candidates;
+  if(f==="todo"){
+    const cats = Object.keys(guUnit.catLabel);
+    const weighted = cats.map(c => { const s = guState.categories[c]; const acc = s && s.total ? s.correct/s.total : 0.5; return {c:c, w:(1-acc)+0.2}; });
+    const tot = weighted.reduce((a,b)=>a+b.w,0);
+    let r = Math.random()*tot, cc = weighted[0].c;
+    for(const w of weighted){ if(r<=w.w){ cc=w.c; break; } r-=w.w; }
+    candidates = bank.filter(e => e.cat===cc && notLast(e));
+  } else candidates = pool.filter(notLast);
+  if(!candidates.length) candidates = pool.filter(e => e.id !== guLastId);
+  if(!candidates.length) candidates = pool;
+  return pick(candidates);
+}
+function guRenderExercise(mount, ex, handlers){
+  let html = '<div class="exBadgeWrap"><span class="pill" style="background:'+guUnit.pillBg+';color:'+guUnit.pillColor+';">'+guUnit.catLabel[ex.cat]+'</span></div>';
+  if(ex.choose){
+    html += '<p class="smallMuted" style="margin:0 0 10px;">Elige la frase correcta:</p>';
+  } else {
+    html += '<p class="smallMuted" style="margin:0 0 8px;">Completa la frase:</p>';
+    html += '<div class="sentence">'+ ex.blank.replace("___", '<span class="blank">___</span>') +'</div>';
+  }
+  html += '<div>'+ ex.options.map((o,i)=>'<button class="optionCard" data-i="'+i+'">'+esc(o)+'</button>').join("") +'</div>';
+  html += '<div class="fbArea"></div>';
+  mount.innerHTML = html;
+  let answered = false;
+  mount.querySelectorAll(".optionCard").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if(answered) return; answered = true;
+      const i = parseInt(btn.dataset.i,10); const chosen = ex.options[i];
+      const correct = chosen === ex.answer;
+      mount.querySelectorAll(".optionCard").forEach((b,j) => {
+        b.disabled = true;
+        if(j===i) b.classList.add("selected", correct?"correct":"wrong");
+        if(!correct && ex.options[j] === ex.answer) b.classList.add("reveal-correct");
+      });
+      const full = ex.choose ? ex.answer : capitalizeFirst(ex.blank.replace("___", ex.answer));
+      const fb = mount.querySelector(".fbArea");
+      fb.innerHTML = '<div class="feedback '+(correct?"correct":"wrong")+'">' +
+        '<div class="fbTitle">'+(correct?"✅ ¡Correcto!":"❌ No exactamente")+'</div>' +
+        '<div class="fbAnswer">'+ esc(full) +'</div>' +
+        (ex.note ? '<div class="fbNote">'+ ex.note +'</div>' : "") +
+        '<div class="nextBtnWrap"><button class="btn btn-primary nextBtn">Siguiente →</button></div>' +
+      '</div>';
+      mount.querySelector(".nextBtn").addEventListener("click", () => handlers.onNext());
+      handlers.onAnswer(correct, ex);
+    });
+  });
+}
+function guRenderNav(active){
+  const tabs = [["aprender","📖","Aprender"],["practica","🎯","Práctica"],["examen","👑","Examen"]];
+  document.getElementById("nav-gu").innerHTML = tabs.map(t =>
+    '<button data-gu="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
+  ).join("");
+  document.querySelectorAll("#nav-gu button").forEach(b => b.addEventListener("click", () => guShowView(b.dataset.gu)));
+}
+function guShowView(name){
+  if(["aprender","practica","examen"].indexOf(name) === -1) name = "aprender";
+  guRenderNav(name);
+  if(name==="aprender") guRenderLearn();
+  else if(name==="practica") guRenderPractica();
+  else guRenderExam();
+  window.scrollTo(0,0);
+}
+function guRenderLearn(){
+  document.getElementById("module-gu").innerHTML =
+    '<h2 class="title">'+guUnit.icon+' '+esc(guUnit.name)+'</h2>' +
+    '<p class="subtitle">'+guUnit.subtitle+'</p>' +
+    '<div class="card">'+ guUnit.learnHtml +'</div>' +
+    '<button class="btn btn-primary" onclick="__guGo(\'practica\')">Empezar a practicar</button>';
+}
+function guRenderPractica(){
+  guSessionCounter = 0; guRepeatQueue = []; guRepeatCounts = {}; guLastId = null;
+  const f = guState.practiceFilter || "todo";
+  const chips = [["todo","Todo"]].concat(Object.keys(guUnit.catLabel).map(c=>[c, (guUnit.catChip && guUnit.catChip[c]) || guUnit.catLabel[c]]))
+    .map(c => '<button class="chip'+(f===c[0]?" active":"")+'" data-f="'+c[0]+'">'+c[1]+'</button>').join("");
+  document.getElementById("module-gu").innerHTML =
+    '<h2 class="title">'+guUnit.icon+' '+esc(guUnit.name)+' · Práctica</h2>' +
+    '<p class="subtitle">Más ejercicios de donde fallas. Filtra para machacar un tipo.</p>' +
+    '<div class="filterRow wrap">'+chips+'</div>' +
+    '<div class="card" id="guMount"></div>';
+  document.querySelectorAll("#module-gu .chip").forEach(ch => ch.addEventListener("click", () => {
+    guState.practiceFilter = ch.dataset.f; saveState(); guRenderPractica();
+  }));
+  guLoadNext();
+}
+function guLoadNext(){
+  const mount = document.getElementById("guMount"); if(!mount) return;
+  const ex = guPickNext(); if(!ex){ mount.innerHTML = "<p>No hay ejercicios.</p>"; return; }
+  guLastId = ex.id; guSessionCounter++;
+  guRenderExercise(mount, ex, { onAnswer:(c)=>guRecordAnswer(ex,c), onNext:()=>guLoadNext() });
+}
+function guRenderExam(){
+  const host = document.getElementById("module-gu");
+  if(guExam.phase === "exam"){
+    if(guExam.idx >= guExam.queue.length){
+      const total = guExam.queue.length; const pct = Math.round(guExam.score/total*100);
+      guState.jefe.examResults.push({date:todayISO(), score:guExam.score, total:total, pct:pct});
+      saveState(); guExam.phase = "result"; guRenderExam(); return;
+    }
+    const ex = guExam.queue[guExam.idx];
+    host.innerHTML = '<h2 class="title">👑 Examen</h2><p class="subtitle">Pregunta '+(guExam.idx+1)+' de '+guExam.queue.length+' · Aciertos: '+guExam.score+'</p><div class="card" id="guExamMount"></div>';
+    guRenderExercise(document.getElementById("guExamMount"), ex, {
+      onAnswer:(c)=>{ if(c) guExam.score++; },
+      onNext:()=>{ guExam.idx++; guRenderExam(); }
+    });
+  } else if(guExam.phase === "result"){
+    const last = guState.jefe.examResults[guState.jefe.examResults.length-1];
+    const score = safeInt(last.score,0), total = safeInt(last.total,0), pct = safeInt(last.pct,0);
+    const pass = pct >= 80;
+    host.innerHTML = '<div class="card center">' +
+      '<div style="font-size:48px;">'+(pass?"🏆":"📚")+'</div>' +
+      '<h2 class="title">'+(pass?"¡"+esc(guUnit.name)+" superado!":"Casi lo tienes")+'</h2>' +
+      '<p class="subtitle">Acertaste '+score+' de '+total+' ('+pct+'%). '+(pass?"Necesitabas 80%.":"Necesitas 80% para aprobar.")+'</p>' +
+      '<button class="btn btn-outline" id="guExamAgain">Repetir examen</button>' +
+    '</div>';
+    document.getElementById("guExamAgain").addEventListener("click", () => {
+      guExam = {phase:"exam", queue:shuffle(guUnit.bank).slice(0,20), idx:0, score:0}; guRenderExam();
+    });
+  } else {
+    host.innerHTML = '<h2 class="title">👑 Examen de '+esc(guUnit.name)+'</h2>' +
+      '<p class="subtitle">20 preguntas de todo tipo. Necesitas 80% para aprobar.</p>' +
+      '<div class="card"><p class="smallMuted">Si lo necesitas, repasa antes en la pestaña Aprender.</p></div>' +
+      '<button class="btn btn-primary" id="guStartExam">Empezar examen</button>';
+    document.getElementById("guStartExam").addEventListener("click", () => {
+      guExam = {phase:"exam", queue:shuffle(guUnit.bank).slice(0,20), idx:0, score:0}; guRenderExam();
+    });
+  }
+}
+function enterGU(unitId){
+  const unit = GU_UNITS[unitId];
+  if(!unit) return;
+  guUnit = unit;
+  guState = getGUState(unit);
+  const cat = CATEGORY_TREE.find(c => c.units.some(u=>u.id===unitId));
+  const backLabel = cat ? "‹ "+cat.name : "‹ Módulos";
+  enterModuleUI("module-gu","nav-gu", backLabel, () => enterCategory(cat ? cat.id : currentCategoryId));
+  guExam = {phase:"intro", queue:null, idx:0, score:0};
+  guShowView("aprender");
+}
+function __guGo(v){ guShowView(v); }
+window.__guGo = __guGo;
+
+/* ================= CONTENIDO: PRESENTE SIMPLE ================= */
 const PS_CAT_LABEL = {afirmativa:"AFIRMATIVA", negativa:"NEGATIVA", pregunta:"PREGUNTA", tercera:"3ª PERSONA -S", uso:"USO"};
 const PS_BANK = [
   // ----- Afirmativa (forma base con I/you/we/they) -----
@@ -1603,203 +2072,14 @@ const PS_BANK = [
   {id:"ps53", cat:"uso", choose:true, options:["Always she is happy.","She always is happy.","She is always happy."], answer:"She is always happy.", note:"Con 'be', el adverbio de frecuencia va después del verbo: is always.", errorProne:true},
   {id:"ps54", cat:"pregunta", choose:true, options:["Do she likes coffee?","Does she like coffee?","Does she likes coffee?"], answer:"Does she like coffee?", note:"Does + sujeto + verbo base: Does she like...?", errorProne:true}
 ];
-const PS_BY_ID = {}; PS_BANK.forEach(e => PS_BY_ID[e.id] = e);
+const PS_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Afirmativa</div><div class="b">Con <b>I / you / we / they</b> el verbo va en su forma base: <code>I work</code>, <code>they play</code>.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Tercera persona (he / she / it) → +s</div><div class="b">Se añade <b>-s</b>: <code>works</code>, <code>plays</code>.<br>-ch, -sh, -ss, -x, -o → <b>-es</b>: <code>watches</code>, <code>goes</code>.<br>consonante + y → <b>-ies</b>: <code>cry → cries</code>.<br>Irregular: <code>have → has</code>.</div></div>' +
+  '<div class="psRule"><div class="h">3 · Negativa → don\'t / doesn\'t + base</div><div class="b">I/you/we/they → <code>don\'t</code>. he/she/it → <code>doesn\'t</code>.<br>El verbo vuelve a la <b>base</b>: <code>She doesn\'t play</code> (no "doesn\'t plays").</div></div>' +
+  '<div class="psRule"><div class="h">4 · Preguntas → Do / Does + sujeto + base</div><div class="b"><code>Do you like...?</code> · <code>Does she like...?</code><br>Con wh-: <code>Where does she live?</code> El verbo va en base (no "lives").</div></div>' +
+  '<div class="psRule"><div class="h">5 · Uso: adverbios y verbos de estado</div><div class="b">Frecuencia (always, usually, never): <b>antes</b> del verbo normal (<code>I always go</code>) pero <b>después</b> de "be" (<code>She is always late</code>).<br>Verbos de estado (know, like, want, have, understand) van en simple, <b>no</b> en continuo: <code>I think</code>, no "I am thinking" (para opiniones).</div></div>';
 
-let psSessionCounter = 0, psRepeatQueue = [], psRepeatCounts = {}, psLastId = null;
-let psExam = {phase:"intro", queue:null, idx:0, score:0};
-
-function psScheduleSRS(id, correct){
-  const today = todayISO();
-  let entry = psState.srs[id];
-  if(!entry) entry = {stage:0, due:today, reps:0, lapses:0};
-  if(correct){
-    entry.stage = Math.min(entry.stage + 1, STAGE_DAYS.length - 1);
-    entry.reps++; entry.due = addDaysISO(today, STAGE_DAYS[entry.stage]);
-  } else {
-    entry.stage = 0; entry.lapses++; entry.due = today;
-    psRepeatQueue = psRepeatQueue.filter(it => it.id !== id);
-    const t = psRepeatCounts[id] || 0;
-    if(t < MAX_SESSION_REPEATS){ psRepeatCounts[id] = t + 1; psRepeatQueue.push({id:id, availableAfter: psSessionCounter + 3}); }
-  }
-  psState.srs[id] = entry;
-}
-function psRecordAnswer(ex, correct){
-  const cat = ex.cat;
-  if(!psState.categories[cat]) psState.categories[cat] = {correct:0,total:0};
-  psState.categories[cat].total++;
-  if(correct) psState.categories[cat].correct++;
-  psState.totalAnswered++; if(correct) psState.totalCorrect++;
-  psState.history.push({id:ex.id, cat:cat, date:todayISO(), correct:correct});
-  if(psState.history.length > 500) psState.history.splice(0, psState.history.length - 500);
-  psScheduleSRS(ex.id, correct);
-  updateStreak(); saveState();
-}
-function psMasteryStats(){
-  let mastered = 0;
-  Object.keys(psState.srs).forEach(id => { if((psState.srs[id].stage||0) >= 2) mastered++; });
-  return {mastered: mastered, total: PS_BANK.length};
-}
-function psPickNext(){
-  const today = todayISO();
-  const f = psState.practiceFilter || "todo";
-  const pool = f==="todo" ? PS_BANK : PS_BANK.filter(e => e.cat===f);
-  const notLast = e => e.id !== psLastId;
-  const due = pool.filter(e => psState.srs[e.id] && psState.srs[e.id].stage>=1 && psState.srs[e.id].due<=today && notLast(e));
-  if(due.length && Math.random() < 0.35) return pick(due);
-  const reps = [];
-  for(let i=0;i<psRepeatQueue.length;i++){
-    const it = psRepeatQueue[i]; const ex = PS_BY_ID[it.id];
-    if(!ex) continue; if(f!=="todo" && ex.cat!==f) continue;
-    if(it.availableAfter <= psSessionCounter && ex.id !== psLastId) reps.push(i);
-  }
-  if(reps.length && Math.random() < 0.35){
-    const idx = pick(reps); const it = psRepeatQueue[idx]; psRepeatQueue.splice(idx,1); return PS_BY_ID[it.id];
-  }
-  let candidates;
-  if(f==="todo"){
-    const cats = ["afirmativa","negativa","pregunta","tercera","uso"];
-    const weighted = cats.map(c => { const s = psState.categories[c]; const acc = s.total ? s.correct/s.total : 0.5; return {c:c, w:(1-acc)+0.2}; });
-    const tot = weighted.reduce((a,b)=>a+b.w,0);
-    let r = Math.random()*tot, cc = weighted[0].c;
-    for(const w of weighted){ if(r<=w.w){ cc=w.c; break; } r-=w.w; }
-    candidates = PS_BANK.filter(e => e.cat===cc && notLast(e));
-  } else candidates = pool.filter(notLast);
-  if(!candidates.length) candidates = pool.filter(e => e.id !== psLastId);
-  if(!candidates.length) candidates = pool;
-  return pick(candidates);
-}
-function psRenderExercise(mount, ex, handlers){
-  let html = '<div class="exBadgeWrap"><span class="pill ps">'+PS_CAT_LABEL[ex.cat]+'</span></div>';
-  if(ex.choose){
-    html += '<p class="smallMuted" style="margin:0 0 10px;">Elige la frase correcta:</p>';
-  } else {
-    html += '<p class="smallMuted" style="margin:0 0 8px;">Completa la frase:</p>';
-    html += '<div class="sentence">'+ ex.blank.replace("___", '<span class="blank">___</span>') +'</div>';
-  }
-  html += '<div>'+ ex.options.map((o,i)=>'<button class="optionCard" data-i="'+i+'">'+esc(o)+'</button>').join("") +'</div>';
-  html += '<div class="fbArea"></div>';
-  mount.innerHTML = html;
-  let answered = false;
-  mount.querySelectorAll(".optionCard").forEach(btn => {
-    btn.addEventListener("click", () => {
-      if(answered) return; answered = true;
-      const i = parseInt(btn.dataset.i,10); const chosen = ex.options[i];
-      const correct = chosen === ex.answer;
-      mount.querySelectorAll(".optionCard").forEach((b,j) => {
-        b.disabled = true;
-        if(j===i) b.classList.add("selected", correct?"correct":"wrong");
-        if(!correct && ex.options[j] === ex.answer) b.classList.add("reveal-correct");
-      });
-      const full = ex.choose ? ex.answer : capitalizeFirst(ex.blank.replace("___", ex.answer));
-      const fb = mount.querySelector(".fbArea");
-      fb.innerHTML = '<div class="feedback '+(correct?"correct":"wrong")+'">' +
-        '<div class="fbTitle">'+(correct?"✅ ¡Correcto!":"❌ No exactamente")+'</div>' +
-        '<div class="fbAnswer">'+ esc(full) +'</div>' +
-        (ex.note ? '<div class="fbNote">'+ ex.note +'</div>' : "") +
-        '<div class="nextBtnWrap"><button class="btn btn-primary nextBtn">Siguiente →</button></div>' +
-      '</div>';
-      mount.querySelector(".nextBtn").addEventListener("click", () => handlers.onNext());
-      handlers.onAnswer(correct, ex);
-    });
-  });
-}
-function psRenderNav(active){
-  const tabs = [["aprender","📖","Aprender"],["practica","🎯","Práctica"],["examen","👑","Examen"]];
-  document.getElementById("nav-ps").innerHTML = tabs.map(t =>
-    '<button data-ps="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
-  ).join("");
-  document.querySelectorAll("#nav-ps button").forEach(b => b.addEventListener("click", () => psShowView(b.dataset.ps)));
-}
-function psShowView(name){
-  if(["aprender","practica","examen"].indexOf(name) === -1) name = "aprender";
-  psRenderNav(name);
-  if(name==="aprender") psRenderLearn();
-  else if(name==="practica") psRenderPractica();
-  else psRenderExam();
-  window.scrollTo(0,0);
-}
-function psRenderLearn(){
-  document.getElementById("module-ps").innerHTML =
-    '<h2 class="title">🟢 Presente Simple</h2>' +
-    '<p class="subtitle">Rutinas, hechos y cosas que pasan siempre. Domina las 5 piezas y no fallas.</p>' +
-    '<div class="card">' +
-      '<div class="psRule"><div class="h">1 · Afirmativa</div><div class="b">Con <b>I / you / we / they</b> el verbo va en su forma base: <code>I work</code>, <code>they play</code>.</div></div>' +
-      '<div class="psRule"><div class="h">2 · Tercera persona (he / she / it) → +s</div><div class="b">Se añade <b>-s</b>: <code>works</code>, <code>plays</code>.<br>-ch, -sh, -ss, -x, -o → <b>-es</b>: <code>watches</code>, <code>goes</code>.<br>consonante + y → <b>-ies</b>: <code>cry → cries</code>.<br>Irregular: <code>have → has</code>.</div></div>' +
-      '<div class="psRule"><div class="h">3 · Negativa → don\'t / doesn\'t + base</div><div class="b">I/you/we/they → <code>don\'t</code>. he/she/it → <code>doesn\'t</code>.<br>El verbo vuelve a la <b>base</b>: <code>She doesn\'t play</code> (no "doesn\'t plays").</div></div>' +
-      '<div class="psRule"><div class="h">4 · Preguntas → Do / Does + sujeto + base</div><div class="b"><code>Do you like...?</code> · <code>Does she like...?</code><br>Con wh-: <code>Where does she live?</code> El verbo va en base (no "lives").</div></div>' +
-      '<div class="psRule"><div class="h">5 · Uso: adverbios y verbos de estado</div><div class="b">Frecuencia (always, usually, never): <b>antes</b> del verbo normal (<code>I always go</code>) pero <b>después</b> de "be" (<code>She is always late</code>).<br>Verbos de estado (know, like, want, have, understand) van en simple, <b>no</b> en continuo: <code>I think</code>, no "I am thinking" (para opiniones).</div></div>' +
-    '</div>' +
-    '<button class="btn btn-primary" onclick="__psGo(\'practica\')">Empezar a practicar</button>';
-}
-function psRenderPractica(){
-  psSessionCounter = 0; psRepeatQueue = []; psRepeatCounts = {}; psLastId = null;
-  const f = psState.practiceFilter || "todo";
-  const chips = [["todo","Todo"],["afirmativa","Afirm."],["negativa","Neg."],["pregunta","Pregunt."],["tercera","3ª -s"],["uso","Uso"]]
-    .map(c => '<button class="chip'+(f===c[0]?" active":"")+'" data-f="'+c[0]+'">'+c[1]+'</button>').join("");
-  document.getElementById("module-ps").innerHTML =
-    '<h2 class="title">🟢 Presente Simple · Práctica</h2>' +
-    '<p class="subtitle">Más ejercicios de donde fallas. Filtra para machacar un tipo.</p>' +
-    '<div class="filterRow wrap">'+chips+'</div>' +
-    '<div class="card" id="psMount"></div>';
-  document.querySelectorAll("#module-ps .chip").forEach(ch => ch.addEventListener("click", () => {
-    psState.practiceFilter = ch.dataset.f; saveState(); psRenderPractica();
-  }));
-  psLoadNext();
-}
-function psLoadNext(){
-  const mount = document.getElementById("psMount"); if(!mount) return;
-  const ex = psPickNext(); if(!ex){ mount.innerHTML = "<p>No hay ejercicios.</p>"; return; }
-  psLastId = ex.id; psSessionCounter++;
-  psRenderExercise(mount, ex, { onAnswer:(c)=>psRecordAnswer(ex,c), onNext:()=>psLoadNext() });
-}
-function psRenderExam(){
-  const host = document.getElementById("module-ps");
-  if(psExam.phase === "exam"){
-    if(psExam.idx >= psExam.queue.length){
-      const total = psExam.queue.length; const pct = Math.round(psExam.score/total*100);
-      psState.jefe.examResults.push({date:todayISO(), score:psExam.score, total:total, pct:pct});
-      saveState(); psExam.phase = "result"; psRenderExam(); return;
-    }
-    const ex = psExam.queue[psExam.idx];
-    host.innerHTML = '<h2 class="title">👑 Examen</h2><p class="subtitle">Pregunta '+(psExam.idx+1)+' de '+psExam.queue.length+' · Aciertos: '+psExam.score+'</p><div class="card" id="psExamMount"></div>';
-    psRenderExercise(document.getElementById("psExamMount"), ex, {
-      onAnswer:(c)=>{ if(c) psExam.score++; },
-      onNext:()=>{ psExam.idx++; psRenderExam(); }
-    });
-  } else if(psExam.phase === "result"){
-    const last = psState.jefe.examResults[psState.jefe.examResults.length-1];
-    const score = safeInt(last.score,0), total = safeInt(last.total,0), pct = safeInt(last.pct,0);
-    const pass = pct >= 80;
-    host.innerHTML = '<div class="card center">' +
-      '<div style="font-size:48px;">'+(pass?"🏆":"📚")+'</div>' +
-      '<h2 class="title">'+(pass?"¡Presente Simple superado!":"Casi lo tienes")+'</h2>' +
-      '<p class="subtitle">Acertaste '+score+' de '+total+' ('+pct+'%). '+(pass?"Necesitabas 80%.":"Necesitas 80% para aprobar.")+'</p>' +
-      '<button class="btn btn-outline" id="psExamAgain">Repetir examen</button>' +
-    '</div>';
-    document.getElementById("psExamAgain").addEventListener("click", () => {
-      psExam = {phase:"exam", queue:shuffle(PS_BANK).slice(0,20), idx:0, score:0}; psRenderExam();
-    });
-  } else {
-    host.innerHTML = '<h2 class="title">👑 Examen de Presente Simple</h2>' +
-      '<p class="subtitle">20 preguntas de todo: afirmativa, negativa, preguntas, 3ª persona y uso. Necesitas 80% para aprobar.</p>' +
-      '<div class="card"><p class="smallMuted">Si lo necesitas, repasa antes en la pestaña Aprender.</p></div>' +
-      '<button class="btn btn-primary" id="psStartExam">Empezar examen</button>';
-    document.getElementById("psStartExam").addEventListener("click", () => {
-      psExam = {phase:"exam", queue:shuffle(PS_BANK).slice(0,20), idx:0, score:0}; psRenderExam();
-    });
-  }
-}
-function enterPS(){
-  psState = APP.modules["present-simple"];
-  enterModuleUI("module-ps","nav-ps");
-  psExam = {phase:"intro", queue:null, idx:0, score:0};
-  psShowView("aprender");
-}
-function __psGo(v){ psShowView(v); }
-window.__psGo = __psGo;
-
-/* ================= MÓDULO: PRESENTE CONTINUO ================= */
-let pcState = APP.modules["present-continuous"];
+/* ================= CONTENIDO: PRESENTE CONTINUO ================= */
 const PC_CAT_LABEL = {afirmativa:"AFIRMATIVA", negativa:"NEGATIVA", pregunta:"PREGUNTA", ortografia:"ORTOGRAFÍA -ING", uso:"USO Y CONTRASTE"};
 const PC_BANK = [
   // ----- Afirmativa (am/is/are + verbo-ing) -----
@@ -1863,200 +2143,213 @@ const PC_BANK = [
   {id:"pc53", cat:"uso", choose:true, options:["Right now, she cooks dinner.","Right now, she is cooking dinner.","Right now, she cook dinner."], answer:"Right now, she is cooking dinner.", note:"'Right now' señala una acción en curso: presente continuo.", errorProne:true},
   {id:"pc54", cat:"uso", choose:true, options:["He always is losing his phone.","He is always losing his phone.","He always losing his phone."], answer:"He is always losing his phone.", note:"Con 'always' + continuo (queja), el orden es: sujeto + is + always + verbo-ing.", errorProne:true}
 ];
-const PC_BY_ID = {}; PC_BANK.forEach(e => PC_BY_ID[e.id] = e);
+const PC_LEARN_HTML =
+  '<div class="pcRule"><div class="h">1 · Afirmativa → am/is/are + verbo-ing</div><div class="b"><code>I am working</code>, <code>she is working</code>, <code>they are working</code>.</div></div>' +
+  '<div class="pcRule"><div class="h">2 · Negativa → am not / isn\'t / aren\'t + verbo-ing</div><div class="b"><code>I am not working</code>, <code>she isn\'t working</code>, <code>they aren\'t working</code>.</div></div>' +
+  '<div class="pcRule"><div class="h">3 · Preguntas → Am/Is/Are + sujeto + verbo-ing</div><div class="b"><code>Are you working?</code> · <code>What is she doing?</code> El verbo va siempre en -ing.</div></div>' +
+  '<div class="pcRule"><div class="h">4 · Ortografía del -ing</div><div class="b">e muda final se elimina: <code>make → making</code>.<br>vocal corta + consonante final → se dobla: <code>run → running</code>, <code>stop → stopping</code>.<br>-ie final → -y: <code>lie → lying</code>, <code>die → dying</code>.<br>-y no cambia: <code>study → studying</code>, <code>play → playing</code>.</div></div>' +
+  '<div class="pcRule"><div class="h">5 · El contraste que de verdad importa</div><div class="b">Rutina/hecho general → <b>presente simple</b>: <code>I drink tea</code>.<br>Ahora mismo / temporal / plan de futuro → <b>presente continuo</b>: <code>I\'m drinking tea now</code>, <code>She\'s living in Rome these days</code>.<br>Verbos de estado (know, want, like, believe, understand, have de posesión, taste/smell/sound de percepción) casi <b>nunca</b> van en continuo: <code>I understand</code>, no "I am understanding".<br>Truco extra: <code>always</code> + continuo = queja por algo repetitivo (<code>He\'s always losing his keys!</code>).</div></div>';
 
-let pcSessionCounter = 0, pcRepeatQueue = [], pcRepeatCounts = {}, pcLastId = null;
-let pcExam = {phase:"intro", queue:null, idx:0, score:0};
+/* ================= CONTENIDO: PRESENTE CONTINUO + PRESENTE SIMPLE 1 ================= */
+const PP1_CAT_LABEL = {ahora:"AHORA VS RUTINA", estado:"VERBOS DE ESTADO", marcador:"MARCADOR DE TIEMPO", error:"FRASE CORRECTA"};
+const PP1_BANK = [
+  {id:"c1-1", cat:"ahora", blank:"Please be quiet. I ___.", options:["am working","work"], answer:"am working", note:"Ahora mismo, en este momento: presente continuo."},
+  {id:"c1-2", cat:"ahora", blank:"I ___ six days a week.", options:["work","am working"], answer:"work", note:"Rutina habitual: presente simple."},
+  {id:"c1-3", cat:"ahora", blank:"Look! Sarah ___ a beautiful dress.", options:["is wearing","wears"], answer:"is wearing", note:"'Look!' señala algo que pasa justo ahora."},
+  {id:"c1-4", cat:"ahora", blank:"Sarah always ___ nice clothes.", options:["wears","is wearing"], answer:"wears", note:"'Always' con hecho general (no queja) → presente simple."},
+  {id:"c1-5", cat:"ahora", blank:"Listen! Somebody ___.", options:["is singing","sings"], answer:"is singing", note:"'Listen!' señala una acción en curso ahora mismo."},
+  {id:"c1-6", cat:"ahora", blank:"The River Nile ___ into the Mediterranean.", options:["flows","is flowing"], answer:"flows", note:"Hecho geográfico permanente: presente simple."},
+  {id:"c1-7", cat:"ahora", blank:"___ the party right now?", options:["Are you enjoying","Do you enjoy"], answer:"Are you enjoying", note:"'right now' = ahora mismo: presente continuo."},
+  {id:"c1-8", cat:"ahora", blank:"I usually ___ tea for breakfast.", options:["drink","am drinking"], answer:"drink", note:"'Usually' señala rutina: presente simple."},
+  {id:"c1-9", cat:"ahora", blank:"Hurry up! The bus ___.", options:["is coming","comes"], answer:"is coming", note:"Acción que está ocurriendo ahora."},
+  {id:"c1-10", cat:"ahora", blank:"My brother ___ for a bank; he loves it.", options:["works","is working"], answer:"works", note:"Trabajo/situación estable: presente simple."},
+  {id:"c1-11", cat:"estado", blank:"I ___ this exercise, but I can't answer question 3.", options:["understand","am understanding"], answer:"understand", note:"'understand' es verbo de estado: nunca va en continuo."},
+  {id:"c1-12", cat:"estado", blank:"She ___ tired today.", options:["seems","is seeming"], answer:"seems", note:"'seem' es verbo de estado."},
+  {id:"c1-13", cat:"estado", blank:"This coffee ___ great.", options:["smells","is smelling"], answer:"smells", note:"Verbos de percepción (smell, taste, sound) son de estado."},
+  {id:"c1-14", cat:"estado", blank:"I ___ you, but I don't know why.", options:["like","am liking"], answer:"like", note:"'like' es verbo de estado."},
+  {id:"c1-15", cat:"estado", blank:"He ___ this bag; it's his father's.", options:["owns","is owning"], answer:"owns", note:"'own' (poseer) es verbo de estado."},
+  {id:"c1-16", cat:"estado", blank:"I ___ that you're right.", options:["suppose","am supposing"], answer:"suppose", note:"'suppose' (opinar) es verbo de estado."},
+  {id:"c1-17", cat:"estado", blank:"Right now, I ___ what to do.", options:["don't know","am not knowing"], answer:"don't know", note:"'know' nunca va en continuo, ni siquiera con 'right now'."},
+  {id:"c1-18", cat:"marcador", blank:"I'm afraid I ___ right now; call back later.", options:["am driving","drive"], answer:"am driving", note:"'right now' → presente continuo."},
+  {id:"c1-19", cat:"marcador", blank:"We ___ dinner at 8 every evening.", options:["have","are having"], answer:"have", note:"'every evening' → rutina, presente simple."},
+  {id:"c1-20", cat:"marcador", blank:"At the moment, prices ___ fast.", options:["are rising","rise"], answer:"are rising", note:"'at the moment' + cambio en curso → presente continuo."},
+  {id:"c1-21", cat:"marcador", blank:"These days, more people ___ bikes to work.", options:["are using","use"], answer:"are using", note:"'these days' señala una tendencia temporal, no permanente."},
+  {id:"c1-22", cat:"marcador", blank:"Water ___ at 0°C.", options:["freezes","is freezing"], answer:"freezes", note:"Hecho científico: presente simple."},
+  {id:"c1-23", cat:"marcador", blank:"___ a lot in this city?", options:["Does it rain","Is it raining"], answer:"Does it rain", note:"Pregunta sobre un hecho general/rutina climática."},
+  {id:"c1-24", cat:"marcador", blank:"Why ___ at me like that?", options:["are you looking","do you look"], answer:"are you looking", note:"Acción que ocurre justo ahora."},
+  {id:"c1-25", cat:"error", choose:true, options:["I am not understanding this.","I don't understand this.","I not understand this."], answer:"I don't understand this.", note:"'understand' es verbo de estado: nunca en continuo.", errorProne:true},
+  {id:"c1-26", cat:"error", choose:true, options:["She is having three sisters.","She has three sisters.","She have three sisters."], answer:"She has three sisters.", note:"'have' de posesión es verbo de estado.", errorProne:true},
+  {id:"c1-27", cat:"error", choose:true, options:["I think you're right.","I am thinking you're right.","I thinking you're right."], answer:"I think you're right.", note:"Opinar con 'think' es presente simple, no continuo.", errorProne:true},
+  {id:"c1-28", cat:"error", choose:true, options:["He always is complaining.","He is always complaining.","He always complaining."], answer:"He is always complaining.", note:"'always' + queja: sujeto + is + always + verbo-ing.", errorProne:true}
+];
 
-function pcScheduleSRS(id, correct){
-  const today = todayISO();
-  let entry = pcState.srs[id];
-  if(!entry) entry = {stage:0, due:today, reps:0, lapses:0};
-  if(correct){
-    entry.stage = Math.min(entry.stage + 1, STAGE_DAYS.length - 1);
-    entry.reps++; entry.due = addDaysISO(today, STAGE_DAYS[entry.stage]);
-  } else {
-    entry.stage = 0; entry.lapses++; entry.due = today;
-    pcRepeatQueue = pcRepeatQueue.filter(it => it.id !== id);
-    const t = pcRepeatCounts[id] || 0;
-    if(t < MAX_SESSION_REPEATS){ pcRepeatCounts[id] = t + 1; pcRepeatQueue.push({id:id, availableAfter: pcSessionCounter + 3}); }
+/* ================= CONTENIDO: PRESENTE CONTINUO + PRESENTE SIMPLE 2 ================= */
+const PP2_CAT_LABEL = {cambio:"SITUACIONES QUE CAMBIAN", temporal:"TEMPORAL VS PERMANENTE", dobleverbo:"DOS HUECOS", excepcion:"VERBOS CON DOBLE SENTIDO", error:"FRASE CORRECTA"};
+const PP2_BANK = [
+  {id:"c2-1", cat:"cambio", blank:"The population of the world ___ very fast.", options:["is increasing","increases"], answer:"is increasing", note:"Situación en desarrollo, no un hecho fijo: presente continuo."},
+  {id:"c2-2", cat:"cambio", blank:"Your English ___ better.", options:["is getting","gets"], answer:"is getting", note:"'get + comparativo' para cambios en curso."},
+  {id:"c2-3", cat:"cambio", blank:"The weather ___ worse these days.", options:["is getting","gets"], answer:"is getting", note:"Cambio progresivo y temporal."},
+  {id:"c2-4", cat:"cambio", blank:"More and more people ___ working from home.", options:["are choosing","choose"], answer:"are choosing", note:"Tendencia actual y cambiante."},
+  {id:"c2-5", cat:"temporal", blank:"I usually ___ at home, but this month I ___ at my sister's.", options:["live / am living","am living / live"], answer:"live / am living", note:"Permanente (live) vs. temporal (am living)."},
+  {id:"c2-6", cat:"temporal", blank:"He ___ in a hotel until his flat is ready.", options:["is staying","stays"], answer:"is staying", note:"Situación explícitamente temporal."},
+  {id:"c2-7", cat:"temporal", blank:"My parents ___ in Madrid; they've lived there for 30 years.", options:["live","are living"], answer:"live", note:"Situación permanente: presente simple."},
+  {id:"c2-8", cat:"temporal", blank:"She ___ French this term as an extra subject.", options:["is studying","studies"], answer:"is studying", note:"'this term' marca algo temporal."},
+  {id:"c2-9", cat:"dobleverbo", blank:"I usually ___ the bus, but today I ___ a taxi.", options:["take / am taking","am taking / take"], answer:"take / am taking", note:"Rutina (take) vs. hoy, algo distinto (am taking)."},
+  {id:"c2-10", cat:"dobleverbo", blank:"Normally I ___ jeans, but today I ___ a suit for the interview.", options:["wear / am wearing","am wearing / wear"], answer:"wear / am wearing", note:"Mismo patrón: rutina + excepción de hoy."},
+  {id:"c2-11", cat:"dobleverbo", blank:"We usually ___ at home, but this week we ___ out because the kitchen is being fixed.", options:["eat / are eating","are eating / eat"], answer:"eat / are eating", note:"Rutina + situación temporal de esta semana."},
+  {id:"c2-12", cat:"excepcion", blank:"I ___ dinner at the moment — can you call back?", options:["am having","have"], answer:"am having", note:"'have' = comer, es una acción: puede ir en continuo."},
+  {id:"c2-13", cat:"excepcion", blank:"I ___ a great idea!", options:["am having","have"], answer:"am having", note:"'have an idea' es una acción puntual."},
+  {id:"c2-14", cat:"excepcion", blank:"I ___ Tom tomorrow evening.", options:["am seeing","see"], answer:"am seeing", note:"'see' = quedar con alguien (plan): presente continuo."},
+  {id:"c2-15", cat:"excepcion", blank:"Do you ___ what I mean?", options:["see","are seeing"], answer:"see", note:"'see' = entender: verbo de estado."},
+  {id:"c2-16", cat:"excepcion", blank:"The chef ___ the soup to check the salt.", options:["is tasting","tastes"], answer:"is tasting", note:"'taste' = probar activamente: acción."},
+  {id:"c2-17", cat:"excepcion", blank:"This soup ___ salty.", options:["tastes","is tasting"], answer:"tastes", note:"'taste' = tener sabor a: estado."},
+  {id:"c2-18", cat:"excepcion", blank:"I ___ about changing my job.", options:["am thinking","think"], answer:"am thinking", note:"'think about' = estar considerando: acción en curso."},
+  {id:"c2-19", cat:"excepcion", blank:"I ___ you should accept the offer.", options:["think","am thinking"], answer:"think", note:"'think that...' = opinar: estado."},
+  {id:"c2-20", cat:"cambio", blank:"Every year the ice caps ___ smaller.", options:["are getting","get"], answer:"are getting", note:"Cambio progresivo año a año."},
+  {id:"c2-21", cat:"temporal", blank:"I ___ the newspaper on the train to work every day.", options:["read","am reading"], answer:"read", note:"Rutina diaria fija, no temporal."},
+  {id:"c2-22", cat:"temporal", blank:"He's not usually like this — he ___ difficult at the moment because of his exams.", options:["is being","is"], answer:"is being", note:"'be + -ing' para describir un comportamiento temporal, no su carácter."},
+  {id:"c2-23", cat:"error", choose:true, options:["She's seeing what you mean.","She sees what you mean.","She see what you mean."], answer:"She sees what you mean.", note:"'see' = entender: verbo de estado.", errorProne:true},
+  {id:"c2-24", cat:"error", choose:true, options:["I'm having three brothers.","I have three brothers.","I having three brothers."], answer:"I have three brothers.", note:"'have' de posesión es estado.", errorProne:true},
+  {id:"c2-25", cat:"error", choose:true, options:["The situation is getting worse.","The situation gets worse.","The situation is get worse."], answer:"The situation is getting worse.", note:"Cambio progresivo: presente continuo.", errorProne:true},
+  {id:"c2-26", cat:"error", choose:true, options:["He usually is working late.","He usually works late.","He usual works late."], answer:"He usually works late.", note:"'usually' con rutina: presente simple.", errorProne:true},
+  {id:"c2-27", cat:"error", choose:true, options:["I'm thinking that's a good idea.","I think that's a good idea.","I am think that's a good idea."], answer:"I think that's a good idea.", note:"Opinión: presente simple.", errorProne:true},
+  {id:"c2-28", cat:"cambio", blank:"Prices ___ every year because of inflation.", options:["rise","are rising"], answer:"rise", note:"Hecho repetido y regular ('every year'): presente simple."}
+];
+
+/* ================= CONTENIDO: PASADO SIMPLE ================= */
+const PA_CAT_LABEL = {bewas:"WAS / WERE", regular:"REGULARES -ED", irregular:"IRREGULARES", negativa:"NEGATIVA", pregunta:"PREGUNTA", error:"FRASE CORRECTA"};
+const PA_BANK = [
+  {id:"pa1", cat:"bewas", blank:"I ___ tired last night.", options:["was","were"], answer:"was", note:"I/he/she/it → was."},
+  {id:"pa2", cat:"bewas", blank:"They ___ at home yesterday.", options:["was","were"], answer:"were", note:"we/you/they → were."},
+  {id:"pa3", cat:"bewas", blank:"___ you at the party on Friday?", options:["Was","Were"], answer:"Were", note:"'you' → were."},
+  {id:"pa4", cat:"bewas", blank:"It ___ very cold last winter.", options:["was","were"], answer:"was", note:"'it' → was."},
+  {id:"pa5", cat:"bewas", blank:"There ___ a lot of people at the concert.", options:["was","were"], answer:"were", note:"'there' + sustantivo plural → were."},
+  {id:"pa6", cat:"bewas", blank:"She ___ not happy with the results.", options:["was","were"], answer:"was", note:"'she' → was."},
+  {id:"pa7", cat:"regular", blank:"I ___ (work) late yesterday.", options:["worked","workted"], answer:"worked", note:"Verbo regular: base + -ed."},
+  {id:"pa8", cat:"regular", blank:"They ___ (stop) at the traffic lights.", options:["stoped","stopped"], answer:"stopped", note:"Consonante final tras vocal corta → se dobla: stop → stopped."},
+  {id:"pa9", cat:"regular", blank:"She ___ (study) hard for the exam.", options:["studyed","studied"], answer:"studied", note:"Consonante + y → -ied: study → studied."},
+  {id:"pa10", cat:"regular", blank:"He ___ (try) to call you twice.", options:["tryed","tried"], answer:"tried", note:"Consonante + y → -ied: try → tried."},
+  {id:"pa11", cat:"regular", blank:"We ___ (live) in Paris for a year.", options:["lived","liveed"], answer:"lived", note:"e muda final + -ed → solo se añade -d: live → lived."},
+  {id:"pa12", cat:"regular", blank:"I ___ (play) tennis every Saturday last year.", options:["played","playyed"], answer:"played", note:"Vocal + y no cambia: play → played."},
+  {id:"pa13", cat:"irregular", blank:"I ___ (go) to the cinema last night.", options:["went","goed"], answer:"went", note:"'go' es irregular: went."},
+  {id:"pa14", cat:"irregular", blank:"She ___ (see) the film twice.", options:["seen","saw"], answer:"saw", note:"'see' → saw (no 'seen', que es el participio)."},
+  {id:"pa15", cat:"irregular", blank:"They ___ (buy) a new car.", options:["buyed","bought"], answer:"bought", note:"'buy' es irregular: bought."},
+  {id:"pa16", cat:"irregular", blank:"He ___ (write) a long email.", options:["writed","wrote"], answer:"wrote", note:"'write' es irregular: wrote."},
+  {id:"pa17", cat:"irregular", blank:"We ___ (eat) at a nice restaurant.", options:["eated","ate"], answer:"ate", note:"'eat' es irregular: ate."},
+  {id:"pa18", cat:"irregular", blank:"I ___ (take) the wrong bus.", options:["taked","took"], answer:"took", note:"'take' es irregular: took."},
+  {id:"pa19", cat:"irregular", blank:"She ___ (come) home late.", options:["comed","came"], answer:"came", note:"'come' es irregular: came."},
+  {id:"pa20", cat:"irregular", blank:"He ___ (think) it was a good idea.", options:["thinked","thought"], answer:"thought", note:"'think' es irregular: thought."},
+  {id:"pa21", cat:"negativa", blank:"I ___ like the film.", options:["didn't","don't"], answer:"didn't", note:"Negativa en pasado: didn't + base, para todos los sujetos."},
+  {id:"pa22", cat:"negativa", blank:"She didn't ___ the truth.", options:["tell","told"], answer:"tell", note:"Tras didn't, el verbo vuelve a la forma base."},
+  {id:"pa23", cat:"negativa", blank:"They ___ come to the party.", options:["didn't","weren't"], answer:"didn't", note:"'come' es un verbo normal: se niega con didn't."},
+  {id:"pa24", cat:"negativa", blank:"We didn't ___ any money.", options:["have","had"], answer:"have", note:"Tras didn't, verbo base: didn't have."},
+  {id:"pa25", cat:"pregunta", blank:"___ you sleep well?", options:["Did","Was"], answer:"Did", note:"Pregunta con verbo normal: Did + sujeto + base."},
+  {id:"pa26", cat:"pregunta", blank:"What time ___ the film start?", options:["did","was"], answer:"did", note:"Pregunta wh- con verbo normal: did."},
+  {id:"pa27", cat:"pregunta", blank:"Did she ___ the letter?", options:["send","sent"], answer:"send", note:"Tras Did, el verbo va en forma base."},
+  {id:"pa28", cat:"pregunta", blank:"Where ___ you go on holiday?", options:["did","was"], answer:"did", note:"Pregunta wh- con verbo normal: did."},
+  {id:"pa29", cat:"error", choose:true, options:["I goed to school yesterday.","I went to school yesterday.","I have go to school yesterday."], answer:"I went to school yesterday.", note:"'go' es irregular: went, no 'goed'.", errorProne:true},
+  {id:"pa30", cat:"error", choose:true, options:["She didn't went to work.","She didn't go to work.","She not go to work."], answer:"She didn't go to work.", note:"Tras didn't, siempre verbo base.", errorProne:true},
+  {id:"pa31", cat:"error", choose:true, options:["Did you saw the match?","Did you see the match?","You did see the match?"], answer:"Did you see the match?", note:"Did + sujeto + verbo base.", errorProne:true},
+  {id:"pa32", cat:"error", choose:true, options:["There was three people in the room.","There were three people in the room.","There were three person in the room."], answer:"There were three people in the room.", note:"Sustantivo plural (people) → were.", errorProne:true}
+];
+
+/* ================= CONTENIDO: PASADO CONTINUO ================= */
+const PCO_CAT_LABEL = {afirmativa:"AFIRMATIVA", negativa:"NEGATIVA", pregunta:"PREGUNTA", interrumpida:"ACCIÓN INTERRUMPIDA", contraste:"SIMPLE VS CONTINUO"};
+const PCO_BANK = [
+  {id:"pco1", cat:"afirmativa", blank:"I ___ TV when you called.", options:["was watching","watched"], answer:"was watching", note:"Acción larga en curso en un momento del pasado: was/were + -ing."},
+  {id:"pco2", cat:"afirmativa", blank:"They ___ football at 5 o'clock yesterday.", options:["were playing","played"], answer:"were playing", note:"'they' → were + -ing."},
+  {id:"pco3", cat:"afirmativa", blank:"She ___ a book when I arrived.", options:["was reading","read"], answer:"was reading", note:"'she' → was + -ing."},
+  {id:"pco4", cat:"afirmativa", blank:"We ___ dinner at 8pm last night.", options:["were having","had"], answer:"were having", note:"Acción en curso a esa hora exacta."},
+  {id:"pco5", cat:"negativa", blank:"I ___ listening to you.", options:["wasn't","weren't"], answer:"wasn't", note:"'I' → wasn't."},
+  {id:"pco6", cat:"negativa", blank:"They ___ paying attention.", options:["weren't","wasn't"], answer:"weren't", note:"'they' → weren't."},
+  {id:"pco7", cat:"negativa", blank:"He wasn't ___ when the phone rang.", options:["sleeping","slept"], answer:"sleeping", note:"Tras wasn't, el verbo va en -ing."},
+  {id:"pco8", cat:"pregunta", blank:"___ you waiting long?", options:["Were","Was"], answer:"Were", note:"'you' → Were."},
+  {id:"pco9", cat:"pregunta", blank:"What ___ she doing at 9pm?", options:["was","were"], answer:"was", note:"'she' → was."},
+  {id:"pco10", cat:"pregunta", blank:"___ it raining when you left?", options:["Was","Were"], answer:"Was", note:"'it' → Was."},
+  {id:"pco11", cat:"interrumpida", blank:"I was cooking dinner when the phone ___.", options:["rang","was ringing"], answer:"rang", note:"Acción corta que interrumpe → pasado simple."},
+  {id:"pco12", cat:"interrumpida", blank:"While I ___, someone stole my bike.", options:["was shopping","shopped"], answer:"was shopping", note:"Acción larga en curso: pasado continuo."},
+  {id:"pco13", cat:"interrumpida", blank:"When I got home, my sister ___.", options:["was cooking","cooked"], answer:"was cooking", note:"Acción ya en marcha cuando ocurre otra."},
+  {id:"pco14", cat:"interrumpida", blank:"She broke her leg while she ___.", options:["was skiing","skied"], answer:"was skiing", note:"Acción larga interrumpida por un accidente."},
+  {id:"pco15", cat:"interrumpida", blank:"As I ___ the road, I saw an old friend.", options:["was crossing","crossed"], answer:"was crossing", note:"'as' + acción en curso."},
+  {id:"pco16", cat:"interrumpida", blank:"The lights went out while we ___ dinner.", options:["were having","had"], answer:"were having", note:"Acción larga en curso interrumpida por un corte de luz."},
+  {id:"pco17", cat:"contraste", blank:"I ___ my keys yesterday, so I ___ late.", options:["lost / was","was losing / was"], answer:"lost / was", note:"Dos hechos completos y consecutivos → pasado simple."},
+  {id:"pco18", cat:"contraste", blank:"At 10pm last night I ___ in bed.", options:["was","was being"], answer:"was", note:"'be' casi nunca va en continuo."},
+  {id:"pco19", cat:"contraste", blank:"When the accident happened, I ___ my car.", options:["was driving","drove"], answer:"was driving", note:"Acción en curso en el momento exacto de otro evento."},
+  {id:"pco20", cat:"contraste", blank:"I ___ to Rome three times last year.", options:["went","was going"], answer:"went", note:"Número de veces = hechos puntuales repetidos: pasado simple."},
+  {id:"pco21", cat:"contraste", blank:"This time last year I ___ in Australia.", options:["was living","lived"], answer:"was living", note:"Situación temporal en curso en aquel momento."},
+  {id:"pco22", cat:"contraste", choose:true, options:["While I was cooking, the phone was ringing.","While I was cooking, the phone rang.","While I cooked, the phone rang."], answer:"While I was cooking, the phone rang.", note:"Acción larga en curso (was cooking) + acción corta que interrumpe (rang, pasado simple).", errorProne:true},
+  {id:"pco23", cat:"contraste", choose:true, options:["She was have a shower when I called.","She was having a shower when I called.","She had a shower when I called and she was in the shower."], answer:"She was having a shower when I called.", note:"was/were + verbo-ing: was having.", errorProne:true},
+  {id:"pco24", cat:"negativa", choose:true, options:["They were not listening to me.","They was not listening to me.","They not were listening to me."], answer:"They were not listening to me.", note:"'they' → were not.", errorProne:true},
+  {id:"pco25", cat:"pregunta", choose:true, options:["What did you doing at midnight?","What were you doing at midnight?","What was you doing at midnight?"], answer:"What were you doing at midnight?", note:"'you' → were, y el verbo va en -ing.", errorProne:true}
+];
+
+const PP1_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Lo que ya sabes, combinado</div><div class="b">Rutina, hecho general o algo permanente → <b>presente simple</b>: <code>I work in a bank</code>.<br>Ahora mismo, algo temporal, o una reacción a lo que ves → <b>presente continuo</b>: <code>I\'m working from home this week</code>.</div></div>' +
+  '<div class="guRule"><div class="h">2 · Verbos de estado: la trampa más común</div><div class="b">Verbos como <code>know, understand, like, want, believe, seem, own, suppose</code> casi nunca van en continuo, aunque hables de "ahora mismo": <code>I understand</code>, no "I am understanding".</div></div>' +
+  '<div class="guRule"><div class="h">3 · Marcadores que delatan el tiempo</div><div class="b">Presente simple: <code>usually, every day, normally, on Mondays</code>.<br>Presente continuo: <code>now, right now, at the moment, these days, look!, listen!</code>.</div></div>' +
+  '<div class="guRule"><div class="h">4 · always + continuo = queja</div><div class="b"><code>He is always losing his keys!</code> no es una rutina neutra: es una queja por algo que se repite y molesta. El orden es sujeto + is/are + always + verbo-ing.</div></div>';
+
+const PP2_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Situaciones que están cambiando</div><div class="b">Cuando algo está en proceso de cambio (no es un hecho fijo), se usa presente continuo, aunque sea una tendencia larga: <code>The world\'s population is increasing</code>. Con "get + comparativo" (<code>is getting better/worse</code>) casi siempre es continuo.</div></div>' +
+  '<div class="guRule"><div class="h">2 · Temporal vs. permanente</div><div class="b">Algo que dura para siempre o es tu situación habitual → presente simple: <code>My parents live in Madrid</code>.<br>Algo que dura solo un tiempo → presente continuo: <code>He is staying in a hotel this week</code>.</div></div>' +
+  '<div class="guRule"><div class="h">3 · Verbos con doble sentido</div><div class="b"><code>have</code>: posesión (estado, simple) vs. comer/una experiencia (acción, continuo): <code>I have a car</code> / <code>I\'m having lunch</code>.<br><code>see</code>: entender (estado) vs. quedar con alguien (acción): <code>I see what you mean</code> / <code>I\'m seeing Tom tomorrow</code>.<br><code>think</code>: opinar (estado) vs. estar considerando (acción): <code>I think it\'s a good idea</code> / <code>I\'m thinking about it</code>.<br><code>taste/smell/look</code>: cualidad (estado) vs. acción deliberada: <code>This soup tastes salty</code> / <code>The chef is tasting the soup</code>.</div></div>' +
+  '<div class="guRule"><div class="h">4 · El truco de las frases con dos huecos</div><div class="b">Muy típico en el examen: una parte describe la rutina (simple) y la otra, la excepción de hoy (continuo). <code>I usually take the bus, but today I\'m taking a taxi.</code></div></div>';
+
+const PA_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · was / were</div><div class="b">I/he/she/it → <code>was</code>. we/you/they → <code>were</code>. Negativa: <code>wasn\'t / weren\'t</code>. Pregunta: <code>Was/Were + sujeto...?</code>. Con "there": <code>there was</code> (singular), <code>there were</code> (plural).</div></div>' +
+  '<div class="guRule"><div class="h">2 · Verbos regulares → base + -ed</div><div class="b"><code>work → worked</code>. Reglas de ortografía: e muda final → solo -d (<code>live → lived</code>); vocal corta + consonante final → se dobla (<code>stop → stopped</code>); consonante + y → -ied (<code>study → studied</code>); vocal + y no cambia (<code>play → played</code>).</div></div>' +
+  '<div class="guRule"><div class="h">3 · Verbos irregulares</div><div class="b">No siguen ninguna regla, hay que memorizarlos: <code>go → went</code>, <code>see → saw</code>, <code>buy → bought</code>, <code>write → wrote</code>, <code>eat → ate</code>, <code>take → took</code>, <code>come → came</code>, <code>think → thought</code>.</div></div>' +
+  '<div class="guRule"><div class="h">4 · Negativa y pregunta → didn\'t / Did + base</div><div class="b">Para TODOS los sujetos: <code>I didn\'t go</code>, <code>Did she go?</code>. El verbo principal vuelve siempre a su forma base, nunca en pasado: no "Did you went?", sí <code>Did you go?</code></div></div>';
+
+const PCO_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Forma → was/were + verbo-ing</div><div class="b"><code>I was working</code>, <code>they were working</code>. Negativa: <code>wasn\'t/weren\'t + -ing</code>. Pregunta: <code>Was/Were + sujeto + -ing?</code></div></div>' +
+  '<div class="guRule"><div class="h">2 · Acción larga interrumpida por otra corta</div><div class="b">La acción en curso (más larga) va en pasado continuo; la que la interrumpe (más corta) va en pasado simple: <code>I was cooking when the phone rang</code>. Con "while" suele ir la acción larga; con "when" suele ir la acción corta.</div></div>' +
+  '<div class="guRule"><div class="h">3 · Dos acciones en curso a la vez</div><div class="b">Cuando dos cosas pasaban al mismo tiempo, ambas pueden ir en continuo: <code>While I was cooking, she was setting the table.</code></div></div>' +
+  '<div class="guRule"><div class="h">4 · Cuándo NO usar el continuo</div><div class="b">Hechos puntuales completos, aunque se repitan (<code>I went to Rome three times</code>), y el verbo <code>be</code> casi nunca van en pasado continuo.</div></div>';
+
+/* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
+const GU_UNITS = {
+  "present-continuous": {
+    id:"present-continuous", stateKey:"present-continuous", name:"Present continuous", icon:"🟣",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#5b21b6",
+    subtitle:"Acciones en curso ahora mismo, y el contraste con el presente simple. Aquí es donde de verdad se nota el nivel.",
+    learnHtml: PC_LEARN_HTML, catLabel: PC_CAT_LABEL, bank: PC_BANK
+  },
+  "present-simple": {
+    id:"present-simple", stateKey:"present-simple", name:"Present simple", icon:"🟢",
+    color:"#16a34a", pillBg:"var(--on-soft)", pillColor:"var(--on-dark)",
+    subtitle:"Rutinas, hechos y cosas que pasan siempre. Domina las 5 piezas y no fallas.",
+    learnHtml: PS_LEARN_HTML, catLabel: PS_CAT_LABEL, bank: PS_BANK
+  },
+  "ps-pc-1": {
+    id:"ps-pc-1", name:"Present continuous and present simple 1", icon:"🟡",
+    color:"#d97706", pillBg:"#fef3c7", pillColor:"#92400e",
+    subtitle:"El contraste de verdad: ahora mismo frente a rutina, y los verbos de estado que nunca van en continuo.",
+    learnHtml: PP1_LEARN_HTML, catLabel: PP1_CAT_LABEL, bank: PP1_BANK
+  },
+  "ps-pc-2": {
+    id:"ps-pc-2", name:"Present continuous and present simple 2", icon:"🟠",
+    color:"#c2410c", pillBg:"#fed7aa", pillColor:"#7c2d12",
+    subtitle:"Nivel avanzado: situaciones que cambian, temporal vs. permanente, y verbos con doble sentido.",
+    learnHtml: PP2_LEARN_HTML, catLabel: PP2_CAT_LABEL, bank: PP2_BANK
+  },
+  "past-simple": {
+    id:"past-simple", name:"Past simple", icon:"🔴",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#991b1b",
+    subtitle:"Hechos completos y terminados en el pasado: was/were, verbos regulares e irregulares, negativa y pregunta con did.",
+    learnHtml: PA_LEARN_HTML, catLabel: PA_CAT_LABEL, bank: PA_BANK
+  },
+  "past-continuous": {
+    id:"past-continuous", name:"Past continuous", icon:"🌸",
+    color:"#db2777", pillBg:"#fce7f3", pillColor:"#9d174d",
+    subtitle:"Acciones en curso en un momento del pasado, y cómo se interrumpen con el pasado simple.",
+    learnHtml: PCO_LEARN_HTML, catLabel: PCO_CAT_LABEL, bank: PCO_BANK
   }
-  pcState.srs[id] = entry;
-}
-function pcRecordAnswer(ex, correct){
-  const cat = ex.cat;
-  if(!pcState.categories[cat]) pcState.categories[cat] = {correct:0,total:0};
-  pcState.categories[cat].total++;
-  if(correct) pcState.categories[cat].correct++;
-  pcState.totalAnswered++; if(correct) pcState.totalCorrect++;
-  pcState.history.push({id:ex.id, cat:cat, date:todayISO(), correct:correct});
-  if(pcState.history.length > 500) pcState.history.splice(0, pcState.history.length - 500);
-  pcScheduleSRS(ex.id, correct);
-  updateStreak(); saveState();
-}
-function pcMasteryStats(){
-  let mastered = 0;
-  Object.keys(pcState.srs).forEach(id => { if((pcState.srs[id].stage||0) >= 2) mastered++; });
-  return {mastered: mastered, total: PC_BANK.length};
-}
-function pcPickNext(){
-  const today = todayISO();
-  const f = pcState.practiceFilter || "todo";
-  const pool = f==="todo" ? PC_BANK : PC_BANK.filter(e => e.cat===f);
-  const notLast = e => e.id !== pcLastId;
-  const due = pool.filter(e => pcState.srs[e.id] && pcState.srs[e.id].stage>=1 && pcState.srs[e.id].due<=today && notLast(e));
-  if(due.length && Math.random() < 0.35) return pick(due);
-  const reps = [];
-  for(let i=0;i<pcRepeatQueue.length;i++){
-    const it = pcRepeatQueue[i]; const ex = PC_BY_ID[it.id];
-    if(!ex) continue; if(f!=="todo" && ex.cat!==f) continue;
-    if(it.availableAfter <= pcSessionCounter && ex.id !== pcLastId) reps.push(i);
-  }
-  if(reps.length && Math.random() < 0.35){
-    const idx = pick(reps); const it = pcRepeatQueue[idx]; pcRepeatQueue.splice(idx,1); return PC_BY_ID[it.id];
-  }
-  let candidates;
-  if(f==="todo"){
-    const cats = ["afirmativa","negativa","pregunta","ortografia","uso"];
-    const weighted = cats.map(c => { const s = pcState.categories[c]; const acc = s.total ? s.correct/s.total : 0.5; return {c:c, w:(1-acc)+0.2}; });
-    const tot = weighted.reduce((a,b)=>a+b.w,0);
-    let r = Math.random()*tot, cc = weighted[0].c;
-    for(const w of weighted){ if(r<=w.w){ cc=w.c; break; } r-=w.w; }
-    candidates = PC_BANK.filter(e => e.cat===cc && notLast(e));
-  } else candidates = pool.filter(notLast);
-  if(!candidates.length) candidates = pool.filter(e => e.id !== pcLastId);
-  if(!candidates.length) candidates = pool;
-  return pick(candidates);
-}
-function pcRenderExercise(mount, ex, handlers){
-  let html = '<div class="exBadgeWrap"><span class="pill pc">'+PC_CAT_LABEL[ex.cat]+'</span></div>';
-  if(ex.choose){
-    html += '<p class="smallMuted" style="margin:0 0 10px;">Elige la frase correcta:</p>';
-  } else {
-    html += '<p class="smallMuted" style="margin:0 0 8px;">Completa la frase:</p>';
-    html += '<div class="sentence">'+ ex.blank.replace("___", '<span class="blank">___</span>') +'</div>';
-  }
-  html += '<div>'+ ex.options.map((o,i)=>'<button class="optionCard" data-i="'+i+'">'+esc(o)+'</button>').join("") +'</div>';
-  html += '<div class="fbArea"></div>';
-  mount.innerHTML = html;
-  let answered = false;
-  mount.querySelectorAll(".optionCard").forEach(btn => {
-    btn.addEventListener("click", () => {
-      if(answered) return; answered = true;
-      const i = parseInt(btn.dataset.i,10); const chosen = ex.options[i];
-      const correct = chosen === ex.answer;
-      mount.querySelectorAll(".optionCard").forEach((b,j) => {
-        b.disabled = true;
-        if(j===i) b.classList.add("selected", correct?"correct":"wrong");
-        if(!correct && ex.options[j] === ex.answer) b.classList.add("reveal-correct");
-      });
-      const full = ex.choose ? ex.answer : capitalizeFirst(ex.blank.replace("___", ex.answer));
-      const fb = mount.querySelector(".fbArea");
-      fb.innerHTML = '<div class="feedback '+(correct?"correct":"wrong")+'">' +
-        '<div class="fbTitle">'+(correct?"✅ ¡Correcto!":"❌ No exactamente")+'</div>' +
-        '<div class="fbAnswer">'+ esc(full) +'</div>' +
-        (ex.note ? '<div class="fbNote">'+ ex.note +'</div>' : "") +
-        '<div class="nextBtnWrap"><button class="btn btn-primary nextBtn">Siguiente →</button></div>' +
-      '</div>';
-      mount.querySelector(".nextBtn").addEventListener("click", () => handlers.onNext());
-      handlers.onAnswer(correct, ex);
-    });
-  });
-}
-function pcRenderNav(active){
-  const tabs = [["aprender","📖","Aprender"],["practica","🎯","Práctica"],["examen","👑","Examen"]];
-  document.getElementById("nav-pc").innerHTML = tabs.map(t =>
-    '<button data-pc="'+t[0]+'" class="'+(t[0]===active?"active":"")+'"><span class="ic">'+t[1]+'</span><span>'+t[2]+'</span></button>'
-  ).join("");
-  document.querySelectorAll("#nav-pc button").forEach(b => b.addEventListener("click", () => pcShowView(b.dataset.pc)));
-}
-function pcShowView(name){
-  if(["aprender","practica","examen"].indexOf(name) === -1) name = "aprender";
-  pcRenderNav(name);
-  if(name==="aprender") pcRenderLearn();
-  else if(name==="practica") pcRenderPractica();
-  else pcRenderExam();
-  window.scrollTo(0,0);
-}
-function pcRenderLearn(){
-  document.getElementById("module-pc").innerHTML =
-    '<h2 class="title">🟣 Presente Continuo</h2>' +
-    '<p class="subtitle">Acciones en curso ahora mismo, y el contraste con el presente simple. Aquí es donde de verdad se nota el nivel.</p>' +
-    '<div class="card">' +
-      '<div class="pcRule"><div class="h">1 · Afirmativa → am/is/are + verbo-ing</div><div class="b"><code>I am working</code>, <code>she is working</code>, <code>they are working</code>.</div></div>' +
-      '<div class="pcRule"><div class="h">2 · Negativa → am not / isn\'t / aren\'t + verbo-ing</div><div class="b"><code>I am not working</code>, <code>she isn\'t working</code>, <code>they aren\'t working</code>.</div></div>' +
-      '<div class="pcRule"><div class="h">3 · Preguntas → Am/Is/Are + sujeto + verbo-ing</div><div class="b"><code>Are you working?</code> · <code>What is she doing?</code> El verbo va siempre en -ing.</div></div>' +
-      '<div class="pcRule"><div class="h">4 · Ortografía del -ing</div><div class="b">e muda final se elimina: <code>make → making</code>.<br>vocal corta + consonante final → se dobla: <code>run → running</code>, <code>stop → stopping</code>.<br>-ie final → -y: <code>lie → lying</code>, <code>die → dying</code>.<br>-y no cambia: <code>study → studying</code>, <code>play → playing</code>.</div></div>' +
-      '<div class="pcRule"><div class="h">5 · El contraste que de verdad importa</div><div class="b">Rutina/hecho general → <b>presente simple</b>: <code>I drink tea</code>.<br>Ahora mismo / temporal / plan de futuro → <b>presente continuo</b>: <code>I\'m drinking tea now</code>, <code>She\'s living in Rome these days</code>.<br>Verbos de estado (know, want, like, believe, understand, have de posesión, taste/smell/sound de percepción) casi <b>nunca</b> van en continuo: <code>I understand</code>, no "I am understanding".<br>Truco extra: <code>always</code> + continuo = queja por algo repetitivo (<code>He\'s always losing his keys!</code>).</div></div>' +
-    '</div>' +
-    '<button class="btn btn-primary" onclick="__pcGo(\'practica\')">Empezar a practicar</button>';
-}
-function pcRenderPractica(){
-  pcSessionCounter = 0; pcRepeatQueue = []; pcRepeatCounts = {}; pcLastId = null;
-  const f = pcState.practiceFilter || "todo";
-  const chips = [["todo","Todo"],["afirmativa","Afirm."],["negativa","Neg."],["pregunta","Pregunt."],["ortografia","-ing"],["uso","Uso"]]
-    .map(c => '<button class="chip'+(f===c[0]?" active":"")+'" data-f="'+c[0]+'">'+c[1]+'</button>').join("");
-  document.getElementById("module-pc").innerHTML =
-    '<h2 class="title">🟣 Presente Continuo · Práctica</h2>' +
-    '<p class="subtitle">Más ejercicios de donde fallas. Filtra para machacar un tipo.</p>' +
-    '<div class="filterRow wrap">'+chips+'</div>' +
-    '<div class="card" id="pcMount"></div>';
-  document.querySelectorAll("#module-pc .chip").forEach(ch => ch.addEventListener("click", () => {
-    pcState.practiceFilter = ch.dataset.f; saveState(); pcRenderPractica();
-  }));
-  pcLoadNext();
-}
-function pcLoadNext(){
-  const mount = document.getElementById("pcMount"); if(!mount) return;
-  const ex = pcPickNext(); if(!ex){ mount.innerHTML = "<p>No hay ejercicios.</p>"; return; }
-  pcLastId = ex.id; pcSessionCounter++;
-  pcRenderExercise(mount, ex, { onAnswer:(c)=>pcRecordAnswer(ex,c), onNext:()=>pcLoadNext() });
-}
-function pcRenderExam(){
-  const host = document.getElementById("module-pc");
-  if(pcExam.phase === "exam"){
-    if(pcExam.idx >= pcExam.queue.length){
-      const total = pcExam.queue.length; const pct = Math.round(pcExam.score/total*100);
-      pcState.jefe.examResults.push({date:todayISO(), score:pcExam.score, total:total, pct:pct});
-      saveState(); pcExam.phase = "result"; pcRenderExam(); return;
-    }
-    const ex = pcExam.queue[pcExam.idx];
-    host.innerHTML = '<h2 class="title">👑 Examen</h2><p class="subtitle">Pregunta '+(pcExam.idx+1)+' de '+pcExam.queue.length+' · Aciertos: '+pcExam.score+'</p><div class="card" id="pcExamMount"></div>';
-    pcRenderExercise(document.getElementById("pcExamMount"), ex, {
-      onAnswer:(c)=>{ if(c) pcExam.score++; },
-      onNext:()=>{ pcExam.idx++; pcRenderExam(); }
-    });
-  } else if(pcExam.phase === "result"){
-    const last = pcState.jefe.examResults[pcState.jefe.examResults.length-1];
-    const score = safeInt(last.score,0), total = safeInt(last.total,0), pct = safeInt(last.pct,0);
-    const pass = pct >= 80;
-    host.innerHTML = '<div class="card center">' +
-      '<div style="font-size:48px;">'+(pass?"🏆":"📚")+'</div>' +
-      '<h2 class="title">'+(pass?"¡Presente Continuo superado!":"Casi lo tienes")+'</h2>' +
-      '<p class="subtitle">Acertaste '+score+' de '+total+' ('+pct+'%). '+(pass?"Necesitabas 80%.":"Necesitas 80% para aprobar.")+'</p>' +
-      '<button class="btn btn-outline" id="pcExamAgain">Repetir examen</button>' +
-    '</div>';
-    document.getElementById("pcExamAgain").addEventListener("click", () => {
-      pcExam = {phase:"exam", queue:shuffle(PC_BANK).slice(0,20), idx:0, score:0}; pcRenderExam();
-    });
-  } else {
-    host.innerHTML = '<h2 class="title">👑 Examen de Presente Continuo</h2>' +
-      '<p class="subtitle">20 preguntas de todo: afirmativa, negativa, preguntas, ortografía del -ing y el contraste con el presente simple. Necesitas 80% para aprobar.</p>' +
-      '<div class="card"><p class="smallMuted">Si lo necesitas, repasa antes en la pestaña Aprender.</p></div>' +
-      '<button class="btn btn-primary" id="pcStartExam">Empezar examen</button>';
-    document.getElementById("pcStartExam").addEventListener("click", () => {
-      pcExam = {phase:"exam", queue:shuffle(PC_BANK).slice(0,20), idx:0, score:0}; pcRenderExam();
-    });
-  }
-}
-function enterPC(){
-  pcState = APP.modules["present-continuous"];
-  enterModuleUI("module-pc","nav-pc");
-  pcExam = {phase:"intro", queue:null, idx:0, score:0};
-  pcShowView("aprender");
-}
-function __pcGo(v){ pcShowView(v); }
-window.__pcGo = __pcGo;
+};
+Object.keys(GU_UNITS).forEach(id => {
+  const u = GU_UNITS[id];
+  u.byId = {}; u.bank.forEach(e => { u.byId[e.id] = e; });
+});
 
 /* ================= MÓDULO: CHUNKS (tarjetas tipo Anki) ================= */
 const VOCAB_CAT_LABEL = {opinion:"OPINIÓN", linking:"CONECTORES", verbnoun:"VERBO + NOMBRE", adjnoun:"ADJETIVO + NOMBRE", phrasal:"PHRASAL VERBS", prep:"EXPRESIÓN FIJA", social:"CONVERSACIÓN"};
@@ -3116,7 +3409,7 @@ function updateStreakChip(){
 document.querySelectorAll("#nav-ioa button").forEach(b => {
   b.addEventListener("click", () => showView(b.dataset.view));
 });
-document.getElementById("brand").addEventListener("click", showHub);
+document.getElementById("brand").addEventListener("click", () => brandBackAction());
 updateStreakChip();
 showHub();
 setInterval(updateStreakChip, 2000);
