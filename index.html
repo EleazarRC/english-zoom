@@ -3131,6 +3131,356 @@ const MRQ_LEARN_HTML =
   '<div class="psRule"><div class="h">2 · Pedir permiso</div><div class="b">Informal → formal:<br><code>Can I...?</code> → <code>Could I...?</code> → <code>May I...?</code><br>Respuestas afirmativas: <code>Yes, of course. / Certainly. / Sure.</code></div></div>' +
   '<div class="psRule"><div class="h">3 · Would you mind...</div><div class="b"><code>Would you mind + verbo-ing?</code>: <code>Would you mind closing the door?</code><br><code>Would you mind if + sujeto + pasado simple?</code>: <code>Would you mind if I opened the window?</code><br>Respuesta: <code>No, not at all.</code> (= claro que no me importa)</div></div>';
 
+/* ================= CONTENIDO: IF I DO AND IF I DID ================= */
+const IFD_CAT_LABEL = {tipo0:"TIPO 0 (VERDAD GENERAL)", tipo1:"TIPO 1 (REAL FUTURO)", tipo2:"TIPO 2 (IRREAL HOY)", error:"FRASE CORRECTA"};
+const IFD_BANK = [
+  {id:"ifd-1", cat:"tipo0", blank:"If you heat water to 100°C, it ___.", options:["boils","will boil","would boil"], answer:"boils", note:"Tipo 0: verdad general. if + presente simple → presente simple."},
+  {id:"ifd-2", cat:"tipo0", blank:"If she doesn't eat, she ___ hungry.", options:["gets","will get","would get"], answer:"gets", note:"Tipo 0: resultado automático siempre verdadero."},
+  {id:"ifd-3", cat:"tipo1", blank:"If it ___ tomorrow, we'll cancel the picnic.", options:["rains","will rain","rained"], answer:"rains", note:"Tipo 1 real: if + presente simple → will + infinitivo. NUNCA will en la cláusula con if."},
+  {id:"ifd-4", cat:"tipo1", blank:"If she studies hard, she ___ (pass) the exam.", options:["will pass","passes","would pass"], answer:"will pass", note:"Tipo 1: resultado probable en el futuro."},
+  {id:"ifd-5", cat:"tipo1", blank:"He ___ (come) if you invite him.", options:["will come","comes","would come"], answer:"will come", note:"Tipo 1: resultado probable."},
+  {id:"ifd-6", cat:"tipo1", blank:"If you ___ (not/hurry), you'll miss the train.", options:["don't hurry","won't hurry","didn't hurry"], answer:"don't hurry", note:"Tipo 1: if + presente simple (no will en la cláusula con if)."},
+  {id:"ifd-7", cat:"tipo1", blank:"___ you tell me if something goes wrong?", options:["Will","Would","Should"], answer:"Will", note:"Tipo 1: petición sobre futuro real."},
+  {id:"ifd-8", cat:"tipo2", blank:"If I ___ (have) more money, I would travel more.", options:["had","have","would have"], answer:"had", note:"Tipo 2 irreal: if + pasado simple → would + infinitivo. NUNCA would en la cláusula con if."},
+  {id:"ifd-9", cat:"tipo2", blank:"If she knew the answer, she ___ (tell) us.", options:["would tell","tells","will tell"], answer:"would tell", note:"Tipo 2: ella no sabe la respuesta (situación irreal)."},
+  {id:"ifd-10", cat:"tipo2", blank:"I would help you if I ___ (be) able to.", options:["were","am","was"], answer:"were", note:"Tipo 2: 'were' para todos los sujetos en formal (was también en informal)."},
+  {id:"ifd-11", cat:"tipo2", blank:"If they ___ (live) closer, we'd see them more often.", options:["lived","live","would live"], answer:"lived", note:"Tipo 2: situación opuesta a la realidad presente."},
+  {id:"ifd-12", cat:"tipo2", blank:"What ___ you ___ (do) if you lost your job?", options:["would / do","will / do","did / do"], answer:"would / do", note:"Tipo 2 hipotético. What would you do if...?"},
+  {id:"ifd-13", cat:"error", choose:true, options:["If it will rain, we'll cancel the picnic.","If it rains, we'll cancel the picnic.","If it rains, we cancel the picnic."], answer:"If it rains, we'll cancel the picnic.", note:"Tipo 1: if + presente simple (NUNCA will en la cláusula con if).", errorProne:true},
+  {id:"ifd-14", cat:"error", choose:true, options:["If I would have more money, I'd travel more.","If I had more money, I'd travel more.","If I have more money, I'd travel more."], answer:"If I had more money, I'd travel more.", note:"Tipo 2: if + PASADO SIMPLE (nunca would en la cláusula con if).", errorProne:true},
+  {id:"ifd-15", cat:"error", choose:true, options:["If I was rich, I will buy a yacht.","If I were rich, I would buy a yacht.","If I am rich, I would buy a yacht."], answer:"If I were rich, I would buy a yacht.", note:"Tipo 2 completo: if + pasado (were) → would + infinitivo.", errorProne:true}
+];
+const IFD_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Tipo 0: verdad general (if + pres. simple → pres. simple)</div><div class="b">Para hechos y leyes que siempre son verdad:<br><code>If you heat water to 100°C, it boils.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Tipo 1: situación real y probable (if + pres. simple → will)</div><div class="b">Algo que realmente puede ocurrir en el futuro:<br><code>If it rains, we\'ll cancel the picnic.</code><br>⚠️ NUNCA will en la cláusula con if.</div></div>' +
+  '<div class="psRule"><div class="h">3 · Tipo 2: situación irreal (if + pasado simple → would)</div><div class="b">Para situaciones contrarias a la realidad presente:<br><code>If I had more money, I\'d travel more.</code> (no tengo más dinero)<br>⚠️ NUNCA would en la cláusula con if. Se usa were para todos los sujetos: <code>If I were you...</code></div></div>';
+
+/* ================= CONTENIDO: IF I KNEW, I WISH I KNEW ================= */
+const IFK_CAT_LABEL = {tipo2_det:"TIPO 2 (IF I WERE YOU)", wish_simple:"WISH + PASADO SIMPLE", wish_could:"WISH + COULD", error:"FRASE CORRECTA"};
+const IFK_BANK = [
+  {id:"ifk-1", cat:"tipo2_det", blank:"If I ___ (be) you, I wouldn't accept the offer.", options:["were","was","am"], answer:"were", note:"If I were you = forma fija para consejos. 'Were' para todos los sujetos en tipo 2 formal."},
+  {id:"ifk-2", cat:"tipo2_det", blank:"She would come if she ___ (not/be) so busy.", options:["weren't","wasn't","isn't"], answer:"weren't", note:"Tipo 2: if + pasado. Para todos los sujetos, were es más formal."},
+  {id:"ifk-3", cat:"tipo2_det", blank:"If I spoke Spanish, I ___ (get) the job.", options:["would get","will get","got"], answer:"would get", note:"Tipo 2: resultado hipotético con would."},
+  {id:"ifk-4", cat:"wish_simple", blank:"I wish I ___ (know) the answer.", options:["knew","know","would know"], answer:"knew", note:"wish + pasado simple para lamentarse de algo en el presente: ojalá supiera."},
+  {id:"ifk-5", cat:"wish_simple", blank:"She wishes she ___ (live) in a warmer country.", options:["lived","lives","would live"], answer:"lived", note:"wish + past simple: deseo irreal sobre el presente."},
+  {id:"ifk-6", cat:"wish_simple", blank:"I wish I ___ (be) taller.", options:["were","was","am"], answer:"were", note:"wish + were (más formal) o was (informal). Deseo irreal presente."},
+  {id:"ifk-7", cat:"wish_simple", blank:"He wishes he ___ (have) more time.", options:["had","has","would have"], answer:"had", note:"wish + had: deseo presente irreal."},
+  {id:"ifk-8", cat:"wish_simple", blank:"I wish it ___ (not/be) so cold!", options:["weren't","isn't","wouldn't be"], answer:"weren't", note:"wish + weren't: ojalá no fuera tan frío."},
+  {id:"ifk-9", cat:"wish_could", blank:"I wish I ___ (speak) Japanese.", options:["could speak","can speak","would speak"], answer:"could speak", note:"wish + could + infinitivo para deseos sobre habilidades."},
+  {id:"ifk-10", cat:"wish_could", blank:"She wishes she ___ (come) to the party.", options:["could come","can come","would come"], answer:"could come", note:"wish + could: ojalá pudiera venir."},
+  {id:"ifk-11", cat:"error", choose:true, options:["I wish I know the answer.","I wish I knew the answer.","I wish I would know the answer."], answer:"I wish I knew the answer.", note:"wish + PASADO SIMPLE: knew. No 'know' (presente) ni 'would know'.", errorProne:true},
+  {id:"ifk-12", cat:"error", choose:true, options:["If I were you, I will accept the offer.","If I were you, I would accept the offer.","If I was you, I will accept the offer."], answer:"If I were you, I would accept the offer.", note:"Tipo 2: resultado → would + infinitivo (no will).", errorProne:true},
+  {id:"ifk-13", cat:"error", choose:true, options:["She wishes she lives in Paris.","She wishes she lived in Paris.","She wished she lives in Paris."], answer:"She wishes she lived in Paris.", note:"wish (presente) + PASADO SIMPLE: lived. No presente simple.", errorProne:true}
+];
+const IFK_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · If I were you (consejo con tipo 2)</div><div class="b">Forma fija para dar consejos:<br><code>If I were you, I wouldn\'t accept it.</code><br>Were es preferible para todos los sujetos en tipo 2 formal.</div></div>' +
+  '<div class="psRule"><div class="h">2 · wish + pasado simple = deseo irreal (presente)</div><div class="b">Para lamentarse de algo que no es así ahora:<br><code>I wish I knew the answer.</code> (no lo sé)<br><code>She wishes she lived somewhere warmer.</code><br><code>I wish I were taller.</code><br>⚠️ wish + PASADO SIMPLE (no presente, no would).</div></div>' +
+  '<div class="psRule"><div class="h">3 · wish + could = deseo sobre habilidad</div><div class="b">Para desear poder hacer algo que ahora no puedes:<br><code>I wish I could speak Japanese.</code><br><code>She wishes she could come to the party.</code></div></div>';
+
+/* ================= CONTENIDO: IF I HAD KNOWN, I WISH I HAD KNOWN ================= */
+const IFHK_CAT_LABEL = {tipo3:"TIPO 3 (IRREAL PASADO)", wish_pp:"WISH + PAST PERFECT", wish_would:"WISH + WOULD", error:"FRASE CORRECTA"};
+const IFHK_BANK = [
+  {id:"ifhk-1", cat:"tipo3", blank:"If I ___ (know), I would have told you.", options:["had known","knew","would have known"], answer:"had known", note:"Tipo 3: if + past perfect → would have + participio. Irreal en el pasado."},
+  {id:"ifhk-2", cat:"tipo3", blank:"She would have passed if she ___ (study) harder.", options:["had studied","studied","would have studied"], answer:"had studied", note:"Tipo 3: if + past perfect. El resultado hubiera sido diferente."},
+  {id:"ifhk-3", cat:"tipo3", blank:"If we ___ (leave) earlier, we wouldn't have missed the flight.", options:["had left","left","would have left"], answer:"had left", note:"Tipo 3: situación pasada irreal."},
+  {id:"ifhk-4", cat:"tipo3", blank:"He ___ (not/break) his leg if he had been more careful.", options:["wouldn't have broken","wouldn't break","didn't break"], answer:"wouldn't have broken", note:"Resultado tipo 3: wouldn't have + participio."},
+  {id:"ifhk-5", cat:"tipo3", blank:"What ___ you ___ (do) if you had been in her position?", options:["would / have done","will / have done","did / do"], answer:"would / have done", note:"Pregunta tipo 3: What would you have done if...?"},
+  {id:"ifhk-6", cat:"wish_pp", blank:"I wish I ___ (study) harder — I failed the exam.", options:["had studied","studied","would have studied"], answer:"had studied", note:"wish + past perfect para lamentarse de algo que pasó (o no pasó) en el pasado."},
+  {id:"ifhk-7", cat:"wish_pp", blank:"She wishes she ___ (not/say) that.", options:["hadn't said","didn't say","wouldn't have said"], answer:"hadn't said", note:"wish + hadn't + participio: ojalá no hubiera dicho eso."},
+  {id:"ifhk-8", cat:"wish_pp", blank:"He wishes he ___ (take) the job when it was offered.", options:["had taken","took","would take"], answer:"had taken", note:"wish + had taken: ojalá hubiera aceptado el trabajo."},
+  {id:"ifhk-9", cat:"wish_pp", blank:"I wish you ___ (tell) me earlier.", options:["had told","told","would tell"], answer:"had told", note:"wish + had told: ojalá me lo hubieras dicho antes."},
+  {id:"ifhk-10", cat:"wish_would", blank:"I wish he ___ (stop) making so much noise.", options:["would stop","stopped","could stop"], answer:"would stop", note:"wish + would + infinitivo para pedir que alguien cambie su comportamiento."},
+  {id:"ifhk-11", cat:"wish_would", blank:"I wish it ___ (stop) raining!", options:["would stop","stopped","could stop"], answer:"would stop", note:"wish + would para desear que algo cambie (a menudo expresa queja)."},
+  {id:"ifhk-12", cat:"wish_would", blank:"She wishes her boss ___ (listen) to her ideas.", options:["would listen","listened","had listened"], answer:"would listen", note:"wish + would: deseo de que alguien haga algo diferente."},
+  {id:"ifhk-13", cat:"error", choose:true, options:["If I would have known, I'd have told you.","If I had known, I'd have told you.","If I knew, I'd have told you."], answer:"If I had known, I'd have told you.", note:"Tipo 3: if + PAST PERFECT (had known). Nunca would en la cláusula con if.", errorProne:true},
+  {id:"ifhk-14", cat:"error", choose:true, options:["I wish I studied harder last year.","I wish I had studied harder last year.","I wish I would study harder last year."], answer:"I wish I had studied harder last year.", note:"Deseo sobre el pasado: wish + PAST PERFECT.", errorProne:true},
+  {id:"ifhk-15", cat:"error", choose:true, options:["She would have pass if she had studied.","She would have passed if she had studied.","She would passed if she had studied."], answer:"She would have passed if she had studied.", note:"Resultado tipo 3: would have + PARTICIPIO PASADO.", errorProne:true}
+];
+const IFHK_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Tipo 3: irreal pasado (if + past perfect → would have)</div><div class="b">Para hablar de situaciones pasadas que fueron diferentes:<br><code>If I had known, I would have told you.</code> (pero no lo sabía)<br><code>If she had studied, she would have passed.</code><br>⚠️ NUNCA would en la cláusula con if.</div></div>' +
+  '<div class="psRule"><div class="h">2 · wish + past perfect = arrepentimiento (pasado)</div><div class="b">Para lamentarse de cómo fueron las cosas:<br><code>I wish I had studied harder.</code><br><code>She wishes she hadn\'t said that.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · wish + would = desear un cambio de comportamiento</div><div class="b">Para desear que alguien actúe diferente:<br><code>I wish he would stop making noise.</code><br>⚠️ No "I wish I would" para ti mismo.</div></div>';
+
+/* ================= CONTENIDO: WISH ================= */
+const WSH_CAT_LABEL = {wish_pres:"WISH: PRESENTE", wish_past:"WISH: PASADO", wish_would:"WISH: CAMBIO", if_only:"IF ONLY", error:"FRASE CORRECTA"};
+const WSH_BANK = [
+  {id:"wsh-1", cat:"wish_pres", blank:"I wish I ___ (be) better at maths.", options:["were","am","was"], answer:"were", note:"wish + were para deseo irreal en el presente."},
+  {id:"wsh-2", cat:"wish_pres", blank:"She wishes she ___ (have) a bigger house.", options:["had","has","would have"], answer:"had", note:"wish + past simple: deseo irreal presente."},
+  {id:"wsh-3", cat:"wish_pres", blank:"I wish I ___ (not/have) to work on Saturdays.", options:["didn't have","don't have","wouldn't have"], answer:"didn't have", note:"wish + didn't have to: ojalá no tuviera que trabajar."},
+  {id:"wsh-4", cat:"wish_pres", blank:"He wishes he ___ (know) more people in the city.", options:["knew","knows","would know"], answer:"knew", note:"wish + knew: deseo irreal presente."},
+  {id:"wsh-5", cat:"wish_past", blank:"I wish I ___ (take) that job when I had the chance.", options:["had taken","took","would take"], answer:"had taken", note:"wish + past perfect para lamentarse de una decisión pasada."},
+  {id:"wsh-6", cat:"wish_past", blank:"She wishes she ___ (not/leave) her old job.", options:["hadn't left","didn't leave","wouldn't leave"], answer:"hadn't left", note:"wish + hadn't + participio."},
+  {id:"wsh-7", cat:"wish_past", blank:"I wish I ___ (listen) to your advice.", options:["had listened","listened","would listen"], answer:"had listened", note:"wish + had listened: ojalá te hubiera escuchado."},
+  {id:"wsh-8", cat:"wish_would", blank:"I wish people ___ (be) more polite online.", options:["would be","were","are"], answer:"would be", note:"wish + would para desear un cambio de comportamiento."},
+  {id:"wsh-9", cat:"wish_would", blank:"I wish you ___ (stop) interrupting me!", options:["would stop","stopped","could stop"], answer:"would stop", note:"wish + would + infinitivo: deseo de cambio."},
+  {id:"wsh-10", cat:"wish_would", blank:"She wishes the government ___ (do) more about housing.", options:["would do","did","could do"], answer:"would do", note:"wish + would para desear que una entidad actúe diferente."},
+  {id:"wsh-11", cat:"if_only", blank:"___ I had more time!", options:["If only","I wish","Only if"], answer:"If only", note:"If only = I wish, pero expresa un deseo más intenso o dramático."},
+  {id:"wsh-12", cat:"if_only", blank:"___ I hadn't said that!", options:["If only","I wish","Only if"], answer:"If only", note:"If only + past perfect para arrepentimiento intenso."},
+  {id:"wsh-13", cat:"error", choose:true, options:["I wish I know more people.","I wish I knew more people.","I wish I would know more people."], answer:"I wish I knew more people.", note:"wish (presente) + PASADO SIMPLE: knew.", errorProne:true},
+  {id:"wsh-14", cat:"error", choose:true, options:["I wish I have taken that job.","I wish I had taken that job.","I wish I would have taken that job."], answer:"I wish I had taken that job.", note:"wish (pasado) + PAST PERFECT: had taken.", errorProne:true},
+  {id:"wsh-15", cat:"error", choose:true, options:["I wish he stops making noise.","I wish he would stop making noise.","I wish he stopped making noise."], answer:"I wish he would stop making noise.", note:"Para desear un cambio de comportamiento de otra persona: wish + would.", errorProne:true}
+];
+const WSH_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · wish + past simple = deseo irreal (presente)</div><div class="b">Para lamentarse de cómo son las cosas ahora:<br><code>I wish I were taller.</code> / <code>She wishes she had more time.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · wish + past perfect = arrepentimiento (pasado)</div><div class="b">Para lamentarse de cómo fueron las cosas:<br><code>I wish I had taken that job.</code> / <code>She wishes she hadn\'t left.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · wish + would = desear un cambio de comportamiento</div><div class="b">Para desear que alguien haga algo diferente (no para ti mismo):<br><code>I wish he would stop making noise.</code></div></div>' +
+  '<div class="psRule"><div class="h">4 · If only...</div><div class="b">Sinónimo intenso de I wish:<br><code>If only I had more time!</code> / <code>If only I hadn\'t said that!</code></div></div>';
+
+/* ================= CONTENIDO: PASSIVE 1 (IS DONE / WAS DONE) ================= */
+const PAS1_CAT_LABEL = {pres_simple:"PRESENTE SIMPLE PASIVO", past_simple:"PASADO SIMPLE PASIVO", by_agente:"BY + AGENTE", error:"FRASE CORRECTA"};
+const PAS1_BANK = [
+  {id:"pas1-1", cat:"pres_simple", blank:"English ___ (speak) all over the world.", options:["is spoken","is speaking","speaks"], answer:"is spoken", note:"Pasiva presente simple: is/are + participio."},
+  {id:"pas1-2", cat:"pres_simple", blank:"The windows ___ (clean) every week.", options:["are cleaned","is cleaned","are cleaning"], answer:"are cleaned", note:"Sujeto plural → are + participio."},
+  {id:"pas1-3", cat:"pres_simple", blank:"Rice ___ (grow) in many countries.", options:["is grown","grows","is growing"], answer:"is grown", note:"is + participio pasado."},
+  {id:"pas1-4", cat:"pres_simple", blank:"These cars ___ (make) in Germany.", options:["are made","is made","are making"], answer:"are made", note:"Sujeto plural → are + participio."},
+  {id:"pas1-5", cat:"past_simple", blank:"The bridge ___ (build) in 1890.", options:["was built","is built","was build"], answer:"was built", note:"Pasiva pasado simple: was/were + participio."},
+  {id:"pas1-6", cat:"past_simple", blank:"Three people ___ (injure) in the accident.", options:["were injured","was injured","are injured"], answer:"were injured", note:"Sujeto plural → were + participio."},
+  {id:"pas1-7", cat:"past_simple", blank:"My phone ___ (steal) on the bus.", options:["was stolen","was steal","is stolen"], answer:"was stolen", note:"was + participio irregular: steal → stolen."},
+  {id:"pas1-8", cat:"past_simple", blank:"The letter ___ (write) in 1850.", options:["was written","was wrote","is written"], answer:"was written", note:"write → written (participio irregular)."},
+  {id:"pas1-9", cat:"past_simple", blank:"___ the window ___ (open)?", options:["Is / opened","Was / opened","Are / opened"], answer:"Is / opened", note:"Pregunta pasiva presente: Is/Are + sujeto + participio?"},
+  {id:"pas1-10", cat:"past_simple", blank:"___ the match ___ (cancel)?", options:["Was / cancelled","Is / cancelled","Did / cancel"], answer:"Was / cancelled", note:"Pregunta pasiva pasado: Was/Were + sujeto + participio?"},
+  {id:"pas1-11", cat:"by_agente", blank:"This painting ___ (paint) by Picasso.", options:["was painted","is painted","painted"], answer:"was painted", note:"by + agente: quién realizó la acción."},
+  {id:"pas1-12", cat:"by_agente", blank:"The film ___ (direct) by Spielberg.", options:["was directed","is directed","directed"], answer:"was directed", note:"by Spielberg: el agente."},
+  {id:"pas1-13", cat:"by_agente", blank:"The report ___ (write) by the manager.", options:["was written","was wrote","is written"], answer:"was written", note:"was written by: write → written."},
+  {id:"pas1-14", cat:"error", choose:true, options:["English is speak all over the world.","English is spoken all over the world.","English spoken all over the world."], answer:"English is spoken all over the world.", note:"Pasiva: is/are + PARTICIPIO PASADO (spoken, no speak).", errorProne:true},
+  {id:"pas1-15", cat:"error", choose:true, options:["The bridge was builded in 1890.","The bridge was built in 1890.","The bridge is built in 1890."], answer:"The bridge was built in 1890.", note:"build → built (participio irregular). La época pasada → was.", errorProne:true}
+];
+const PAS1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Pasiva: be + participio pasado</div><div class="b">Activa: <code>They build cars here.</code><br>Pasiva: <code>Cars are built here.</code><br>El agente (quien lo hace) se añade con <code>by</code> si es relevante.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Presente simple pasivo: is/are + participio</div><div class="b">Singular → <code>is + participio</code>: <code>English is spoken here.</code><br>Plural → <code>are + participio</code>: <code>Cars are made in Germany.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Pasado simple pasivo: was/were + participio</div><div class="b">Singular → <code>was + participio</code>: <code>The bridge was built in 1890.</code><br>Plural → <code>were + participio</code>: <code>Three people were injured.</code></div></div>';
+
+/* ================= CONTENIDO: PASSIVE 2 (MODALS, PERFECT, CONTINUOUS) ================= */
+const PAS2_CAT_LABEL = {modal_fut:"FUTURO Y MODALES", perfect:"PERFECT PASSIVE", continuo:"CONTINUOUS PASSIVE", error:"FRASE CORRECTA"};
+const PAS2_BANK = [
+  {id:"pas2-1", cat:"modal_fut", blank:"The new hospital ___ (build) next year.", options:["will be built","will be build","is going to built"], answer:"will be built", note:"Futuro pasivo: will + be + participio."},
+  {id:"pas2-2", cat:"modal_fut", blank:"Taxes ___ (increase) next month.", options:["are going to be increased","are going to increased","will increased"], answer:"are going to be increased", note:"going to pasivo: am/is/are + going to + be + participio."},
+  {id:"pas2-3", cat:"modal_fut", blank:"The form ___ (can/complete) online.", options:["can be completed","can be complete","can completed"], answer:"can be completed", note:"Modal pasivo: modal + be + participio."},
+  {id:"pas2-4", cat:"modal_fut", blank:"The problem ___ (must/solve) immediately.", options:["must be solved","must be solve","must solved"], answer:"must be solved", note:"must + be + participio."},
+  {id:"pas2-5", cat:"modal_fut", blank:"The concert ___ (might/cancel).", options:["might be cancelled","might be cancel","might cancelled"], answer:"might be cancelled", note:"might + be + participio."},
+  {id:"pas2-6", cat:"perfect", blank:"The window ___ (break).", options:["has been broken","is been broken","was broken"], answer:"has been broken", note:"Present perfect pasivo: has/have + been + participio."},
+  {id:"pas2-7", cat:"perfect", blank:"All the tickets ___ (sell).", options:["have been sold","has been sold","were sold"], answer:"have been sold", note:"Sujeto plural → have been + participio."},
+  {id:"pas2-8", cat:"perfect", blank:"The report ___ (not / finish) yet.", options:["hasn't been finished","haven't been finished","wasn't finished"], answer:"hasn't been finished", note:"Present perfect pasivo negativo."},
+  {id:"pas2-9", cat:"perfect", blank:"By the time we arrived, all the food ___ (eat).", options:["had been eaten","has been eaten","was eaten"], answer:"had been eaten", note:"Past perfect pasivo: had + been + participio."},
+  {id:"pas2-10", cat:"continuo", blank:"The road ___ (repair) at the moment.", options:["is being repaired","is being repair","is repaired"], answer:"is being repaired", note:"Present continuous pasivo: is/are + being + participio."},
+  {id:"pas2-11", cat:"continuo", blank:"New houses ___ (build) in the area.", options:["are being built","is being built","are been built"], answer:"are being built", note:"Plural → are being + participio."},
+  {id:"pas2-12", cat:"continuo", blank:"When we arrived, dinner ___ (prepare).", options:["was being prepared","was been prepared","is being prepared"], answer:"was being prepared", note:"Past continuous pasivo: was/were + being + participio."},
+  {id:"pas2-13", cat:"error", choose:true, options:["The problem must solved immediately.","The problem must be solved immediately.","The problem must be solve immediately."], answer:"The problem must be solved immediately.", note:"Modal pasivo: modal + BE + participio.", errorProne:true},
+  {id:"pas2-14", cat:"error", choose:true, options:["The window has broken.","The window has been broken.","The window is been broken."], answer:"The window has been broken.", note:"Present perfect pasivo: has/have + BEEN + participio.", errorProne:true},
+  {id:"pas2-15", cat:"error", choose:true, options:["The road is repairing at the moment.","The road is being repaired at the moment.","The road is repaired at the moment."], answer:"The road is being repaired at the moment.", note:"Present continuous pasivo: is/are + BEING + participio.", errorProne:true}
+];
+const PAS2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Modal + be + participio</div><div class="b"><code>can be done, must be done, might be done, should be done</code>:<br><code>This form can be completed online.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Perfect passive</div><div class="b">Present perfect: <code>has/have + been + participio</code>: <code>The window has been broken.</code><br>Past perfect: <code>had been + participio</code>: <code>All the food had been eaten.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Continuous passive</div><div class="b">Present continuous: <code>is/are + being + participio</code>: <code>The road is being repaired.</code><br>Past continuous: <code>was/were + being + participio</code>: <code>Dinner was being prepared.</code></div></div>';
+
+/* ================= CONTENIDO: PASSIVE 3 ================= */
+const PAS3_CAT_LABEL = {doble_obj:"DOS COMPLEMENTOS", by_with:"BY VS WITH", get_pasiva:"GET + PARTICIPIO", error:"FRASE CORRECTA"};
+const PAS3_BANK = [
+  {id:"pas3-1", cat:"doble_obj", blank:"Someone gave her a prize. → She ___ a prize.", options:["was given","is given","gave"], answer:"was given", note:"Con verbos de dos complementos (give, offer, show...) podemos pasivizar el complemento indirecto."},
+  {id:"pas3-2", cat:"doble_obj", blank:"They offered him the job. → He ___ the job.", options:["was offered","were offered","is offered"], answer:"was offered", note:"El objeto indirecto (him → he) pasa a ser sujeto de la pasiva."},
+  {id:"pas3-3", cat:"doble_obj", blank:"They sent her a letter. → A letter ___ her.", options:["was sent to","is sent to","sent"], answer:"was sent to", note:"Si el objeto directo (a letter) es sujeto, el indirecto añade 'to'."},
+  {id:"pas3-4", cat:"doble_obj", blank:"They told us the news. → We ___ the news.", options:["were told","was told","are told"], answer:"were told", note:"'us' → 'we': sujeto de la pasiva."},
+  {id:"pas3-5", cat:"by_with", blank:"The window was broken ___ a stone.", options:["by","with"], answer:"by", note:"by + agente (persona o cosa que causa la acción)."},
+  {id:"pas3-6", cat:"by_with", blank:"The letter was written ___ a pen.", options:["with","by"], answer:"with", note:"with + instrumento (lo que se usó para hacer la acción)."},
+  {id:"pas3-7", cat:"by_with", blank:"She was hit ___ a car.", options:["by","with"], answer:"by", note:"by + lo que causó directamente el evento."},
+  {id:"pas3-8", cat:"by_with", blank:"The nail was hammered ___ a hammer.", options:["with","by"], answer:"with", note:"with + instrumento."},
+  {id:"pas3-9", cat:"get_pasiva", blank:"He ___ (arrest) by the police.", options:["got arrested","was arrested","get arrested"], answer:"got arrested", note:"get + participio: pasiva informal, a menudo para eventos no esperados."},
+  {id:"pas3-10", cat:"get_pasiva", blank:"Our car ___ (damage) in the storm.", options:["got damaged","was damaged","gets damaged"], answer:"got damaged", note:"get damaged: pasiva coloquial para algo no deseado."},
+  {id:"pas3-11", cat:"get_pasiva", blank:"She ___ (pay) at the end of the month.", options:["gets paid","is paid","got paid"], answer:"gets paid", note:"gets paid: rutina → presente simple con get."},
+  {id:"pas3-12", cat:"error", choose:true, options:["He was hit with a car.","He was hit by a car.","He was hit from a car."], answer:"He was hit by a car.", note:"by + agente (la cosa que hace la acción, no instrumento).", errorProne:true},
+  {id:"pas3-13", cat:"error", choose:true, options:["He got arresting by the police.","He got arrested by the police.","He was gotten arrested."], answer:"He got arrested by the police.", note:"get + PARTICIPIO PASADO (no -ing).", errorProne:true},
+  {id:"pas3-14", cat:"error", choose:true, options:["They offered to her a job.","She was offered a job. / A job was offered to her.","She offered a job."], answer:"She was offered a job. / A job was offered to her.", note:"Dos pasivas posibles con verbos de dos complementos.", errorProne:true}
+];
+const PAS3_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Pasiva con verbos de dos complementos</div><div class="b">Con give, offer, send, tell, show...: <br><code>They gave her a prize.</code> → <code>She was given a prize.</code> / <code>A prize was given to her.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · by vs. with</div><div class="b"><code>by</code> + agente (quién/qué causa): <code>The window was broken by a ball.</code><br><code>with</code> + instrumento (con qué se hizo): <code>The letter was written with a pen.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · get + participio (pasiva informal)</div><div class="b">Para eventos no deseados o inesperados:<br><code>He got arrested.</code> / <code>Our car got damaged.</code><br>Rutinas: <code>She gets paid at the end of the month.</code></div></div>';
+
+/* ================= CONTENIDO: IT IS SAID THAT / SUPPOSED TO ================= */
+const PASSE_CAT_LABEL = {said_that:"IT IS SAID THAT", said_to:"HE IS SAID TO", supposed_to:"SUPPOSED TO", error:"FRASE CORRECTA"};
+const PASSE_BANK = [
+  {id:"passe-1", cat:"said_that", blank:"___ that she is very talented.", options:["It is said","It says","They say"], answer:"It is said", note:"It is said/thought/believed + that: forma pasiva para reportar lo que se dice."},
+  {id:"passe-2", cat:"said_that", blank:"___ that the new law will affect everyone.", options:["It is thought","It thinks","They thought"], answer:"It is thought", note:"It is thought/known/reported + that..."},
+  {id:"passe-3", cat:"said_that", blank:"___ that he earned millions.", options:["It is reported","It reported","They report"], answer:"It is reported", note:"Forma habitual en periodismo para no atribuir la información."},
+  {id:"passe-4", cat:"said_to", blank:"She ___ (say/be) very talented.", options:["is said to be","says to be","is said be"], answer:"is said to be", note:"She is said to + infinitivo: forma alternativa y más directa."},
+  {id:"passe-5", cat:"said_to", blank:"He ___ (believe/own) several houses.", options:["is believed to own","is believed owns","believes to own"], answer:"is believed to own", note:"He is believed/thought/reported to + infinitivo."},
+  {id:"passe-6", cat:"said_to", blank:"The suspect ___ (say/leave) the country.", options:["is said to have left","is said to left","is said leaving"], answer:"is said to have left", note:"Acción pasada → is said to have + participio."},
+  {id:"passe-7", cat:"said_to", blank:"She ___ (know/be) the first woman to climb that peak.", options:["is known to be","is known to being","knows to be"], answer:"is known to be", note:"is known to + infinitivo."},
+  {id:"passe-8", cat:"supposed_to", blank:"You ___ (be) quiet in a library.", options:["are supposed to be","supposed to be","suppose to be"], answer:"are supposed to be", note:"be supposed to + infinitivo = se supone que / se espera que."},
+  {id:"passe-9", cat:"supposed_to", blank:"The train ___ (arrive) at 9, but it was late.", options:["was supposed to arrive","supposed to arrive","was supposed arrive"], answer:"was supposed to arrive", note:"was supposed to: era lo esperado (pero no ocurrió)."},
+  {id:"passe-10", cat:"supposed_to", blank:"You ___ (not/smoke) in here.", options:["aren't supposed to smoke","aren't supposed smoking","don't supposed to smoke"], answer:"aren't supposed to smoke", note:"aren't supposed to: no está permitido."},
+  {id:"passe-11", cat:"error", choose:true, options:["It says that she is talented.","It is said that she is talented.","It said that she is talented."], answer:"It is said that she is talented.", note:"Pasiva: It is said (presente pasivo), no 'it says'.", errorProne:true},
+  {id:"passe-12", cat:"error", choose:true, options:["She is supposed arrive at 9.","She is supposed to arrive at 9.","She supposed to arrive at 9."], answer:"She is supposed to arrive at 9.", note:"be supposed to + infinitivo (con to y con be conjugado).", errorProne:true}
+];
+const PASSE_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · It is said/thought/believed that...</div><div class="b">Forma pasiva habitual en noticias y reportes:<br><code>It is said that she is very talented.</code><br><code>It is believed that the company will close.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · He is said/believed/thought to...</div><div class="b">Alternativa con el sujeto directamente:<br><code>She is said to be very talented.</code><br>Si la acción es pasada: <code>He is said to have left the country.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · be supposed to</div><div class="b">Para lo que se espera, se supone o está permitido:<br><code>You are supposed to be quiet here.</code><br><code>The train was supposed to arrive at 9.</code> (era lo esperado)<br><code>You aren\'t supposed to smoke in here.</code></div></div>';
+
+/* ================= CONTENIDO: HAVE SOMETHING DONE ================= */
+const PASSH_CAT_LABEL = {have_done:"HAVE SOMETHING DONE", get_done:"GET SOMETHING DONE", no_deseado:"EXPERIENCIAS NO DESEADAS", error:"FRASE CORRECTA"};
+const PASSH_BANK = [
+  {id:"passh-1", cat:"have_done", blank:"I ___ (cut) my hair yesterday.", options:["had my hair cut","have cut my hair","got cut my hair"], answer:"had my hair cut", note:"have something done: sujeto + have + objeto + participio. Alguien lo hace por ti."},
+  {id:"passh-2", cat:"have_done", blank:"She ___ (repair) her car last week.", options:["had her car repaired","has her car repaired","got her car repair"], answer:"had her car repaired", note:"had + objeto + participio (pasado)."},
+  {id:"passh-3", cat:"have_done", blank:"They ___ (decorate) their house at the moment.", options:["are having their house decorated","have their house decorating","had their house decorated"], answer:"are having their house decorated", note:"Present continuous: are having + objeto + participio."},
+  {id:"passh-4", cat:"have_done", blank:"I need to ___ (check) my eyes.", options:["have my eyes checked","check my eyes","have checked my eyes"], answer:"have my eyes checked", note:"have + objeto + participio para servicios profesionales."},
+  {id:"passh-5", cat:"have_done", blank:"She ___ (clean) her windows every month.", options:["has her windows cleaned","is having her windows cleaned","gets cleaned her windows"], answer:"has her windows cleaned", note:"Presente simple: has + objeto + participio."},
+  {id:"passh-6", cat:"no_deseado", blank:"He ___ (steal) his wallet in the street.", options:["had his wallet stolen","has stolen his wallet","had stolen his wallet"], answer:"had his wallet stolen", note:"have something done para experiencias no deseadas: le robaron la cartera."},
+  {id:"passh-7", cat:"no_deseado", blank:"We ___ (break into) our car last night.", options:["had our car broken into","had broken our car","get broken our car"], answer:"had our car broken into", note:"had our car broken into: nos entraron al coche (no deseado)."},
+  {id:"passh-8", cat:"get_done", blank:"I need to ___ (fix) my bike.", options:["get my bike fixed","get fixed my bike","have fixed my bike"], answer:"get my bike fixed", note:"get something done: alternativa informal de have something done."},
+  {id:"passh-9", cat:"get_done", blank:"She ___ (do) her nails at the salon.", options:["gets her nails done","get done her nails","is getting done her nails"], answer:"gets her nails done", note:"get + objeto + participio (informal)."},
+  {id:"passh-10", cat:"have_done", blank:"Where do you ___ (cut) your hair?", options:["have your hair cut","cut your hair","get cut your hair"], answer:"have your hair cut", note:"have your hair cut = lo hace alguien por ti (peluquero)."},
+  {id:"passh-11", cat:"error", choose:true, options:["I had cut my hair yesterday.","I had my hair cut yesterday.","I got cut my hair yesterday."], answer:"I had my hair cut yesterday.", note:"Orden: have + OBJETO + PARTICIPIO. No 'had cut my hair' (que sería past perfect activo).", errorProne:true},
+  {id:"passh-12", cat:"error", choose:true, options:["She got repaired her car.","She got her car repaired.","She get her car repaired."], answer:"She got her car repaired.", note:"get + OBJETO + PARTICIPIO. El objeto va entre get y el participio.", errorProne:true}
+];
+const PASSH_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · have something done</div><div class="b">Para decir que mandas a alguien hacer algo por ti:<br><code>I had my hair cut.</code> (= me cortaron el pelo)<br>Estructura: <code>have + objeto + participio pasado</code><br>⚠️ Orden: <code>I had my hair cut</code> (no "I had cut my hair").</div></div>' +
+  '<div class="psRule"><div class="h">2 · get something done (informal)</div><div class="b">Sinónimo informal de have something done:<br><code>I need to get my bike fixed.</code><br><code>She gets her nails done at the salon.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Experiencias no deseadas</div><div class="b">have something done también describe cosas que te pasan sin quererlo:<br><code>He had his wallet stolen.</code> (le robaron la cartera)<br><code>We had our car broken into.</code></div></div>';
+
+/* ================= CONTENIDO: REPORTED SPEECH 1 ================= */
+const RP1_CAT_LABEL = {say_tell:"SAY VS TELL", backshift:"RETROCESO VERBAL", tiempo_lugar:"EXPRESIONES DE TIEMPO Y LUGAR", error:"FRASE CORRECTA"};
+const RP1_BANK = [
+  {id:"rp1-1", cat:"say_tell", blank:"She ___ that she was tired.", options:["said","told","says"], answer:"said", note:"say (sin complemento de persona) + that + reported clause."},
+  {id:"rp1-2", cat:"say_tell", blank:"He ___ me that he would be late.", options:["told","said","says"], answer:"told", note:"tell + persona (me, him, her, us) + that + reported clause."},
+  {id:"rp1-3", cat:"say_tell", blank:"She ___ us that she had arrived.", options:["told","said","says"], answer:"told", note:"told siempre necesita un objeto de persona: told us, told me, told her."},
+  {id:"rp1-4", cat:"backshift", blank:"'I live in Madrid.' → She said she ___ in Madrid.", options:["lived","lives","had lived"], answer:"lived", note:"Presente simple → pasado simple en estilo indirecto."},
+  {id:"rp1-5", cat:"backshift", blank:"'I'm working.' → He said he ___.", options:["was working","is working","had been working"], answer:"was working", note:"Presente continuo → pasado continuo."},
+  {id:"rp1-6", cat:"backshift", blank:"'I have finished.' → She said she ___.", options:["had finished","has finished","finished"], answer:"had finished", note:"Present perfect → past perfect."},
+  {id:"rp1-7", cat:"backshift", blank:"'I will help.' → He said he ___.", options:["would help","will help","helped"], answer:"would help", note:"will → would en estilo indirecto."},
+  {id:"rp1-8", cat:"backshift", blank:"'We can come.' → They said they ___.", options:["could come","can come","had come"], answer:"could come", note:"can → could en estilo indirecto."},
+  {id:"rp1-9", cat:"backshift", blank:"'I was reading.' → She said she ___.", options:["had been reading","was reading","is reading"], answer:"had been reading", note:"Past continuous → past perfect continuous."},
+  {id:"rp1-10", cat:"tiempo_lugar", blank:"'I'll call you tomorrow.' → She said she would call me ___.", options:["the next day","tomorrow","the following day"], answer:"the next day", note:"tomorrow → the next day / the following day en estilo indirecto."},
+  {id:"rp1-11", cat:"tiempo_lugar", blank:"'I saw him yesterday.' → He said he had seen him ___.", options:["the day before","yesterday","the previous day"], answer:"the day before", note:"yesterday → the day before / the previous day."},
+  {id:"rp1-12", cat:"tiempo_lugar", blank:"'Come here!' → She told me to go ___.", options:["there","here","that place"], answer:"there", note:"here → there en estilo indirecto."},
+  {id:"rp1-13", cat:"error", choose:true, options:["She said me that she was tired.","She told that she was tired.","She said that she was tired."], answer:"She said that she was tired.", note:"say no lleva objeto de persona. told necesita objeto: told me/him/us.", errorProne:true},
+  {id:"rp1-14", cat:"error", choose:true, options:["He said he will help.","He said he would help.","He told he would help."], answer:"He said he would help.", note:"will → would en estilo indirecto. Y 'said' sin objeto de persona.", errorProne:true},
+  {id:"rp1-15", cat:"error", choose:true, options:["She said that she lives there.","She said that she lived there.","She told that she lived there."], answer:"She said that she lived there.", note:"Backshift: lives → lived. Y 'said' sin objeto de persona.", errorProne:true}
+];
+const RP1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · say vs. tell</div><div class="b"><code>say</code> = sin objeto de persona: <code>She said (that) she was tired.</code><br><code>tell</code> = con objeto de persona: <code>He told me (that) he was tired.</code><br>⚠️ "She said me" ❌ / "He told that" ❌</div></div>' +
+  '<div class="psRule"><div class="h">2 · Retroceso verbal (backshift)</div><div class="b">Los tiempos "retroceden" en el pasado:<br>pres. simple → past simple: <code>I live → she said she lived</code><br>pres. continuo → past continuo: <code>I\'m working → he said he was working</code><br>will → would: <code>I will → he said he would</code><br>can → could: <code>I can → they said they could</code><br>pres. perfect → past perfect: <code>I have done → she said she had done</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Cambios de tiempo y lugar</div><div class="b"><code>now → then</code>, <code>today → that day</code>, <code>tomorrow → the next day</code>, <code>yesterday → the day before</code>, <code>here → there</code>, <code>this → that</code></div></div>';
+
+/* ================= CONTENIDO: REPORTED SPEECH 2 ================= */
+const RP2_CAT_LABEL = {preg_yn:"PREGUNTAS SÍ/NO", preg_wh:"PREGUNTAS WH-", mandatos:"MANDATOS Y CONSEJOS", error:"FRASE CORRECTA"};
+const RP2_BANK = [
+  {id:"rp2-1", cat:"preg_yn", blank:"'Are you tired?' → She asked me ___ I was tired.", options:["if","whether","that"], answer:"if", note:"Pregunta sí/no → if/whether + sujeto + verbo (orden afirmativo)."},
+  {id:"rp2-2", cat:"preg_yn", blank:"'Do you like jazz?' → He asked me ___ I liked jazz.", options:["if","that","what"], answer:"if", note:"Do you...? → asked me if I liked... (sin do, orden afirmativo)."},
+  {id:"rp2-3", cat:"preg_yn", blank:"'Can you swim?' → He asked me ___ I could swim.", options:["if","whether","that"], answer:"if", note:"can → could. if/whether + sujeto + could + infinitivo."},
+  {id:"rp2-4", cat:"preg_wh", blank:"'Where do you live?' → She asked me ___ I lived.", options:["where","what where","that where"], answer:"where", note:"Pregunta wh- → wh- + sujeto + verbo (orden afirmativo, sin do)."},
+  {id:"rp2-5", cat:"preg_wh", blank:"'What are you doing?' → He asked me what ___.", options:["I was doing","was I doing","I did"], answer:"I was doing", note:"What are you doing? → what I was doing (orden afirmativo)."},
+  {id:"rp2-6", cat:"preg_wh", blank:"'Why did she leave?' → He asked why she ___.", options:["had left","left","did leave"], answer:"had left", note:"did leave → had left (backshift). Orden afirmativo."},
+  {id:"rp2-7", cat:"preg_wh", blank:"'How much does it cost?' → She asked how much it ___.", options:["cost","costs","did cost"], answer:"cost", note:"does cost → cost (backshift). Orden afirmativo sin does."},
+  {id:"rp2-8", cat:"mandatos", blank:"'Be quiet!' → He told them ___ quiet.", options:["to be","be","that they were"], answer:"to be", note:"Mandato → told + objeto + to + infinitivo."},
+  {id:"rp2-9", cat:"mandatos", blank:"'Don't touch that!' → She told him ___ touch that.", options:["not to","to not","don't"], answer:"not to", note:"Mandato negativo → told + objeto + not to + infinitivo."},
+  {id:"rp2-10", cat:"mandatos", blank:"'Please sit down.' → She asked us ___ sit down.", options:["to","not to","that we"], answer:"to", note:"Petición → asked + objeto + to + infinitivo."},
+  {id:"rp2-11", cat:"mandatos", blank:"'You should see a doctor.' → She advised me ___ a doctor.", options:["to see","see","that I should see"], answer:"to see", note:"advised + objeto + to + infinitivo."},
+  {id:"rp2-12", cat:"error", choose:true, options:["She asked me where did I live.","She asked me where I lived.","She asked me where I did live."], answer:"She asked me where I lived.", note:"Pregunta indirecta: orden afirmativo (sin inversión ni do/does/did).", errorProne:true},
+  {id:"rp2-13", cat:"error", choose:true, options:["He asked if I was tired?","He asked if I was tired.","He asked whether was I tired."], answer:"He asked if I was tired.", note:"Pregunta indirecta no lleva signo de interrogación ni inversión.", errorProne:true},
+  {id:"rp2-14", cat:"error", choose:true, options:["She told him don't do that.","She told him not to do that.","She said him not to do that."], answer:"She told him not to do that.", note:"Mandato negativo: told + objeto + not to + infinitivo.", errorProne:true}
+];
+const RP2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Preguntas sí/no → if/whether</div><div class="b">"Are you tired?" → She asked me <code>if</code> I was tired.<br>"Can you swim?" → He asked me <code>whether</code> I could swim.<br>⚠️ Orden afirmativo (no inversión), sin signo de interrogación.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Preguntas wh- → wh- + sujeto + verbo</div><div class="b">"Where do you live?" → She asked me <code>where I lived</code> (no "where did I live").<br>"What are you doing?" → He asked <code>what I was doing</code>.</div></div>' +
+  '<div class="psRule"><div class="h">3 · Mandatos y consejos</div><div class="b">Mandato: <code>told + objeto + to + infinitivo</code>: <code>He told them to be quiet.</code><br>Mandato negativo: <code>told + objeto + not to</code>: <code>She told him not to touch it.</code><br>Petición: <code>asked + objeto + to</code>. Consejo: <code>advised + objeto + to</code></div></div>';
+
+/* ================= CONTENIDO: QUESTIONS 1 ================= */
+const QU1_CAT_LABEL = {forma:"FORMA DE PREGUNTAS", wh_sujeto:"WH- SUJETO (SIN DO)", wh_objeto:"WH- OBJETO (CON DO)", error:"FRASE CORRECTA"};
+const QU1_BANK = [
+  {id:"qu1-1", cat:"forma", blank:"___ she work here?", options:["Does","Is","Do"], answer:"Does", note:"Pregunta presente simple con he/she/it: Does + sujeto + infinitivo base?"},
+  {id:"qu1-2", cat:"forma", blank:"___ they leave yesterday?", options:["Did","Was","Do"], answer:"Did", note:"Pregunta pasado simple: Did + sujeto + infinitivo base?"},
+  {id:"qu1-3", cat:"forma", blank:"What time ___ the film start?", options:["does","is","do"], answer:"does", note:"'the film' = it → Does."},
+  {id:"qu1-4", cat:"forma", blank:"Where ___ you yesterday?", options:["were","did","was"], answer:"were", note:"Pregunta con be en pasado: Were + sujeto?"},
+  {id:"qu1-5", cat:"forma", blank:"Why ___ she late yesterday?", options:["was","did","were"], answer:"was", note:"she → was (pasado de be)."},
+  {id:"qu1-6", cat:"wh_sujeto", blank:"___ broke the window?", options:["Who","Who did","Whom"], answer:"Who", note:"Cuando who/what es SUJETO, no hay do/does/did: Who broke = quién rompió."},
+  {id:"qu1-7", cat:"wh_sujeto", blank:"___ happened at the party?", options:["What","What did","Which"], answer:"What", note:"What como sujeto: no hay auxiliar do/did."},
+  {id:"qu1-8", cat:"wh_sujeto", blank:"___ lives next door?", options:["Who","Who does","Whom"], answer:"Who", note:"Who = sujeto: Who lives (no 'who does live')."},
+  {id:"qu1-9", cat:"wh_objeto", blank:"___ did you see at the party?", options:["Who","Whom","What did"], answer:"Who", note:"Cuando who es OBJETO, sí hay do/does/did: Who did you see?"},
+  {id:"qu1-10", cat:"wh_objeto", blank:"___ does she work?", options:["Where","Where does","Who"], answer:"Where", note:"Where + does + sujeto + infinitivo."},
+  {id:"qu1-11", cat:"wh_objeto", blank:"___ did you buy?", options:["What","Who did","Whom did"], answer:"What", note:"What + did + sujeto + infinitivo base."},
+  {id:"qu1-12", cat:"wh_objeto", blank:"___ did that cost?", options:["How much","How many","What much"], answer:"How much", note:"How much + did + sujeto + infinitivo."},
+  {id:"qu1-13", cat:"error", choose:true, options:["Who did broke the window?","Who broke the window?","Who did break the window?"], answer:"Who broke the window?", note:"Who como sujeto → no do/does/did: Who broke? (no 'Who did break?').", errorProne:true},
+  {id:"qu1-14", cat:"error", choose:true, options:["Where she works?","Where does she work?","Where does she works?"], answer:"Where does she work?", note:"Pregunta wh-: Does + sujeto + infinitivo base (sin -s).", errorProne:true},
+  {id:"qu1-15", cat:"error", choose:true, options:["What happened did at the party?","What did happen at the party?","What happened at the party?"], answer:"What happened at the party?", note:"What como sujeto: no necesita did. What happened? (no 'What did happen?').", errorProne:true}
+];
+const QU1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Forma general de preguntas</div><div class="b">Presente simple: <code>Do/Does + sujeto + infinitivo base?</code><br>Pasado simple: <code>Did + sujeto + infinitivo base?</code><br>Con be: <code>Am/Is/Are + sujeto?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Preguntas con who/what como SUJETO (sin do)</div><div class="b">Cuando who o what ES el sujeto, NO se usa do/does/did:<br><code>Who broke the window?</code> (who = sujeto)<br><code>What happened?</code><br>Compara (objeto): <code>Who did you see?</code> (sí hay did)</div></div>' +
+  '<div class="psRule"><div class="h">3 · Errores comunes</div><div class="b">Orden: <code>Where does she work?</code> (no "Where she works?")<br>Con do/did el verbo va en base: <code>Did she go?</code> (no "Did she went?")</div></div>';
+
+/* ================= CONTENIDO: QUESTIONS 2 (INDIRECT) ================= */
+const QU2_CAT_LABEL = {indirecta:"PREGUNTA INDIRECTA", if_whether:"IF / WHETHER", orden:"ORDEN AFIRMATIVO", error:"FRASE CORRECTA"};
+const QU2_BANK = [
+  {id:"qu2-1", cat:"indirecta", blank:"Do you know ___ she lives?", options:["where","where does","where is"], answer:"where", note:"Pregunta indirecta: wh- + sujeto + verbo (orden afirmativo, sin inversión)."},
+  {id:"qu2-2", cat:"indirecta", blank:"Can you tell me ___ the bank is?", options:["where","where is","that where"], answer:"where", note:"Can you tell me where + sujeto + verbo (sin inversión)."},
+  {id:"qu2-3", cat:"indirecta", blank:"I don't know ___ he said.", options:["what","what did","that what"], answer:"what", note:"I don't know what + sujeto + verbo (orden afirmativo)."},
+  {id:"qu2-4", cat:"indirecta", blank:"Do you know ___ she left?", options:["why","why did","that why"], answer:"why", note:"Do you know why + sujeto + verbo."},
+  {id:"qu2-5", cat:"if_whether", blank:"Do you know ___ he is married?", options:["if","that","whether"], answer:"if", note:"Pregunta indirecta sí/no → if o whether."},
+  {id:"qu2-6", cat:"if_whether", blank:"I'm not sure ___ she is coming.", options:["whether","if","that"], answer:"whether", note:"whether o if: ambos correctos. whether suena más formal."},
+  {id:"qu2-7", cat:"if_whether", blank:"Can you tell me ___ there is a bus stop nearby?", options:["if","that","when"], answer:"if", note:"Pregunta indirecta sí/no → if."},
+  {id:"qu2-8", cat:"orden", blank:"Do you know what time ___ (start)?", options:["it starts","does it start","starts it"], answer:"it starts", note:"Pregunta indirecta: orden afirmativo (sujeto + verbo), sin inversión."},
+  {id:"qu2-9", cat:"orden", blank:"I wonder where ___ (go).", options:["they went","did they go","they did go"], answer:"they went", note:"I wonder where + sujeto + verbo (sin did)."},
+  {id:"qu2-10", cat:"orden", blank:"Do you know how much ___ (cost)?", options:["it costs","does it cost","costs it"], answer:"it costs", note:"how much + sujeto + verbo (orden afirmativo)."},
+  {id:"qu2-11", cat:"orden", blank:"I'd like to know when ___ (arrive).", options:["the train arrives","does the train arrive","arrives the train"], answer:"the train arrives", note:"when + sujeto + verbo (sin auxiliar)."},
+  {id:"qu2-12", cat:"error", choose:true, options:["Do you know where does she live?","Do you know where she lives?","Do you know where she live?"], answer:"Do you know where she lives?", note:"Pregunta indirecta: orden afirmativo (she lives), sin does.", errorProne:true},
+  {id:"qu2-13", cat:"error", choose:true, options:["Can you tell me what time is it?","Can you tell me what time it is?","Can you tell me what time does it?"], answer:"Can you tell me what time it is?", note:"Pregunta indirecta: sujeto + verbo (it is), sin inversión.", errorProne:true},
+  {id:"qu2-14", cat:"error", choose:true, options:["I don't know if is he married?","I don't know if he is married.","I don't know whether is he married."], answer:"I don't know if he is married.", note:"Pregunta indirecta: orden afirmativo, sin signo de interrogación.", errorProne:true}
+];
+const QU2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Preguntas indirectas: orden afirmativo</div><div class="b">Después de Do you know...? / Can you tell me...? / I wonder... el verbo va en ORDEN AFIRMATIVO:<br><code>Do you know where she lives?</code> (no "where does she live")<br><code>Can you tell me what time it is?</code> (no "what time is it")</div></div>' +
+  '<div class="psRule"><div class="h">2 · If / whether para sí/no</div><div class="b">Para preguntas indirectas que esperan una respuesta sí/no → if o whether:<br><code>Do you know if he is married?</code><br><code>I\'m not sure whether she\'s coming.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Expresiones de introducción</div><div class="b"><code>Do you know...? / Can you tell me...? / I wonder... / I don\'t know... / I\'d like to know... / I\'m not sure... / Could you tell me...?</code></div></div>';
+
+/* ================= CONTENIDO: AUXILIARY VERBS / I THINK SO ================= */
+const QAU_CAT_LABEL = {short_ans:"RESPUESTAS CORTAS", so_neither:"SO / NEITHER", think_so:"THINK SO / HOPE SO", error:"FRASE CORRECTA"};
+const QAU_BANK = [
+  {id:"qau-1", cat:"short_ans", blank:"'Are you tired?' 'Yes, I ___.' ", options:["am","do","be"], answer:"am", note:"Short answer: sujeto + auxiliar. 'Yes, I am.'"},
+  {id:"qau-2", cat:"short_ans", blank:"'Does she work here?' 'No, she ___.'" , options:["doesn't","don't","isn't"], answer:"doesn't", note:"Short answer negativa: No, she doesn't."},
+  {id:"qau-3", cat:"short_ans", blank:"'Did they come?' 'Yes, they ___.'" , options:["did","do","had"], answer:"did", note:"Pasado: Yes, they did."},
+  {id:"qau-4", cat:"short_ans", blank:"'Can you drive?' 'Yes, I ___.'" , options:["can","could","am"], answer:"can", note:"Modal: Yes, I can."},
+  {id:"qau-5", cat:"short_ans", blank:"'Have you seen it?' 'No, I ___.'" , options:["haven't","didn't","don't"], answer:"haven't", note:"Present perfect: No, I haven't."},
+  {id:"qau-6", cat:"so_neither", blank:"'I'm tired.' '___ am I.'" , options:["So","Neither","Nor"], answer:"So", note:"Concordar con afirmación: So + auxiliar + sujeto. So am I = yo también."},
+  {id:"qau-7", cat:"so_neither", blank:"'I don't like fish.' '___ do I.'" , options:["Neither","So","Nor"], answer:"Neither", note:"Concordar con negación: Neither/Nor + auxiliar + sujeto. Neither do I = yo tampoco."},
+  {id:"qau-8", cat:"so_neither", blank:"'She can swim.' '___ can Tom.'" , options:["So","Neither","Nor"], answer:"So", note:"So + can + Tom (concordando con afirmación)."},
+  {id:"qau-9", cat:"so_neither", blank:"'They haven't seen it.' '___ have we.'" , options:["Neither","So","But"], answer:"Neither", note:"Concordar con negación: Neither + have + we."},
+  {id:"qau-10", cat:"so_neither", blank:"'I was late.' 'So ___ I.'" , options:["was","am","were"], answer:"was", note:"So was I. El auxiliar concuerda con el tiempo del original."},
+  {id:"qau-11", cat:"think_so", blank:"'Will it rain?' 'I ___ so.'" , options:["think","hope","believe"], answer:"think", note:"'I think so' = creo que sí. 'I don't think so' = creo que no."},
+  {id:"qau-12", cat:"think_so", blank:"'Did she pass?' 'I ___ so.'" , options:["hope","think","believe"], answer:"hope", note:"'I hope so' = espero que sí. 'I hope not' = espero que no."},
+  {id:"qau-13", cat:"think_so", blank:"'Is the office closed?' 'I ___ not.'" , options:["hope","think","suppose"], answer:"hope", note:"'I hope not' = espero que no."},
+  {id:"qau-14", cat:"error", choose:true, options:["'Are you coming?' 'Yes, I do.'","'Are you coming?' 'Yes, I am.'","'Are you coming?' 'Yes, I'm.'"], answer:"'Are you coming?' 'Yes, I am.'", note:"Short answer: el auxiliar de la pregunta (are) → Yes, I am.", errorProne:true},
+  {id:"qau-15", cat:"error", choose:true, options:["'I'm tired.' 'So I am.'","'I'm tired.' 'So am I.'","'I'm tired.' 'Neither am I.'"], answer:"'I'm tired.' 'So am I.'", note:"So + auxiliar + sujeto (invertido). So am I = yo también.", errorProne:true}
+];
+const QAU_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Respuestas cortas (short answers)</div><div class="b">Se repite solo el auxiliar de la pregunta:<br><code>Are you tired? — Yes, I am. / No, I\'m not.</code><br><code>Did they come? — Yes, they did. / No, they didn\'t.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · So / Neither para concordar</div><div class="b">Concordar con afirmación → <code>So + auxiliar + sujeto</code>: <code>So am I.</code> (= yo también)<br>Concordar con negación → <code>Neither/Nor + auxiliar + sujeto</code>: <code>Neither do I.</code> (= yo tampoco)</div></div>' +
+  '<div class="psRule"><div class="h">3 · I think so / I hope so</div><div class="b"><code>I think so</code> = creo que sí. <code>I don\'t think so</code> = creo que no.<br><code>I hope so</code> = espero que sí. <code>I hope not</code> = espero que no.<br><code>I suppose so</code> = supongo que sí. <code>I suppose not</code> = supongo que no.</div></div>';
+
+/* ================= CONTENIDO: QUESTION TAGS ================= */
+const QTG_CAT_LABEL = {afirm_neg:"AFIRMACIÓN → TAG NEG.", neg_afirm:"NEGACIÓN → TAG AFIRM.", especiales:"CASOS ESPECIALES", error:"FRASE CORRECTA"};
+const QTG_BANK = [
+  {id:"qtg-1", cat:"afirm_neg", blank:"You're tired, ___ you?", options:["aren't","isn't","are"], answer:"aren't", note:"are → aren't. Afirmación → tag negativa."},
+  {id:"qtg-2", cat:"afirm_neg", blank:"She works here, ___ she?", options:["doesn't","does","isn't"], answer:"doesn't", note:"works → does → doesn't she? Afirmación → tag negativa."},
+  {id:"qtg-3", cat:"afirm_neg", blank:"He can swim, ___ he?", options:["can't","cannot","isn't"], answer:"can't", note:"can → can't she?"},
+  {id:"qtg-4", cat:"afirm_neg", blank:"They've finished, ___ they?", options:["haven't","didn't","aren't"], answer:"haven't", note:"have → haven't. Afirmación → tag negativa."},
+  {id:"qtg-5", cat:"afirm_neg", blank:"It was a great film, ___ it?", options:["wasn't","isn't","weren't"], answer:"wasn't", note:"was → wasn't. Afirmación → tag negativa."},
+  {id:"qtg-6", cat:"neg_afirm", blank:"You haven't eaten, ___ you?", options:["have","haven't","do"], answer:"have", note:"haven't → have. Negación → tag afirmativa."},
+  {id:"qtg-7", cat:"neg_afirm", blank:"She doesn't like it, ___ she?", options:["does","doesn't","is"], answer:"does", note:"doesn't → does. Negación → tag afirmativa."},
+  {id:"qtg-8", cat:"neg_afirm", blank:"They won't come, ___ they?", options:["will","won't","do"], answer:"will", note:"won't → will. Negación → tag afirmativa."},
+  {id:"qtg-9", cat:"neg_afirm", blank:"He couldn't understand, ___ he?", options:["could","couldn't","can"], answer:"could", note:"couldn't → could."},
+  {id:"qtg-10", cat:"especiales", blank:"I'm right, ___ I?", options:["aren't","am not","isn't"], answer:"aren't", note:"I am → aren't I? (excepción: I am se niega con aren't I)."},
+  {id:"qtg-11", cat:"especiales", blank:"Nobody came, ___ they?", options:["did","didn't","do"], answer:"did", note:"Sujeto negativo (nobody/nothing) → tag afirmativa con they."},
+  {id:"qtg-12", cat:"especiales", blank:"Let's go, ___ we?", options:["shall","will","can"], answer:"shall", note:"Let's → shall we? (tag fija)."},
+  {id:"qtg-13", cat:"especiales", blank:"Don't be late, ___ you?", options:["will","shall","do"], answer:"will", note:"Imperativo (Don't...) → will you? (tag fija para peticiones)."},
+  {id:"qtg-14", cat:"error", choose:true, options:["She works here, isn't she?","She works here, doesn't she?","She works here, does she?"], answer:"She works here, doesn't she?", note:"works → does → tag: doesn't she? (no isn't).", errorProne:true},
+  {id:"qtg-15", cat:"error", choose:true, options:["I'm right, isn't I?","I'm right, am I not? / aren't I?","I'm right, amn't I?"], answer:"I'm right, am I not? / aren't I?", note:"I am → aren't I? (forma habitual) o am I not? (muy formal). Nunca isn't I.", errorProne:true}
+];
+const QTG_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · La regla básica</div><div class="b">Afirmación → tag negativa: <code>It\'s nice, isn\'t it?</code><br>Negación → tag afirmativa: <code>It isn\'t nice, is it?</code><br>El auxiliar de la tag = mismo auxiliar que en la oración principal.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Casos especiales</div><div class="b"><code>I am right, aren\'t I?</code> (excepción)<br><code>Nobody came, did they?</code> (sujeto negativo → tag afirmativa con they)<br><code>Let\'s go, shall we?</code><br><code>Don\'t be late, will you?</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Entonación</div><div class="b">Tag con entonación descendente → confirmas algo que crees saber.<br>Tag con entonación ascendente → genuinamente no estás seguro.</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -3354,6 +3704,96 @@ const GU_UNITS = {
     color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
     subtitle:"Gradación de formalidad: can → could → would. Pedir permiso: can/could/may. Would you mind + -ing?",
     learnHtml: MRQ_LEARN_HTML, catLabel: MRQ_CAT_LABEL, bank: MRQ_BANK
+  },
+  "if-do-did": {
+    id:"if-do-did", name:"if I do… and if I did…", icon:"🔀",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"Tipo 0 (verdad general), Tipo 1 (real futuro: if + present simple → will), Tipo 2 (irreal: if + past simple → would).",
+    learnHtml: IFD_LEARN_HTML, catLabel: IFD_CAT_LABEL, bank: IFD_BANK
+  },
+  "if-knew": {
+    id:"if-knew", name:"if I knew…, I wish I knew…", icon:"💭",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"If I were you. wish + pasado simple (deseo irreal presente). wish + could para habilidades.",
+    learnHtml: IFK_LEARN_HTML, catLabel: IFK_CAT_LABEL, bank: IFK_BANK
+  },
+  "if-had-known": {
+    id:"if-had-known", name:"if I had known…, I wish I had known…", icon:"⏮️",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"Tipo 3 (irreal pasado: if + past perfect → would have). wish + past perfect. wish + would para cambios.",
+    learnHtml: IFHK_LEARN_HTML, catLabel: IFHK_CAT_LABEL, bank: IFHK_BANK
+  },
+  "wish": {
+    id:"wish", name:"wish", icon:"🌠",
+    color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
+    subtitle:"Todos los usos de wish: presente (past simple), pasado (past perfect), cambio de comportamiento (would). If only.",
+    learnHtml: WSH_LEARN_HTML, catLabel: WSH_CAT_LABEL, bank: WSH_BANK
+  },
+  "passive-1": {
+    id:"passive-1", name:"Passive 1 (is done / was done)", icon:"🔄",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"Pasiva presente (is/are + participio) y pasada (was/were + participio). By + agente.",
+    learnHtml: PAS1_LEARN_HTML, catLabel: PAS1_CAT_LABEL, bank: PAS1_BANK
+  },
+  "passive-2": {
+    id:"passive-2", name:"Passive 2 (be done / been done / being done)", icon:"⚙️",
+    color:"#4338ca", pillBg:"#e0e7ff", pillColor:"#1e1b4b",
+    subtitle:"Pasiva con modales (can/must be done), perfect passive (has been done) y continuous passive (is being done).",
+    learnHtml: PAS2_LEARN_HTML, catLabel: PAS2_CAT_LABEL, bank: PAS2_BANK
+  },
+  "passive-3": {
+    id:"passive-3", name:"Passive 3", icon:"🔃",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#134e4a",
+    subtitle:"Pasiva con verbos de dos complementos. by vs. with. get + participio (pasiva informal).",
+    learnHtml: PAS3_LEARN_HTML, catLabel: PAS3_CAT_LABEL, bank: PAS3_BANK
+  },
+  "said-to": {
+    id:"said-to", name:"it is said that…, he is said to…, supposed to…", icon:"📰",
+    color:"#64748b", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"It is said/thought/believed that. He is said/believed to. be supposed to para lo esperado o permitido.",
+    learnHtml: PASSE_LEARN_HTML, catLabel: PASSE_CAT_LABEL, bank: PASSE_BANK
+  },
+  "have-done": {
+    id:"have-done", name:"have something done", icon:"💇",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"have/get + objeto + participio: mandar hacer algo. También para experiencias no deseadas.",
+    learnHtml: PASSH_LEARN_HTML, catLabel: PASSH_CAT_LABEL, bank: PASSH_BANK
+  },
+  "reported-1": {
+    id:"reported-1", name:"Reported speech 1 (he said that…)", icon:"💬",
+    color:"#b91c1c", pillBg:"#fee2e2", pillColor:"#450a0a",
+    subtitle:"say vs. tell. Retroceso verbal (backshift). Cambios de tiempo y lugar en estilo indirecto.",
+    learnHtml: RP1_LEARN_HTML, catLabel: RP1_CAT_LABEL, bank: RP1_BANK
+  },
+  "reported-2": {
+    id:"reported-2", name:"Reported speech 2", icon:"🗨️",
+    color:"#9333ea", pillBg:"#f3e8ff", pillColor:"#3b0764",
+    subtitle:"Preguntas indirectas (if/whether para sí/no, wh- + orden afirmativo). Mandatos y consejos en estilo indirecto.",
+    learnHtml: RP2_LEARN_HTML, catLabel: RP2_CAT_LABEL, bank: RP2_BANK
+  },
+  "questions-1": {
+    id:"questions-1", name:"Questions 1", icon:"❓",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"Do/Does/Did. Who/What como sujeto (sin do). Who/What como objeto (con do). Errores más comunes.",
+    learnHtml: QU1_LEARN_HTML, catLabel: QU1_CAT_LABEL, bank: QU1_BANK
+  },
+  "questions-2": {
+    id:"questions-2", name:"Questions 2 (do you know where…?)", icon:"🔍",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"Preguntas indirectas: orden afirmativo después de Do you know...?/I wonder... If/whether para sí/no.",
+    learnHtml: QU2_LEARN_HTML, catLabel: QU2_CAT_LABEL, bank: QU2_BANK
+  },
+  "auxiliary": {
+    id:"auxiliary", name:"Auxiliary verbs, I think so / I hope so", icon:"✔️",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"Respuestas cortas. So/Neither para concordar. I think/hope/suppose so — I hope/think not.",
+    learnHtml: QAU_LEARN_HTML, catLabel: QAU_CAT_LABEL, bank: QAU_BANK
+  },
+  "tags": {
+    id:"tags", name:"Question tags (do you? isn't it?)", icon:"🏷️",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"Afirmación → tag negativa. Negación → tag afirmativa. Casos especiales: aren't I?, nobody did, let's/don't.",
+    learnHtml: QTG_LEARN_HTML, catLabel: QTG_CAT_LABEL, bank: QTG_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
