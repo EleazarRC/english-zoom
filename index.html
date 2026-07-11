@@ -2841,6 +2841,296 @@ const FWI_LEARN_HTML =
   '<div class="psRule"><div class="h">2 · La regla se aplica a todos los conectores temporales</div><div class="b"><code>when, if, until, before, after, as soon as, once, by the time</code>:<br><code>I\'ll wait until he comes back.</code><br><code>She\'ll feel better once she finds a new job.</code></div></div>' +
   '<div class="psRule"><div class="h">3 · When + presente perfecto (primera acción debe completarse)</div><div class="b">Si quieres enfatizar que la primera acción debe estar TERMINADA antes de la segunda, usa when + presente perfecto:<br><code>I\'ll tell you when I\'ve made a decision.</code> (cuando haya decidido)<br><code>When you\'ve read this, call me.</code><br>La diferencia con el presente simple es de énfasis.</div></div>';
 
+/* ================= CONTENIDO: CAN, COULD AND (BE) ABLE TO ================= */
+const MCA_CAT_LABEL = {can_pres:"CAN (PRESENTE)", could_pas:"COULD (PASADO)", able_to:"BE ABLE TO", contraste:"CONTRASTE", error:"FRASE CORRECTA"};
+const MCA_BANK = [
+  {id:"mca-1", cat:"can_pres", blank:"I ___ (speak) three languages.", options:["can speak","can to speak","am able speak"], answer:"can speak", note:"can + infinitivo base (sin to) para habilidad presente."},
+  {id:"mca-2", cat:"can_pres", blank:"She ___ (not/swim).", options:["can't swim","can't to swim","cannot swimming"], answer:"can't swim", note:"can't (= cannot) + infinitivo base para incapacidad."},
+  {id:"mca-3", cat:"can_pres", blank:"___ you play the piano?", options:["Can","Do","Are"], answer:"Can", note:"Can + sujeto + infinitivo base para preguntar por habilidad."},
+  {id:"mca-4", cat:"can_pres", blank:"He ___ (run) very fast.", options:["can run","cans run","can to run"], answer:"can run", note:"can no lleva -s en tercera persona: he can (no 'he cans')."},
+  {id:"mca-5", cat:"could_pas", blank:"When I was a child, I ___ (climb) trees easily.", options:["could climb","can climb","was able to climb"], answer:"could climb", note:"could + infinitivo base para habilidad general en el pasado."},
+  {id:"mca-6", cat:"could_pas", blank:"She ___ (not/drive) until she was 25.", options:["couldn't drive","can't drive","wasn't able driving"], answer:"couldn't drive", note:"couldn't + infinitivo base para incapacidad pasada."},
+  {id:"mca-7", cat:"could_pas", blank:"___ you understand the teacher when you were a student?", options:["Could","Did","Were"], answer:"Could", note:"Could + sujeto + infinitivo base."},
+  {id:"mca-8", cat:"able_to", blank:"I haven't ___ (sleep) well lately.", options:["been able to sleep","been able sleep","could sleep"], answer:"been able to sleep", note:"be able to en tiempos compuestos: have been able to + infinitivo."},
+  {id:"mca-9", cat:"able_to", blank:"She will ___ (speak) Japanese after the course.", options:["be able to speak","can speak","be able speak"], answer:"be able to speak", note:"Después de will/might/may → be able to, no can."},
+  {id:"mca-10", cat:"able_to", blank:"I'd like ___ (fly) one day.", options:["to be able to fly","to can fly","being able to fly"], answer:"to be able to fly", note:"Después de to → to be able to (infinitivo de be able to)."},
+  {id:"mca-11", cat:"contraste", blank:"The fire was spreading, but they ___ (escape).", options:["were able to escape","could escape"], answer:"were able to escape", note:"Logro específico en el pasado (managed to) → was/were able to, no could."},
+  {id:"mca-12", cat:"contraste", blank:"When I was young, I ___ (run) a marathon.", options:["could run","was able to run"], answer:"could run", note:"Habilidad general en el pasado → could o was able to (ambos correctos)."},
+  {id:"mca-13", cat:"contraste", blank:"He practiced a lot and eventually ___ (pass) the exam.", options:["was able to pass","could pass"], answer:"was able to pass", note:"Logro específico conseguido tras esfuerzo → was able to."},
+  {id:"mca-14", cat:"error", choose:true, options:["She cans swim very well.","She can swims very well.","She can swim very well."], answer:"She can swim very well.", note:"can no toma -s en 3ª persona. El verbo principal va en base.", errorProne:true},
+  {id:"mca-15", cat:"error", choose:true, options:["I will can drive after my test.","I will be able to drive after my test.","I can drive after my test."], answer:"I will be able to drive after my test.", note:"Después de will → be able to (can no puede seguir a otro modal).", errorProne:true},
+  {id:"mca-16", cat:"error", choose:true, options:["She could escape from the burning building.","She was able to escape from the burning building.","She could escaped from the building."], answer:"She was able to escape from the burning building.", note:"Logro específico en el pasado → was/were able to, no could.", errorProne:true}
+];
+const MCA_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · can/can\'t (habilidad presente)</div><div class="b">Para habilidad o capacidad actual: <code>can + infinitivo base</code>.<br><code>I can speak French.</code> / <code>She can\'t swim.</code><br>⚠️ can no lleva -s: <code>he can</code> (no "he cans").</div></div>' +
+  '<div class="psRule"><div class="h">2 · could/couldn\'t (habilidad pasada)</div><div class="b">Para habilidad general en el pasado: <code>could + infinitivo base</code>.<br><code>When I was young, I could run very fast.</code><br>⚠️ Para un logro específico en el pasado, se prefiere <code>was/were able to</code>:<br><code>The fire spread but they were able to escape.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · be able to (cuando can no cabe)</div><div class="b">Necesario después de will/might/may/have/to...<br><code>I won\'t be able to come tomorrow.</code><br><code>I\'ve never been able to understand maths.</code><br><code>I\'d like to be able to fly.</code></div></div>';
+
+/* ================= CONTENIDO: COULD (DO) AND COULD HAVE (DONE) ================= */
+const MCOH_CAT_LABEL = {could_posib:"COULD: POSIBILIDAD / SUGERENCIA", could_have:"COULD HAVE (DONE)", error:"FRASE CORRECTA"};
+const MCOH_BANK = [
+  {id:"mcoh-1", cat:"could_posib", blank:"If you're tired, you ___ take a nap.", options:["could","can","might"], answer:"could", note:"could para sugerencias suaves: podrías."},
+  {id:"mcoh-2", cat:"could_posib", blank:"I'm not sure where he is. He ___ be at the office.", options:["could","should","would"], answer:"could", note:"could para posibilidad: podría estar."},
+  {id:"mcoh-3", cat:"could_posib", blank:"We ___ go to the cinema tonight — what do you think?", options:["could","should","would"], answer:"could", note:"could para propuestas sin imponer."},
+  {id:"mcoh-4", cat:"could_have", blank:"You ___ (call) me — I was home all day!", options:["could have called","could call","should call"], answer:"could have called", note:"could have + participio: podrías haber hecho algo (y no lo hiciste)."},
+  {id:"mcoh-5", cat:"could_have", blank:"She ___ (get) the job — she was well qualified.", options:["could have got","could get","might get"], answer:"could have got", note:"could have + participio: era posible conseguirlo."},
+  {id:"mcoh-6", cat:"could_have", blank:"The meeting was unnecessary. We ___ (do) it by email.", options:["could have done","could do","should do"], answer:"could have done", note:"could have + participio: había una alternativa que no se usó."},
+  {id:"mcoh-7", cat:"could_have", blank:"I ___ (be) a doctor, but I chose to study art.", options:["could have been","could be","might be"], answer:"could have been", note:"could have been: posibilidad pasada que no se realizó."},
+  {id:"mcoh-8", cat:"could_have", blank:"That was dangerous! You ___ (hurt) yourself!", options:["could have hurt","could hurt","might hurt"], answer:"could have hurt", note:"could have + participio para posibilidad peligrosa que (por suerte) no ocurrió."},
+  {id:"mcoh-9", cat:"could_have", blank:"She didn't answer — she ___ (be) asleep.", options:["could have been","could be","might be"], answer:"could have been", note:"could have been: posible explicación del pasado."},
+  {id:"mcoh-10", cat:"could_have", blank:"They ___ (take) a different route — that's why they're late.", options:["could have taken","could take","might takes"], answer:"could have taken", note:"could have + participio para posibilidad pasada."},
+  {id:"mcoh-11", cat:"error", choose:true, options:["You could to try harder.","You could try harder.","You could tried harder."], answer:"You could try harder.", note:"could + infinitivo BASE (sin to).", errorProne:true},
+  {id:"mcoh-12", cat:"error", choose:true, options:["She could have being more careful.","She could have been more careful.","She could had been more careful."], answer:"She could have been more careful.", note:"could have + PARTICIPIO PASADO: been (no being, no had been).", errorProne:true},
+  {id:"mcoh-13", cat:"error", choose:true, options:["You could have call me!","You could have called me!","You could called me!"], answer:"You could have called me!", note:"could have + participio pasado: called.", errorProne:true}
+];
+const MCOH_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · could para posibilidad y sugerencia (presente)</div><div class="b">Para hablar de posibilidades o hacer sugerencias suaves:<br><code>He could be at the office.</code> (posibilidad)<br><code>You could try again tomorrow.</code> (sugerencia)</div></div>' +
+  '<div class="psRule"><div class="h">2 · could have + participio (pasado)</div><div class="b">Para algo posible en el pasado que NO ocurrió (o podría haber ocurrido):<br><code>You could have called me!</code> (podrías haberme llamado, pero no lo hiciste)<br><code>She could have been a doctor.</code> (era posible pero no ocurrió)<br><code>You could have hurt yourself!</code> (peligro que no se materializó)</div></div>' +
+  '<div class="psRule"><div class="h">3 · Forma</div><div class="b">Nunca "could to": <code>You could try</code> (no "could to try").<br>could have + participio pasado: <code>could have called</code> (no "could have calling").</div></div>';
+
+/* ================= CONTENIDO: MUST AND CAN'T (DEDUCTION) ================= */
+const MMC_CAT_LABEL = {must_ded:"MUST (DEDUCCIÓN +)", cant_ded:"CAN'T (DEDUCCIÓN –)", past_ded:"DEDUCCIÓN PASADA", error:"FRASE CORRECTA"};
+const MMC_BANK = [
+  {id:"mmc-1", cat:"must_ded", blank:"You've been working all day — you ___ (be) exhausted!", options:["must be","must to be","have to be"], answer:"must be", note:"must + infinitivo base para deducción: estoy casi seguro de que lo es."},
+  {id:"mmc-2", cat:"must_ded", blank:"She spends hours in the gym — she ___ (love) sport.", options:["must love","must to love","has to love"], answer:"must love", note:"Deducción lógica en presente → must + infinitivo base."},
+  {id:"mmc-3", cat:"must_ded", blank:"There's a light on. Somebody ___ (be) at home.", options:["must be","could be","should be"], answer:"must be", note:"Deducción fuerte basada en evidencia → must be."},
+  {id:"mmc-4", cat:"must_ded", blank:"He bought three houses this year — he ___ (earn) a lot of money.", options:["must earn","can't earn","should earn"], answer:"must earn", note:"Deducción lógica → must."},
+  {id:"mmc-5", cat:"cant_ded", blank:"That ___ (be) Tom — he's in Australia!", options:["can't be","mustn't be","couldn't be"], answer:"can't be", note:"can't para deducción negativa: es imposible."},
+  {id:"mmc-6", cat:"cant_ded", blank:"She passed all her exams. She ___ (be) stupid.", options:["can't be","mustn't be","couldn't be"], answer:"can't be", note:"can't be = es imposible que sea tonta."},
+  {id:"mmc-7", cat:"cant_ded", blank:"You've just had dinner — you ___ (be) hungry again!", options:["can't be","mustn't be","shouldn't be"], answer:"can't be", note:"can't = es lógicamente imposible."},
+  {id:"mmc-8", cat:"past_ded", blank:"She looks fresh — she ___ (sleep) well.", options:["must have slept","must slept","had to sleep"], answer:"must have slept", note:"Deducción positiva en el pasado: must have + participio."},
+  {id:"mmc-9", cat:"past_ded", blank:"She ___ (take) my keys — they're gone and she was the only one here.", options:["must have taken","can't have taken","should have taken"], answer:"must have taken", note:"Deducción lógica fuerte en el pasado → must have + participio."},
+  {id:"mmc-10", cat:"past_ded", blank:"He ___ (study) — he got zero on the test.", options:["can't have studied","must have studied","shouldn't have studied"], answer:"can't have studied", note:"Deducción negativa en el pasado: can't have + participio."},
+  {id:"mmc-11", cat:"past_ded", blank:"They ___ (enjoy) the party — they left after ten minutes.", options:["can't have enjoyed","must have enjoyed","wouldn't have enjoyed"], answer:"can't have enjoyed", note:"can't have + participio = es imposible que lo hayan disfrutado."},
+  {id:"mmc-12", cat:"past_ded", blank:"He ___ (see) the message — he read it an hour ago.", options:["must have seen","must saw","had to see"], answer:"must have seen", note:"Deducción positiva pasada → must have + participio."},
+  {id:"mmc-13", cat:"error", choose:true, options:["She must to be tired.","She must be tired.","She musts be tired."], answer:"She must be tired.", note:"must + infinitivo BASE (sin to). No tiene -s en 3ª persona.", errorProne:true},
+  {id:"mmc-14", cat:"error", choose:true, options:["That mustn't be right — it's impossible.","That can't be right — it's impossible.","That shouldn't be right — it's impossible."], answer:"That can't be right — it's impossible.", note:"Para deducción negativa (imposibilidad) → can't, no mustn't.", errorProne:true},
+  {id:"mmc-15", cat:"error", choose:true, options:["She must has slept well.","She must have slept well.","She must have sleep well."], answer:"She must have slept well.", note:"must have + participio pasado (slept). 'must has' no existe.", errorProne:true}
+];
+const MMC_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · must = deducción positiva ("debe de ser")</div><div class="b">Cuando estás casi seguro de que algo es así:<br><code>You\'ve been working all day — you must be tired!</code><br><code>There\'s a light on — somebody must be at home.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · can\'t = deducción negativa ("es imposible que")</div><div class="b">Cuando algo es lógicamente imposible:<br><code>That can\'t be Tom — he\'s in Australia.</code><br><code>She can\'t be hungry — she just ate!</code><br>⚠️ Para deducción negativa NO se usa <code>mustn\'t</code>.</div></div>' +
+  '<div class="psRule"><div class="h">3 · Deducción en el pasado</div><div class="b">must have + participio = casi seguro que ocurrió:<br><code>She must have slept well — she looks so fresh.</code><br>can\'t have + participio = es imposible que haya ocurrido:<br><code>He can\'t have studied — he got zero.</code></div></div>';
+
+/* ================= CONTENIDO: MAY AND MIGHT 1 ================= */
+const MMP1_CAT_LABEL = {posibilidad:"POSIBILIDAD (PRES./FUT.)", negativa:"MAY NOT / MIGHT NOT", maybe:"MAYBE vs MAY BE", error:"FRASE CORRECTA"};
+const MMP1_BANK = [
+  {id:"mmp1-1", cat:"posibilidad", blank:"I ___ (go) to the party tonight — I'm not sure yet.", options:["may go","may to go","might going"], answer:"may go", note:"may + infinitivo base para posibilidad (quizás, puede que)."},
+  {id:"mmp1-2", cat:"posibilidad", blank:"She ___ (be) late — the traffic is terrible.", options:["might be","might to be","may to be"], answer:"might be", note:"might + infinitivo base: posibilidad (un poco más de duda que may)."},
+  {id:"mmp1-3", cat:"posibilidad", blank:"It ___ (rain) tomorrow — take an umbrella.", options:["might rain","might to rain","may to rain"], answer:"might rain", note:"might / may + infinitivo base para posibilidad futura."},
+  {id:"mmp1-4", cat:"posibilidad", blank:"He ___ (know) the answer — ask him.", options:["may know","may knows","might knows"], answer:"may know", note:"may/might no llevan -s en 3ª persona. Verbo principal en base."},
+  {id:"mmp1-5", cat:"posibilidad", blank:"'Where is she?' 'I'm not sure — she ___ (be) at the gym.'", options:["may be","maybe","might being"], answer:"may be", note:"may be (dos palabras, modal + infinitivo) ≠ maybe (adverbio)."},
+  {id:"mmp1-6", cat:"posibilidad", blank:"Take your phone — I ___ (need) to reach you later.", options:["might need","may need","could need"], answer:"might need", note:"Cualquiera de las tres es correcta para posibilidad."},
+  {id:"mmp1-7", cat:"negativa", blank:"He ___ (not/come) to the meeting — he said he was busy.", options:["may not come","might not coming","can't come"], answer:"may not come", note:"may not / might not (sin contracción habitual) para posibilidad negativa."},
+  {id:"mmp1-8", cat:"negativa", blank:"She ___ (not/be) at home — try calling her.", options:["might not be","mightn't be","may not being"], answer:"might not be", note:"might not + infinitivo base."},
+  {id:"mmp1-9", cat:"negativa", blank:"I ___ (not/have) time to finish it today.", options:["may not have","might not have","might not has"], answer:"may not have", note:"may not have + infinitivo base."},
+  {id:"mmp1-10", cat:"maybe", blank:"___ he is right. (adverbio)", options:["Maybe","May","Might"], answer:"Maybe", note:"Maybe = perhaps (adverbio). No es un modal."},
+  {id:"mmp1-11", cat:"maybe", blank:"He ___ be right. (modal)", options:["may","maybe","might be"], answer:"may", note:"may be = modal + infinitivo (dos palabras). Mismo significado que maybe, distinta estructura."},
+  {id:"mmp1-12", cat:"maybe", blank:"It ___ (be) a coincidence, but I doubt it.", options:["may be","maybe be","might be to"], answer:"may be", note:"may be + adjetivo/sustantivo: it may be a coincidence."},
+  {id:"mmp1-13", cat:"error", choose:true, options:["She may to go to the party.","She may go to the party.","She mays go to the party."], answer:"She may go to the party.", note:"may + infinitivo BASE (sin to). No tiene -s en 3ª persona.", errorProne:true},
+  {id:"mmp1-14", cat:"error", choose:true, options:["It mightn't be true.","It might not be true.","It might not to be true."], answer:"It might not be true.", note:"might not + infinitivo base. Sin to.", errorProne:true},
+  {id:"mmp1-15", cat:"error", choose:true, options:["He maybe right.","He may be right.","He might be right."], answer:"He may be right.", note:"maybe (adverbio): Maybe he is right. may be (modal): He may be right.", errorProne:true}
+];
+const MMP1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · may / might + infinitivo base = posibilidad</div><div class="b">Para decir que algo es posible (pero no seguro):<br><code>I may go to the party.</code> / <code>It might rain tomorrow.</code><br>may y might son intercambiables; might implica algo más de duda.<br>⚠️ Sin -s en 3ª persona. Sin to: <code>may go</code> (no "may to go").</div></div>' +
+  '<div class="psRule"><div class="h">2 · may not / might not = posibilidad negativa</div><div class="b">Para la posibilidad de que algo NO ocurra:<br><code>She may not come.</code> / <code>He might not be at home.</code><br>⚠️ No confundir con <code>can\'t</code> (imposibilidad segura).</div></div>' +
+  '<div class="psRule"><div class="h">3 · maybe vs. may be</div><div class="b"><code>Maybe</code> (una palabra) es adverbio: <code>Maybe it\'s true.</code><br><code>may be</code> (dos palabras) es modal + infinitivo: <code>It may be true.</code><br>Mismo significado, distinta posición en la frase.</div></div>';
+
+/* ================= CONTENIDO: MAY AND MIGHT 2 ================= */
+const MMP2_CAT_LABEL = {may_have:"MAY/MIGHT HAVE (PASADO)", permiso:"PERMISO (MAY)", contraste:"PRES./FUT. VS PASADO", error:"FRASE CORRECTA"};
+const MMP2_BANK = [
+  {id:"mmp2-1", cat:"may_have", blank:"She's late. She ___ (miss) the bus.", options:["may have missed","may missed","might missed"], answer:"may have missed", note:"may/might have + participio para posibilidad en el pasado."},
+  {id:"mmp2-2", cat:"may_have", blank:"He looks upset — something ___ (happen).", options:["might have happened","might happened","may has happened"], answer:"might have happened", note:"might have + participio: posible que algo haya ocurrido."},
+  {id:"mmp2-3", cat:"may_have", blank:"I ___ (leave) my phone in the car — I'm not sure.", options:["may have left","may left","might have leave"], answer:"may have left", note:"may have + participio pasado."},
+  {id:"mmp2-4", cat:"may_have", blank:"They ___ (not/receive) the email — send it again.", options:["may not have received","might not received","couldn't have received"], answer:"may not have received", note:"may not have + participio para posibilidad negativa pasada."},
+  {id:"mmp2-5", cat:"may_have", blank:"She ___ (be) ill last week — she didn't come in.", options:["might have been","may has been","could been"], answer:"might have been", note:"might have been: posiblemente estuvo enferma."},
+  {id:"mmp2-6", cat:"permiso", blank:"___ I use your phone?", options:["May","Might","Could"], answer:"May", note:"May I...? para pedir permiso de forma formal y cortés."},
+  {id:"mmp2-7", cat:"permiso", blank:"You ___ use the computer if you need to.", options:["may","might","should"], answer:"may", note:"may para dar permiso formalmente."},
+  {id:"mmp2-8", cat:"permiso", blank:"You ___ (not/park) here — it's a private area.", options:["may not","might not","mustn't"], answer:"may not", note:"may not para denegar permiso (formal)."},
+  {id:"mmp2-9", cat:"permiso", blank:"'___ I sit here?' 'Yes, of course you ___.'", options:["May / may","Might / might","Can / can"], answer:"May / may", note:"May I...? para pedir permiso formal."},
+  {id:"mmp2-10", cat:"contraste", blank:"She ___ (be) at home — try calling her.", options:["might be","might have been"], answer:"might be", note:"Posibilidad presente/futura → might + infinitivo."},
+  {id:"mmp2-11", cat:"contraste", blank:"She ___ (be) at home when you called — I'm not sure.", options:["might have been","might be"], answer:"might have been", note:"Posibilidad en el pasado → might have + participio."},
+  {id:"mmp2-12", cat:"contraste", blank:"He ___ (take) a different route — that's why he's late.", options:["may have taken","may take","might takes"], answer:"may have taken", note:"Posibilidad en el pasado → may have + participio."},
+  {id:"mmp2-13", cat:"error", choose:true, options:["She might have leaving early.","She might have left early.","She might had left early."], answer:"She might have left early.", note:"might have + PARTICIPIO PASADO: left (no leaving, no had).", errorProne:true},
+  {id:"mmp2-14", cat:"error", choose:true, options:["May I to use your pen?","May I use your pen?","Might I use your pen?"], answer:"May I use your pen?", note:"May I + infinitivo base (sin to). Forma habitual de pedir permiso.", errorProne:true},
+  {id:"mmp2-15", cat:"error", choose:true, options:["He may not have saw the sign.","He may not have seen the sign.","He might have not seen the sign."], answer:"He may not have seen the sign.", note:"may not have + PARTICIPIO PASADO: seen. 'not' va entre 'may' y 'have'.", errorProne:true}
+];
+const MMP2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · may/might have + participio = posibilidad en el pasado</div><div class="b">Para decir que es posible que algo haya ocurrido:<br><code>She may have missed the bus.</code><br><code>He might have been ill.</code><br>Negativa: <code>may not have / might not have + participio</code>.</div></div>' +
+  '<div class="psRule"><div class="h">2 · may para permiso (formal)</div><div class="b"><code>May I use your phone?</code> = forma formal de pedir permiso.<br><code>You may use the computer.</code> = permiso formal.<br><code>You may not enter.</code> = denegación formal.<br>En conversación informal → <code>Can I...?</code> o <code>Could I...?</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Presente vs. pasado</div><div class="b">Posibilidad presente/futura: <code>might + infinitivo</code>: <code>She might be at home.</code><br>Posibilidad pasada: <code>might have + participio</code>: <code>She might have been at home.</code></div></div>';
+
+/* ================= CONTENIDO: HAVE TO AND MUST ================= */
+const MHT_CAT_LABEL = {have_to:"HAVE TO", must_obl:"MUST (OBLIGACIÓN)", pasado_futuro:"PASADO / FUTURO", contraste:"CONTRASTE", error:"FRASE CORRECTA"};
+const MHT_BANK = [
+  {id:"mht-1", cat:"have_to", blank:"I ___ (finish) this report by tomorrow.", options:["have to finish","must finish","have finish"], answer:"have to finish", note:"have to + infinitivo para obligación externa (alguien te lo exige)."},
+  {id:"mht-2", cat:"have_to", blank:"She ___ (wear) a uniform at work.", options:["has to wear","have to wear","must wear"], answer:"has to wear", note:"he/she/it → has to + infinitivo."},
+  {id:"mht-3", cat:"have_to", blank:"___ you ___ (work) at weekends?", options:["Do / have to","Must / have to","Does / must"], answer:"Do / have to", note:"Pregunta con have to: Do/Does + sujeto + have to + infinitivo?"},
+  {id:"mht-4", cat:"have_to", blank:"They ___ (not/pay) for the tickets — they were free.", options:["didn't have to pay","mustn't pay","haven't to pay"], answer:"didn't have to pay", note:"didn't have to = no era necesario (y no lo hicieron o no hacía falta)."},
+  {id:"mht-5", cat:"must_obl", blank:"I ___ (call) my mum — it's her birthday.", options:["must call","have to call","need to call"], answer:"must call", note:"must para obligación interna (yo mismo lo considero necesario)."},
+  {id:"mht-6", cat:"must_obl", blank:"You ___ (see) this film — it's incredible!", options:["must see","have to see","need to see"], answer:"must see", note:"must para recomendación fuerte (yo te lo digo)."},
+  {id:"mht-7", cat:"must_obl", blank:"I ___ (stop) eating so much sugar.", options:["must stop","have to stop","should stop"], answer:"must stop", note:"must para autoimposición."},
+  {id:"mht-8", cat:"pasado_futuro", blank:"We ___ (wait) two hours at the airport.", options:["had to wait","must wait","have to wait"], answer:"had to wait", note:"En pasado → had to (must no tiene forma de pasado para obligación)."},
+  {id:"mht-9", cat:"pasado_futuro", blank:"She ___ (take) the exam again next year.", options:["will have to take","must take","has to take"], answer:"will have to take", note:"En futuro → will have to (must no tiene forma de futuro)."},
+  {id:"mht-10", cat:"pasado_futuro", blank:"He ___ (work) three jobs to support his family.", options:["had to work","must work","would have to work"], answer:"had to work", note:"had to: obligación en el pasado."},
+  {id:"mht-11", cat:"contraste", blank:"You ___ (show) your passport at the border — it's the law.", options:["have to show","must show"], answer:"have to show", note:"Regla externa, ley → have to. Must también posible si el hablante la impone."},
+  {id:"mht-12", cat:"contraste", blank:"I ___ (exercise) more — my doctor said so.", options:["have to exercise","must exercise"], answer:"have to exercise", note:"Obligación externa (el médico lo dice) → have to."},
+  {id:"mht-13", cat:"contraste", blank:"I ___ (exercise) more — I feel unfit.", options:["must exercise","have to exercise"], answer:"must exercise", note:"Obligación interna (yo lo siento necesario) → must."},
+  {id:"mht-14", cat:"error", choose:true, options:["She musts finish it today.","She must finish it today.","She must to finish it today."], answer:"She must finish it today.", note:"must + infinitivo base. Sin -s en 3ª persona.", errorProne:true},
+  {id:"mht-15", cat:"error", choose:true, options:["She musted work late yesterday.","She had to work late yesterday.","She must worked late yesterday."], answer:"She had to work late yesterday.", note:"must no tiene forma de pasado para obligación → had to.", errorProne:true},
+  {id:"mht-16", cat:"error", choose:true, options:["Does she has to work on Sundays?","Does she have to work on Sundays?","Must she has to work on Sundays?"], answer:"Does she have to work on Sundays?", note:"Pregunta: Does + sujeto + have to + infinitivo base.", errorProne:true}
+];
+const MHT_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · have to → obligación externa</div><div class="b">La obligación viene de fuera (jefe, ley, norma):<br><code>I have to wear a uniform at work.</code><br>Pasado: <code>had to</code>. Futuro: <code>will have to</code>.<br>Pregunta: <code>Do/Does + sujeto + have to...?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · must → obligación interna</div><div class="b">El hablante siente o impone la obligación:<br><code>I must call my mum — it\'s her birthday.</code><br><code>You must see this film!</code><br>⚠️ must no tiene pasado ni futuro para obligación: usa <code>had to / will have to</code>.</div></div>' +
+  '<div class="psRule"><div class="h">3 · didn\'t have to vs. mustn\'t</div><div class="b"><code>didn\'t have to</code> = no era necesario (sin obligación).<br><code>mustn\'t</code> = está prohibido, no debes.<br><code>You didn\'t have to bring anything.</code> (no hacía falta)<br><code>You mustn\'t park here.</code> (está prohibido)</div></div>';
+
+/* ================= CONTENIDO: MUST, MUSTN'T, NEEDN'T ================= */
+const MMN_CAT_LABEL = {mustnt:"MUSTN'T (PROHIBICIÓN)", neednt:"NEEDN'T (NO NECESARIO)", need_have:"NEEDN'T HAVE / DIDN'T NEED TO", error:"FRASE CORRECTA"};
+const MMN_BANK = [
+  {id:"mmn-1", cat:"mustnt", blank:"You ___ (touch) that — it's very hot!", options:["mustn't touch","don't have to touch","needn't touch"], answer:"mustn't touch", note:"mustn't + infinitivo base para prohibición: no debes / está prohibido."},
+  {id:"mmn-2", cat:"mustnt", blank:"You ___ (tell) anyone — it's a secret.", options:["mustn't tell","don't have to tell","needn't tell"], answer:"mustn't tell", note:"mustn't: estrictamente prohibido o muy importante no hacerlo."},
+  {id:"mmn-3", cat:"mustnt", blank:"You ___ (drive) after drinking.", options:["mustn't drive","don't have to drive","needn't drive"], answer:"mustn't drive", note:"mustn't para prohibiciones legales o morales."},
+  {id:"mmn-4", cat:"mustnt", blank:"Candidates ___ (use) their phones during the exam.", options:["must not use","don't have to use","needn't use"], answer:"must not use", note:"must not (= mustn't): norma / prohibición formal."},
+  {id:"mmn-5", cat:"neednt", blank:"You ___ (come) if you don't want to.", options:["needn't come","mustn't come","don't must come"], answer:"needn't come", note:"needn't + infinitivo base: no es necesario (pero puedes si quieres)."},
+  {id:"mmn-6", cat:"neednt", blank:"She ___ (bring) anything — we have everything.", options:["needn't bring","mustn't bring","doesn't need bring"], answer:"needn't bring", note:"needn't = don't need to: no hace falta."},
+  {id:"mmn-7", cat:"neednt", blank:"You ___ (worry) — everything is under control.", options:["needn't worry","mustn't worry","don't must worry"], answer:"needn't worry", note:"needn't + infinitivo base."},
+  {id:"mmn-8", cat:"neednt", blank:"He ___ (finish) it tonight — there's no deadline.", options:["needn't finish","mustn't finish","hasn't to finish"], answer:"needn't finish", note:"No hay obligación → needn't."},
+  {id:"mmn-9", cat:"need_have", blank:"You ___ (buy) so much food — we have plenty left.", options:["needn't have bought","didn't need to buy","mustn't have bought"], answer:"needn't have bought", note:"needn't have + participio: lo hiciste, pero no era necesario."},
+  {id:"mmn-10", cat:"need_have", blank:"I ___ (set) an alarm — I woke up naturally.", options:["didn't need to set","needn't have set"], answer:"didn't need to set", note:"didn't need to: no fue necesario Y no lo hice (o es neutral sobre si lo hiciste)."},
+  {id:"mmn-11", cat:"need_have", blank:"She ___ (work) all night — the deadline was cancelled.", options:["needn't have worked","didn't need to work"], answer:"needn't have worked", note:"Trabajó toda la noche (lo hizo), pero no era necesario → needn't have + participio."},
+  {id:"mmn-12", cat:"mustnt", blank:"You ___ (forget) to call her — she's been waiting.", options:["mustn't forget","needn't forget","don't have to forget"], answer:"mustn't forget", note:"Prohibición importante (no debes olvidar) → mustn't."},
+  {id:"mmn-13", cat:"neednt", blank:"You ___ (hurry) — we have plenty of time.", options:["needn't hurry","mustn't hurry","don't must hurry"], answer:"needn't hurry", note:"No hay necesidad → needn't."},
+  {id:"mmn-14", cat:"error", choose:true, options:["You mustn't to touch it.","You mustn't touch it.","You needn't to touch it."], answer:"You mustn't touch it.", note:"mustn't + infinitivo BASE (sin to).", errorProne:true},
+  {id:"mmn-15", cat:"error", choose:true, options:["You don't have to drink and drive — it's illegal.","You mustn't drink and drive — it's illegal.","You needn't drink and drive — it's illegal."], answer:"You mustn't drink and drive — it's illegal.", note:"Prohibición: mustn't. 'don't have to' = no es necesario.", errorProne:true},
+  {id:"mmn-16", cat:"error", choose:true, options:["She needn't have to come if she's busy.","She needn't come if she's busy.","She mustn't come if she's busy."], answer:"She needn't come if she's busy.", note:"needn't + infinitivo base (sin 'have to' extra).", errorProne:true}
+];
+const MMN_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · mustn\'t = prohibición ("no debes / está prohibido")</div><div class="b">Expresa que algo NO está permitido:<br><code>You mustn\'t park here.</code> / <code>Candidates must not use their phones.</code><br>⚠️ Distinto de <code>don\'t have to</code> (sin obligación, pero permitido).</div></div>' +
+  '<div class="psRule"><div class="h">2 · needn\'t / don\'t need to = no es necesario</div><div class="b">No hay obligación, pero el oyente puede hacerlo si quiere:<br><code>You needn\'t come — I\'ll handle it.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · needn\'t have vs. didn\'t need to (pasado)</div><div class="b"><code>needn\'t have + participio</code> = lo hiciste, pero no era necesario:<br><code>You needn\'t have brought flowers!</code><br><code>didn\'t need to + infinitivo</code> = no era necesario (neutro sobre si lo hiciste):<br><code>I didn\'t need to set an alarm — I woke up on time.</code></div></div>';
+
+/* ================= CONTENIDO: SHOULD 1 ================= */
+const MSH1_CAT_LABEL = {consejo:"CONSEJO / RECOMENDACIÓN", expectativa:"EXPECTATIVA", critica:"CRÍTICA SUAVE", error:"FRASE CORRECTA"};
+const MSH1_BANK = [
+  {id:"msh1-1", cat:"consejo", blank:"You look tired — you ___ (go) to bed early tonight.", options:["should go","should to go","must go"], answer:"should go", note:"should + infinitivo base para dar consejo."},
+  {id:"msh1-2", cat:"consejo", blank:"She ___ (see) a doctor if the pain continues.", options:["should see","should to see","ought see"], answer:"should see", note:"should = ought to. Ambos válidos para consejo."},
+  {id:"msh1-3", cat:"consejo", blank:"You ___ (not/eat) so much junk food.", options:["shouldn't eat","mustn't eat","don't have to eat"], answer:"shouldn't eat", note:"shouldn't + infinitivo base para consejo negativo."},
+  {id:"msh1-4", cat:"consejo", blank:"You ___ (tell) her the truth — she deserves to know.", options:["should tell","should to tell","ought tell"], answer:"should tell", note:"should + infinitivo base."},
+  {id:"msh1-5", cat:"consejo", blank:"The children ___ (spend) less time on their phones.", options:["should spend","should to spend","must spend"], answer:"should spend", note:"should para recomendación (menos fuerte que must)."},
+  {id:"msh1-6", cat:"expectativa", blank:"The parcel ___ (arrive) tomorrow — I ordered it three days ago.", options:["should arrive","must arrive","will arrive"], answer:"should arrive", note:"should para expectativa: es lo esperado según la lógica."},
+  {id:"msh1-7", cat:"expectativa", blank:"They ___ (be) here by now — the flight landed an hour ago.", options:["should be","must be","will be"], answer:"should be", note:"should para expectativa (debería ser así)."},
+  {id:"msh1-8", cat:"expectativa", blank:"This ___ (not/take) long — it's a simple task.", options:["shouldn't take","mustn't take","won't take"], answer:"shouldn't take", note:"shouldn't para expectativa negativa."},
+  {id:"msh1-9", cat:"expectativa", blank:"If you follow the instructions, it ___ (work).", options:["should work","must work","will work"], answer:"should work", note:"should para lo que se espera que ocurra."},
+  {id:"msh1-10", cat:"critica", blank:"You ___ (not/shout) at him like that.", options:["shouldn't shout","mustn't shout","needn't shout"], answer:"shouldn't shout", note:"shouldn't para indicar que algo no está bien o no es apropiado."},
+  {id:"msh1-11", cat:"critica", blank:"He ___ (not/drive) so fast — it's dangerous.", options:["shouldn't drive","mustn't drive","needn't drive"], answer:"shouldn't drive", note:"shouldn't = es mejor que no lo haga."},
+  {id:"msh1-12", cat:"error", choose:true, options:["You should to go home.","You should go home.","You should going home."], answer:"You should go home.", note:"should + infinitivo BASE (sin to).", errorProne:true},
+  {id:"msh1-13", cat:"error", choose:true, options:["She shoulds see a doctor.","She should sees a doctor.","She should see a doctor."], answer:"She should see a doctor.", note:"should no toma -s en 3ª persona.", errorProne:true},
+  {id:"msh1-14", cat:"error", choose:true, options:["The bus should has arrived by now.","The bus should have arrived by now.","The bus should arrived by now."], answer:"The bus should have arrived by now.", note:"should have + participio para expectativa en el pasado.", errorProne:true}
+];
+const MSH1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · should + infinitivo base = consejo</div><div class="b">Para dar consejo u opinión (más suave que must):<br><code>You should see a doctor.</code><br><code>You shouldn\'t eat so much sugar.</code><br>ought to es prácticamente sinónimo: <code>You ought to see a doctor.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · should para expectativa</div><div class="b">Para decir que algo es lo esperado según la lógica:<br><code>The bus should be here by now.</code> (debería estar, es lo normal)<br><code>This shouldn\'t take long.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · should para crítica suave</div><div class="b">Para decir que algo no está bien o no es apropiado:<br><code>You shouldn\'t shout at him.</code><br>Diferencia con mustn\'t: mustn\'t prohíbe; shouldn\'t recomienda no hacerlo.</div></div>';
+
+/* ================= CONTENIDO: SHOULD 2 (SHOULD HAVE DONE) ================= */
+const MSH2_CAT_LABEL = {should_have:"SHOULD HAVE (DONE)", shouldnt_have:"SHOULDN'T HAVE (DONE)", ought_have:"OUGHT TO HAVE", error:"FRASE CORRECTA"};
+const MSH2_BANK = [
+  {id:"msh2-1", cat:"should_have", blank:"You ___ (tell) me earlier — I could have helped.", options:["should have told","should tell","should had told"], answer:"should have told", note:"should have + participio: debería haber hecho algo (y no lo hiciste)."},
+  {id:"msh2-2", cat:"should_have", blank:"I ___ (study) harder for the exam — I failed.", options:["should have studied","should study","should had studied"], answer:"should have studied", note:"Arrepentimiento: debería haber estudiado más."},
+  {id:"msh2-3", cat:"should_have", blank:"She ___ (call) before coming — it was a surprise.", options:["should have called","should call","ought have called"], answer:"should have called", note:"Crítica pasada: debería haber llamado."},
+  {id:"msh2-4", cat:"should_have", blank:"They ___ (arrive) an hour ago — what happened?", options:["should have arrived","should arrive","ought to have arrived"], answer:"should have arrived", note:"Expectativa no cumplida: deberían haber llegado."},
+  {id:"msh2-5", cat:"should_have", blank:"I ___ (bring) an umbrella — I'm soaked!", options:["should have brought","should bring","ought to have brought"], answer:"should have brought", note:"Arrepentimiento: debería haber traído el paraguas."},
+  {id:"msh2-6", cat:"shouldnt_have", blank:"You ___ (say) that — it was very rude.", options:["shouldn't have said","shouldn't say","should not have say"], answer:"shouldn't have said", note:"shouldn't have + participio: no deberías haber hecho algo (y lo hiciste)."},
+  {id:"msh2-7", cat:"shouldnt_have", blank:"I ___ (eat) so much — I feel terrible now.", options:["shouldn't have eaten","shouldn't eat","should not eaten"], answer:"shouldn't have eaten", note:"Arrepentimiento: no debería haber comido tanto."},
+  {id:"msh2-8", cat:"shouldnt_have", blank:"He ___ (spend) all his money on that car.", options:["shouldn't have spent","shouldn't spend","should not spend"], answer:"shouldn't have spent", note:"Crítica: no debería haber gastado todo el dinero."},
+  {id:"msh2-9", cat:"shouldnt_have", blank:"She ___ (quit) her job — now she regrets it.", options:["shouldn't have quit","shouldn't quit","should not had quit"], answer:"shouldn't have quit", note:"shouldn't have + participio."},
+  {id:"msh2-10", cat:"ought_have", blank:"He ___ (warn) us about the problem.", options:["ought to have warned","ought have warned","should warned"], answer:"ought to have warned", note:"ought to have + participio = sinónimo de should have (más formal)."},
+  {id:"msh2-11", cat:"ought_have", blank:"We ___ (leave) earlier — now we're stuck in traffic.", options:["ought to have left","ought have left","should to have left"], answer:"ought to have left", note:"ought to have + participio."},
+  {id:"msh2-12", cat:"error", choose:true, options:["You should have to told me.","You should have told me.","You should told me."], answer:"You should have told me.", note:"should have + PARTICIPIO PASADO: told (sin 'to' extra).", errorProne:true},
+  {id:"msh2-13", cat:"error", choose:true, options:["I shouldn't have eat so much.","I shouldn't have eaten so much.","I shouldn't ate so much."], answer:"I shouldn't have eaten so much.", note:"shouldn't have + participio pasado: eaten.", errorProne:true},
+  {id:"msh2-14", cat:"error", choose:true, options:["She ought have called first.","She ought to have called first.","She ought to had called first."], answer:"She ought to have called first.", note:"ought TO have + participio (to es obligatorio con ought).", errorProne:true}
+];
+const MSH2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · should have + participio</div><div class="b">Para criticar o lamentarse de algo que no ocurrió (y debería haber ocurrido):<br><code>You should have told me earlier.</code><br><code>I should have studied harder.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · shouldn\'t have + participio</div><div class="b">Para criticar o lamentarse de algo que sí ocurrió (y no debería haber ocurrido):<br><code>You shouldn\'t have said that.</code><br><code>I shouldn\'t have eaten so much.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · ought to have + participio</div><div class="b">Prácticamente sinónimo de should have, pero más formal:<br><code>He ought to have warned us.</code><br>⚠️ ought siempre lleva to: <code>ought to have</code> (no "ought have").</div></div>';
+
+/* ================= CONTENIDO: I'D BETTER… IT'S TIME… ================= */
+const MBT_CAT_LABEL = {better:"I'D BETTER", time_to:"IT'S TIME + TO", time_past:"IT'S TIME + SUJETO + PASADO", high_time:"HIGH TIME / ABOUT TIME", error:"FRASE CORRECTA"};
+const MBT_BANK = [
+  {id:"mbt-1", cat:"better", blank:"I ___ (go) now or I'll miss the bus.", options:["had better go","would better go","should go"], answer:"had better go", note:"I'd better (= I had better) + infinitivo base: consejo urgente con consecuencia implícita."},
+  {id:"mbt-2", cat:"better", blank:"You ___ (not/be) late — the boss is watching.", options:["had better not be","would better not be","should not to be"], answer:"had better not be", note:"I'd better not + infinitivo base: negativa de had better."},
+  {id:"mbt-3", cat:"better", blank:"We ___ (hurry) — the film starts in five minutes.", options:["had better hurry","would better hurry","better to hurry"], answer:"had better hurry", note:"we'd better + infinitivo base."},
+  {id:"mbt-4", cat:"better", blank:"She ___ (see) a doctor — that cough sounds serious.", options:["had better see","would better see","better sees"], answer:"had better see", note:"she'd better + infinitivo base. Consejo con urgencia."},
+  {id:"mbt-5", cat:"better", blank:"You ___ (not/tell) him — it would only upset him.", options:["had better not tell","wouldn't better tell","should not better tell"], answer:"had better not tell", note:"had better not + infinitivo base."},
+  {id:"mbt-6", cat:"time_to", blank:"It's time ___ (go) home.", options:["to go","you go","we went"], answer:"to go", note:"It's time + to + infinitivo: impersonal, sin especificar quién."},
+  {id:"mbt-7", cat:"time_to", blank:"It's time ___ (make) a decision.", options:["to make","we made","you make"], answer:"to make", note:"It's time to + infinitivo."},
+  {id:"mbt-8", cat:"time_past", blank:"It's time the government ___ (do) something about pollution.", options:["did","does","to do"], answer:"did", note:"It's time + sujeto + PASADO SIMPLE (aunque tiene sentido presente/futuro)."},
+  {id:"mbt-9", cat:"time_past", blank:"It's time you ___ (go) to bed — it's midnight!", options:["went","go","to go"], answer:"went", note:"It's time + sujeto + pasado simple (= es hora de que...)."},
+  {id:"mbt-10", cat:"high_time", blank:"It's high time you ___ (apologise) to her.", options:["apologised","apologise","to apologise"], answer:"apologised", note:"It's high time + sujeto + pasado simple. Implica que ya tardaba."},
+  {id:"mbt-11", cat:"high_time", blank:"It's about time they ___ (fix) that road.", options:["fixed","fix","to fix"], answer:"fixed", note:"It's about time + sujeto + pasado simple. Expresa impaciencia."},
+  {id:"mbt-12", cat:"error", choose:true, options:["You had better to go now.","You'd better go now.","You would better go now."], answer:"You'd better go now.", note:"had better + infinitivo BASE (sin to). Se contrae en 'd better.", errorProne:true},
+  {id:"mbt-13", cat:"error", choose:true, options:["It's time we go home.","It's time we went home.","It's time to we go home."], answer:"It's time we went home.", note:"It's time + sujeto + PASADO SIMPLE (went, no go).", errorProne:true},
+  {id:"mbt-14", cat:"error", choose:true, options:["You'd better not to smoke here.","You'd better not smoke here.","You hadn't better smoke here."], answer:"You'd better not smoke here.", note:"had better not + infinitivo base (sin to). La negativa es 'had better not'.", errorProne:true}
+];
+const MBT_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · I\'d better (= I had better) + infinitivo base</div><div class="b">Consejo fuerte con sensación de urgencia o consecuencia negativa si no se hace:<br><code>I\'d better go — I\'ll miss the bus.</code><br><code>You\'d better not be late.</code><br>⚠️ Sin to: <code>I\'d better go</code> (no "I\'d better to go").</div></div>' +
+  '<div class="psRule"><div class="h">2 · It\'s time + to + infinitivo</div><div class="b">Uso impersonal, sin especificar quién:<br><code>It\'s time to go home.</code> / <code>It\'s time to make a decision.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · It\'s time + sujeto + PASADO SIMPLE</div><div class="b">Para decir que alguien debería hacer algo (y quizás ya tarde):<br><code>It\'s time you went to bed.</code> (≠ "It\'s time you go")<br><code>It\'s high time they fixed this road.</code> (impaciencia)<br><code>It\'s about time we left.</code><br>⚠️ Aunque el significado es presente/futuro, el verbo va en PASADO SIMPLE.</div></div>';
+
+/* ================= CONTENIDO: WOULD ================= */
+const MWD_CAT_LABEL = {peticion:"PETICIÓN CORTÉS", hipotetico:"HIPOTÉTICO / CONDICIONAL", habito_pasado:"HÁBITO PASADO", would_like:"WOULD LIKE / PREFER", error:"FRASE CORRECTA"};
+const MWD_BANK = [
+  {id:"mwd-1", cat:"peticion", blank:"___ you open the window, please?", options:["Would","Could","Will"], answer:"Would", note:"Would you...? para petición cortés."},
+  {id:"mwd-2", cat:"peticion", blank:"___ you mind closing the door?", options:["Would","Could","Do"], answer:"Would", note:"Would you mind + -ing? para petición muy cortés."},
+  {id:"mwd-3", cat:"peticion", blank:"___ you like another cup of tea?", options:["Would","Do","Will"], answer:"Would", note:"Would you like...? para ofrecer algo."},
+  {id:"mwd-4", cat:"hipotetico", blank:"If I had more time, I ___ (travel) more.", options:["would travel","will travel","am going to travel"], answer:"would travel", note:"would + infinitivo base en el resultado de un condicional tipo 2."},
+  {id:"mwd-5", cat:"hipotetico", blank:"What ___ you ___ (do) if you won the lottery?", options:["would / do","will / do","should / do"], answer:"would / do", note:"What would you do if...? — pregunta hipotética."},
+  {id:"mwd-6", cat:"hipotetico", blank:"I ___ (love) to visit Japan one day.", options:["would love","will love","am going to love"], answer:"would love", note:"would love/like para deseos hipotéticos."},
+  {id:"mwd-7", cat:"hipotetico", blank:"She ___ (be) a great teacher — she's patient and kind.", options:["would be","will be","is going to be"], answer:"would be", note:"would be en hipotéticos: podría ser, sería."},
+  {id:"mwd-8", cat:"habito_pasado", blank:"When I was a child, we ___ (spend) summers at the beach.", options:["would spend","used to spend","spent"], answer:"would spend", note:"would + infinitivo para actividades repetidas en el pasado."},
+  {id:"mwd-9", cat:"habito_pasado", blank:"My grandfather ___ (tell) us stories every night.", options:["would tell","used to tell","told"], answer:"would tell", note:"would para acciones habituales pasadas (no estados)."},
+  {id:"mwd-10", cat:"habito_pasado", blank:"She ___ (sit) by the window for hours, reading.", options:["would sit","used to sit","sat"], answer:"would sit", note:"would para actividades habituales pasadas."},
+  {id:"mwd-11", cat:"would_like", blank:"I ___ (like) a glass of water, please.", options:["would like","want","would like to"], answer:"would like", note:"would like + sustantivo (sin to)."},
+  {id:"mwd-12", cat:"would_like", blank:"I ___ (like) to speak to the manager.", options:["would like to speak","would like speak","would like speaking"], answer:"would like to speak", note:"would like + to + infinitivo (con to)."},
+  {id:"mwd-13", cat:"would_like", blank:"She ___ (prefer) to take the train.", options:["would prefer to take","would prefer take","prefers to take"], answer:"would prefer to take", note:"would prefer + to + infinitivo."},
+  {id:"mwd-14", cat:"error", choose:true, options:["Would you to open the window?","Would you open the window?","Would you opening the window?"], answer:"Would you open the window?", note:"Would you + infinitivo BASE (sin to).", errorProne:true},
+  {id:"mwd-15", cat:"error", choose:true, options:["If I had time, I will travel more.","If I had time, I would travel more.","If I had time, I am going to travel more."], answer:"If I had time, I would travel more.", note:"Condicional tipo 2: if + pasado simple → would + infinitivo.", errorProne:true},
+  {id:"mwd-16", cat:"error", choose:true, options:["I would like to a coffee, please.","I'd like a coffee, please.","I would like to coffee, please."], answer:"I'd like a coffee, please.", note:"would like + sustantivo (sin to). Con verbo: would like to + infinitivo.", errorProne:true}
+];
+const MWD_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · would para peticiones corteses</div><div class="b"><code>Would you open the window?</code><br><code>Would you mind closing the door?</code><br>Más formal que will. Sin to: <code>Would you open</code> (no "would you to open").</div></div>' +
+  '<div class="psRule"><div class="h">2 · would en condicionales e hipotéticos</div><div class="b">En el resultado del condicional tipo 2 (if + past simple → would + base):<br><code>If I had more time, I would travel more.</code><br><code>What would you do if you won the lottery?</code><br><code>I would love to visit Japan.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · would para hábitos pasados (acciones)</div><div class="b">Para actividades repetidas en el pasado (similar a used to, pero solo para acciones, no estados):<br><code>When I was young, we would go to the beach every summer.</code><br>⚠️ No se usa para estados: no "I would know her" → "I used to know her".</div></div>';
+
+/* ================= CONTENIDO: CAN/COULD/WOULD YOU… (REQUESTS, OFFERS, PERMISSION) ================= */
+const MRQ_CAT_LABEL = {peticiones:"PETICIONES", ofrecimientos:"OFRECIMIENTOS", permiso:"PERMISO", mind:"WOULD YOU MIND", error:"FRASE CORRECTA"};
+const MRQ_BANK = [
+  {id:"mrq-1", cat:"peticiones", blank:"___ you pass me the salt?", options:["Can","Should","Must"], answer:"Can", note:"Can you...? para peticiones informales."},
+  {id:"mrq-2", cat:"peticiones", blank:"___ you open the window? It's very hot.", options:["Could","Should","Must"], answer:"Could", note:"Could you...? para peticiones más corteses que can."},
+  {id:"mrq-3", cat:"peticiones", blank:"___ you help me with this, please?", options:["Would","Should","Shall"], answer:"Would", note:"Would you...? para peticiones muy corteses y formales."},
+  {id:"mrq-4", cat:"peticiones", blank:"(informal) ___ you lend me your bike?", options:["Can","Could","Would"], answer:"Can", note:"Can you = más informal. Could you = más cortés. Would you = formal."},
+  {id:"mrq-5", cat:"peticiones", blank:"(formal) ___ you be able to attend the meeting?", options:["Would","Can","Shall"], answer:"Would", note:"Would you be able to...? = forma muy cortés y formal."},
+  {id:"mrq-6", cat:"ofrecimientos", blank:"___ I carry that for you?", options:["Can","Could","Would"], answer:"Can", note:"Can I...? para ofrecer ayuda de forma informal."},
+  {id:"mrq-7", cat:"ofrecimientos", blank:"___ I get you a drink?", options:["Can","Could","Would"], answer:"Can", note:"Can I...? para ofrecimiento (natural en conversación)."},
+  {id:"mrq-8", cat:"ofrecimientos", blank:"___ I help you with that?", options:["Shall","Will","Would"], answer:"Shall", note:"Shall I...? para ofrecimiento (formal, especialmente en brit.)."},
+  {id:"mrq-9", cat:"permiso", blank:"___ I use your phone?", options:["Can","Could","May"], answer:"Can", note:"Can I...? para pedir permiso de forma informal. Could I más cortés. May I más formal."},
+  {id:"mrq-10", cat:"permiso", blank:"___ I sit here?", options:["Could","Should","Must"], answer:"Could", note:"Could I...? = manera cortés de pedir permiso."},
+  {id:"mrq-11", cat:"permiso", blank:"___ I speak to Mr Smith, please?", options:["May","Shall","Would"], answer:"May", note:"May I...? para pedir permiso de forma muy formal."},
+  {id:"mrq-12", cat:"permiso", blank:"___ we park here?", options:["Can","Would","Should"], answer:"Can", note:"Can we...? para preguntar si está permitido."},
+  {id:"mrq-13", cat:"mind", blank:"___ you mind waiting a moment?", options:["Would","Could","Do"], answer:"Would", note:"Would you mind + -ing? = ¿Le importaría...?"},
+  {id:"mrq-14", cat:"mind", blank:"___ you mind if I opened the window?", options:["Would","Could","Do"], answer:"Would", note:"Would you mind if + sujeto + pasado simple? = ¿Le importaría si...?"},
+  {id:"mrq-15", cat:"mind", blank:"'Would you mind closing the door?' 'No, ___ all.'", options:["not at","of course","not in"], answer:"not at", note:"'No, not at all.' = claro que no (respuesta afirmativa a 'would you mind')."},
+  {id:"mrq-16", cat:"error", choose:true, options:["Can you to pass the salt?","Can you pass the salt?","Could you to pass the salt?"], answer:"Can you pass the salt?", note:"Can/Could + sujeto + infinitivo BASE (sin to).", errorProne:true},
+  {id:"mrq-17", cat:"error", choose:true, options:["Would you mind to close the door?","Would you mind closing the door?","Would you mind close the door?"], answer:"Would you mind closing the door?", note:"Would you mind + verbo-ING (no to + infinitivo).", errorProne:true},
+  {id:"mrq-18", cat:"error", choose:true, options:["Would you mind if I open the window?","Would you mind if I opened the window?","Would you mind if I will open the window?"], answer:"Would you mind if I opened the window?", note:"Would you mind if + sujeto + PASADO SIMPLE.", errorProne:true}
+];
+const MRQ_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Peticiones: gradación de formalidad</div><div class="b">De más informal a más formal:<br><code>Can you help me?</code> → <code>Could you help me?</code> → <code>Would you help me?</code><br>Sin to después de can/could/would: <code>Can you close</code> (no "to close").</div></div>' +
+  '<div class="psRule"><div class="h">2 · Pedir permiso</div><div class="b">Informal → formal:<br><code>Can I...?</code> → <code>Could I...?</code> → <code>May I...?</code><br>Respuestas afirmativas: <code>Yes, of course. / Certainly. / Sure.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Would you mind...</div><div class="b"><code>Would you mind + verbo-ing?</code>: <code>Would you mind closing the door?</code><br><code>Would you mind if + sujeto + pasado simple?</code>: <code>Would you mind if I opened the window?</code><br>Respuesta: <code>No, not at all.</code> (= claro que no me importa)</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -2992,6 +3282,78 @@ const GU_UNITS = {
     color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
     subtitle:"Nunca will después de when/if/until/before/after. When + presente perfecto para énfasis en completitud.",
     learnHtml: FWI_LEARN_HTML, catLabel: FWI_CAT_LABEL, bank: FWI_BANK
+  },
+  "can-able": {
+    id:"can-able", name:"can, could and (be) able to", icon:"💪",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"can/can't para habilidad presente. could/couldn't para pasado. be able to cuando can no cabe (will, have, to...).",
+    learnHtml: MCA_LEARN_HTML, catLabel: MCA_CAT_LABEL, bank: MCA_BANK
+  },
+  "could-have": {
+    id:"could-have", name:"could (do) and could have (done)", icon:"🤔",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"could para posibilidad y sugerencias. could have + participio para posibilidades pasadas que no se realizaron.",
+    learnHtml: MCOH_LEARN_HTML, catLabel: MCOH_CAT_LABEL, bank: MCOH_BANK
+  },
+  "must-cant": {
+    id:"must-cant", name:"must and can't", icon:"🔍",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#7f1d1d",
+    subtitle:"must para deducción positiva ('debe de ser'). can't para negativa ('es imposible'). must/can't have + participio en pasado.",
+    learnHtml: MMC_LEARN_HTML, catLabel: MMC_CAT_LABEL, bank: MMC_BANK
+  },
+  "may-might-1": {
+    id:"may-might-1", name:"may and might 1", icon:"🌫️",
+    color:"#64748b", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"may/might para posibilidad presente y futura. may not/might not. La diferencia entre maybe y may be.",
+    learnHtml: MMP1_LEARN_HTML, catLabel: MMP1_CAT_LABEL, bank: MMP1_BANK
+  },
+  "may-might-2": {
+    id:"may-might-2", name:"may and might 2", icon:"❓",
+    color:"#4338ca", pillBg:"#e0e7ff", pillColor:"#1e1b4b",
+    subtitle:"may/might have + participio para posibilidad en el pasado. may para permiso formal.",
+    learnHtml: MMP2_LEARN_HTML, catLabel: MMP2_CAT_LABEL, bank: MMP2_BANK
+  },
+  "have-to": {
+    id:"have-to", name:"have to and must", icon:"📋",
+    color:"#b91c1c", pillBg:"#fee2e2", pillColor:"#450a0a",
+    subtitle:"have to (obligación externa) vs. must (obligación interna). had to en pasado. didn't have to ≠ mustn't.",
+    learnHtml: MHT_LEARN_HTML, catLabel: MHT_CAT_LABEL, bank: MHT_BANK
+  },
+  "mustnt-neednt": {
+    id:"mustnt-neednt", name:"must, mustn't, needn't", icon:"🚫",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"mustn't = prohibición. needn't = no es necesario. needn't have done vs. didn't need to do.",
+    learnHtml: MMN_LEARN_HTML, catLabel: MMN_CAT_LABEL, bank: MMN_BANK
+  },
+  "should-1": {
+    id:"should-1", name:"should 1", icon:"💡",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"should para consejo, expectativa y crítica suave. ought to como sinónimo. should + infinitivo base.",
+    learnHtml: MSH1_LEARN_HTML, catLabel: MSH1_CAT_LABEL, bank: MSH1_BANK
+  },
+  "should-2": {
+    id:"should-2", name:"should 2", icon:"😬",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"should have / shouldn't have + participio: crítica y arrepentimiento sobre el pasado. ought to have.",
+    learnHtml: MSH2_LEARN_HTML, catLabel: MSH2_CAT_LABEL, bank: MSH2_BANK
+  },
+  "better-time": {
+    id:"better-time", name:"I'd better…, it's time…", icon:"⏰",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#134e4a",
+    subtitle:"I'd better + infinitivo base (consejo urgente). It's time + to / sujeto + pasado simple. High time / about time.",
+    learnHtml: MBT_LEARN_HTML, catLabel: MBT_CAT_LABEL, bank: MBT_BANK
+  },
+  "would": {
+    id:"would", name:"would", icon:"🎭",
+    color:"#9333ea", pillBg:"#f3e8ff", pillColor:"#3b0764",
+    subtitle:"would para peticiones corteses, condicionales hipotéticos y hábitos pasados. would like/prefer.",
+    learnHtml: MWD_LEARN_HTML, catLabel: MWD_CAT_LABEL, bank: MWD_BANK
+  },
+  "requests": {
+    id:"requests", name:"can/could/would you…? (requests, offers, permission)", icon:"🙏",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"Gradación de formalidad: can → could → would. Pedir permiso: can/could/may. Would you mind + -ing?",
+    learnHtml: MRQ_LEARN_HTML, catLabel: MRQ_CAT_LABEL, bank: MRQ_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
