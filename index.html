@@ -2655,6 +2655,192 @@ const PPUSED_LEARN_HTML =
   '<div class="psRule"><div class="h">2 · Negativa y pregunta</div><div class="b">Negativa: <code>didn\'t use to + infinitivo</code> (sin -d en use): <code>I didn\'t use to like jazz.</code><br>Pregunta: <code>Did + sujeto + use to + infinitivo?</code>: <code>Did you use to play tennis?</code></div></div>' +
   '<div class="psRule"><div class="h">3 · used to ≠ be used to</div><div class="b"><code>I used to get up early</code> = antes me levantaba temprano (hábito pasado terminado).<br><code>I\'m used to getting up early</code> = estoy acostumbrado a levantarme temprano (ahora).<br>⚠️ Clave: "used to" + infinitivo; "be used to" + -ing.</div></div>';
 
+/* ================= CONTENIDO: PRESENT TENSES FOR THE FUTURE ================= */
+const FP_CAT_LABEL = {pc_futuro:"PRESENTE CONTINUO (PLAN)", ps_futuro:"PRESENTE SIMPLE (HORARIO)", contraste:"CONTRASTE", error:"FRASE CORRECTA"};
+const FP_BANK = [
+  {id:"fp-1", cat:"pc_futuro", blank:"I ___ (meet) Tom tomorrow at 7.", options:["am meeting","will meet","meet"], answer:"am meeting", note:"Presente continuo para planes/citas ya organizados: am/is/are + verbo-ing."},
+  {id:"fp-2", cat:"pc_futuro", blank:"She ___ (fly) to Paris next Monday.", options:["is flying","flies","will fly"], answer:"is flying", note:"Cita o plan concreto con hora o fecha → presente continuo."},
+  {id:"fp-3", cat:"pc_futuro", blank:"We ___ (have) dinner with the Smiths on Friday.", options:["are having","have","will have"], answer:"are having", note:"Arreglo social ya confirmado → presente continuo."},
+  {id:"fp-4", cat:"pc_futuro", blank:"___ you ___ (do) anything tonight?", options:["Are / doing","Will / do","Do / do"], answer:"Are / doing", note:"Pregunta sobre planes concretos → Are you doing...?"},
+  {id:"fp-5", cat:"pc_futuro", blank:"He ___ (not/come) to the party — he has other plans.", options:["isn't coming","won't come","doesn't come"], answer:"isn't coming", note:"Negativa de plan concreto → isn't coming."},
+  {id:"fp-6", cat:"pc_futuro", blank:"They ___ (move) to a new house next month.", options:["are moving","move","will move"], answer:"are moving", note:"Plan futuro ya organizado: are + verbo-ing."},
+  {id:"fp-7", cat:"ps_futuro", blank:"The film ___ (start) at 8pm.", options:["starts","is starting","will start"], answer:"starts", note:"Horario fijo (cine, tren, bus) → presente simple."},
+  {id:"fp-8", cat:"ps_futuro", blank:"The train ___ (leave) at 9:15 tomorrow.", options:["leaves","is leaving","will leave"], answer:"leaves", note:"Horario de transporte → presente simple."},
+  {id:"fp-9", cat:"ps_futuro", blank:"What time ___ the match ___?", options:["does / start","is / starting","will / start"], answer:"does / start", note:"Pregunta sobre horario → does + base."},
+  {id:"fp-10", cat:"ps_futuro", blank:"The shop ___ (open) at 9 and ___ (close) at 6.", options:["opens / closes","is opening / closing","will open / close"], answer:"opens / closes", note:"Horario regular establecido → presente simple."},
+  {id:"fp-11", cat:"ps_futuro", blank:"The next bus ___ (not / arrive) until half past three.", options:["doesn't arrive","isn't arriving","won't arrive"], answer:"doesn't arrive", note:"Horario de transporte: negativa con presente simple."},
+  {id:"fp-12", cat:"contraste", blank:"I can't see you tomorrow — I ___ (work) all day.", options:["am working","will work","work"], answer:"am working", note:"Plan fijo ya decidido → presente continuo."},
+  {id:"fp-13", cat:"contraste", blank:"The conference ___ (begin) on Monday at 10.", options:["begins","is beginning","will begin"], answer:"begins", note:"Evento con horario fijo → presente simple."},
+  {id:"fp-14", cat:"contraste", blank:"'What ___ you ___ this weekend?' 'I ___ (visit) my parents — it's all arranged.'", options:["are / doing / am visiting","will / do / will visit","do / do / visit"], answer:"are / doing / am visiting", note:"Plan concreto ya organizado → presente continuo."},
+  {id:"fp-15", cat:"error", choose:true, options:["The train is leaving at 9 — it's on the timetable.","The train leaves at 9 — it's on the timetable.","The train will leave at 9 — it's on the timetable."], answer:"The train leaves at 9 — it's on the timetable.", note:"Horario de transporte fijo → presente simple.", errorProne:true},
+  {id:"fp-16", cat:"error", choose:true, options:["Are you doing anything on Saturday?","Will you do anything on Saturday?","Do you do anything on Saturday?"], answer:"Are you doing anything on Saturday?", note:"Pregunta sobre planes personales → Are you doing...?", errorProne:true},
+  {id:"fp-17", cat:"error", choose:true, options:["I'll see the dentist tomorrow at 3 (booked).","I'm seeing the dentist tomorrow at 3 (booked).","I see the dentist tomorrow at 3 (booked)."], answer:"I'm seeing the dentist tomorrow at 3 (booked).", note:"Cita ya reservada y organizada → presente continuo.", errorProne:true}
+];
+const FP_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Presente continuo para planes y citas</div><div class="b">Para hablar de un plan o cita ya organizado (fecha, hora, lugar concretos):<br><code>I\'m meeting Tom tomorrow at 7.</code><br><code>We\'re flying to Rome on Friday.</code><br>No implica que está pasando ahora: implica que ya está decidido y organizado.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Presente simple para horarios fijos</div><div class="b">Para trenes, aviones, películas, clases — cosas que siguen un horario oficial:<br><code>The train leaves at 9:15.</code><br><code>The film starts at 8.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · ¿Cuál usar?</div><div class="b">• Plan personal ya organizado → <b>presente continuo</b>: <code>I\'m seeing the doctor at 3.</code><br>• Horario oficial de transporte / espectáculo → <b>presente simple</b>: <code>The bus leaves at half past.</code></div></div>';
+
+/* ================= CONTENIDO: GOING TO ================= */
+const FGT_CAT_LABEL = {intencion:"INTENCIÓN / PLAN", evidencia:"PREDICCIÓN CON EVIDENCIA", negativa_preg:"NEGATIVA Y PREGUNTA", error:"FRASE CORRECTA"};
+const FGT_BANK = [
+  {id:"fgt-1", cat:"intencion", blank:"I ___ (study) medicine.", options:["am going to study","going to study","will to study"], answer:"am going to study", note:"am/is/are + going to + infinitivo para intenciones y planes ya decididos."},
+  {id:"fgt-2", cat:"intencion", blank:"She ___ (move) to London next year.", options:["is going to move","goes to move","will to move"], answer:"is going to move", note:"he/she/it + is going to + infinitivo."},
+  {id:"fgt-3", cat:"intencion", blank:"They ___ (buy) a new house.", options:["are going to buy","is going to buy","going to buy"], answer:"are going to buy", note:"we/you/they → are going to + infinitivo."},
+  {id:"fgt-4", cat:"intencion", blank:"He ___ (look) for a new job.", options:["is going to look","are going to look","is going look"], answer:"is going to look", note:"is going to + infinitivo."},
+  {id:"fgt-5", cat:"intencion", blank:"We ___ (not / watch) TV tonight — we have work to do.", options:["aren't going to watch","isn't going to watch","don't going to watch"], answer:"aren't going to watch", note:"Negativa: aren't/isn't going to + infinitivo."},
+  {id:"fgt-6", cat:"evidencia", blank:"Look at those clouds! It ___ (rain).", options:["is going to rain","will rain","rains"], answer:"is going to rain", note:"Predicción basada en evidencia visible (las nubes) → going to."},
+  {id:"fgt-7", cat:"evidencia", blank:"He's driving too fast. He ___ (crash)!", options:["is going to crash","will crash","crashes"], answer:"is going to crash", note:"Evidencia visible (velocidad peligrosa) → going to."},
+  {id:"fgt-8", cat:"evidencia", blank:"She's eaten so much. She ___ (be) sick.", options:["is going to be","will be","is being"], answer:"is going to be", note:"Causa visible (comer mucho) → predicción con going to."},
+  {id:"fgt-9", cat:"evidencia", blank:"Look! That vase ___ (fall)!", options:["is going to fall","will fall","falls"], answer:"is going to fall", note:"Lo vemos que está a punto de caer → going to."},
+  {id:"fgt-10", cat:"negativa_preg", blank:"She ___ (not / come) to the meeting.", options:["isn't going to come","aren't going to come","not going to come"], answer:"isn't going to come", note:"isn't going to + infinitivo."},
+  {id:"fgt-11", cat:"negativa_preg", blank:"___ they ___ (open) a new branch?", options:["Are / going to open","Is / going to open","Will / going to open"], answer:"Are / going to open", note:"Pregunta: Are/Is + sujeto + going to + infinitivo?"},
+  {id:"fgt-12", cat:"negativa_preg", blank:"What ___ you ___ (do) with all that money?", options:["are / going to do","is / going to do","will / going to do"], answer:"are / going to do", note:"Are + sujeto + going to + infinitivo."},
+  {id:"fgt-13", cat:"negativa_preg", blank:"___ she ___ (take) the exam again?", options:["Is / going to take","Are / going to take","Does / go to take"], answer:"Is / going to take", note:"she → Is + going to + infinitivo."},
+  {id:"fgt-14", cat:"error", choose:true, options:["I'm going to to study harder.","I'm going to study harder.","I going to study harder."], answer:"I'm going to study harder.", note:"going to + infinitivo base (sin segundo 'to'). Y no olvidar am/is/are.", errorProne:true},
+  {id:"fgt-15", cat:"error", choose:true, options:["Look at those clouds! It will rain.","Look at those clouds! It's going to rain.","Look at those clouds! It rains."], answer:"Look at those clouds! It's going to rain.", note:"Predicción con evidencia visible → going to.", errorProne:true},
+  {id:"fgt-16", cat:"error", choose:true, options:["She is going to moves to Paris.","She is going to move to Paris.","She going to move to Paris."], answer:"She is going to move to Paris.", note:"going to + infinitivo base (no -s, no -ed, no -ing).", errorProne:true},
+  {id:"fgt-17", cat:"error", choose:true, options:["I'm going to buy a new car — I just decided!","I'll buy a new car — I just decided!","I buy a new car — I just decided!"], answer:"I'll buy a new car — I just decided!", note:"Decisión tomada EN EL MOMENTO de hablar → will. Going to = plan decidido antes.", errorProne:true}
+];
+const FGT_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Estructura: am/is/are + going to + infinitivo</div><div class="b">I → <code>am going to</code>. He/she/it → <code>is going to</code>. We/you/they → <code>are going to</code>.<br>Negativa: <code>isn\'t / aren\'t going to</code>.<br>Pregunta: <code>Is/Are + sujeto + going to + infinitivo?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Uso 1: intenciones y planes ya decididos</div><div class="b">Para hablar de lo que ya has decidido hacer antes de este momento:<br><code>I\'m going to study medicine.</code> (decisión tomada)<br><code>We\'re going to buy a new car.</code><br>⚠️ Si hay hora y lugar concretos (cita reservada), es más natural el presente continuo: <code>I\'m meeting Tom at 7.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Uso 2: predicciones con evidencia visible</div><div class="b">Cuando ves algo que hace inevitable lo que va a pasar:<br><code>Look at those clouds! It\'s going to rain.</code><br><code>He\'s driving too fast. He\'s going to crash!</code></div></div>';
+
+/* ================= CONTENIDO: WILL AND SHALL 1 ================= */
+const FW1_CAT_LABEL = {forma:"FORMA Y CONTRACCIONES", prediccion:"PREDICCIÓN", decision_esp:"DECISIÓN ESPONTÁNEA", shall_io:"SHALL (I/WE)", error:"FRASE CORRECTA"};
+const FW1_BANK = [
+  {id:"fw1-1", cat:"forma", blank:"I ___ help you.", options:["will","am going to","am going"], answer:"will", note:"will + infinitivo base para todos los sujetos."},
+  {id:"fw1-2", cat:"forma", blank:"She ___ be here in ten minutes.", options:["will","is going to","shall"], answer:"will", note:"he/she/it → will (no cambia de forma)."},
+  {id:"fw1-3", cat:"forma", blank:"They ___ (not/come) if it rains.", options:["won't come","will not coming","aren't going to come"], answer:"won't come", note:"Negativa: won't (= will not) + infinitivo base."},
+  {id:"fw1-4", cat:"forma", blank:"___ you be at home this evening?", options:["Will","Are","Do"], answer:"Will", note:"Pregunta: Will + sujeto + infinitivo base?"},
+  {id:"fw1-5", cat:"forma", blank:"___ (I/be) back by midnight.", options:["I'll","I'm going to","I shall"], answer:"I'll", note:"I'll = I will. Contracción habitual."},
+  {id:"fw1-6", cat:"prediccion", blank:"I think it ___ (snow) tonight.", options:["will snow","is going to snow","snows"], answer:"will snow", note:"Predicción basada en opinión (no evidencia visible) → will."},
+  {id:"fw1-7", cat:"prediccion", blank:"I'm sure you ___ (pass) the exam.", options:["will pass","are going to pass","pass"], answer:"will pass", note:"Predicción / seguridad personal → will."},
+  {id:"fw1-8", cat:"prediccion", blank:"This time next year, robots ___ (do) half the jobs.", options:["will do","are going to do","do"], answer:"will do", note:"Predicción sobre el futuro general → will."},
+  {id:"fw1-9", cat:"prediccion", blank:"Life ___ (be) very different in 2050.", options:["will be","is going to be","is"], answer:"will be", note:"Predicción sobre el futuro → will."},
+  {id:"fw1-10", cat:"decision_esp", blank:"'The phone is ringing.' 'I ___ (get) it.'", options:["will get","am going to get","get"], answer:"will get", note:"Decisión tomada en el momento de hablar → will."},
+  {id:"fw1-11", cat:"decision_esp", blank:"'We've run out of milk.' 'I ___ (go) and get some.'", options:["will go","am going to go","go"], answer:"will go", note:"Decisión espontánea → will (no going to, que es para planes previos)."},
+  {id:"fw1-12", cat:"decision_esp", blank:"This bag is really heavy. Don't worry, I ___ (carry) it.", options:["will carry","am going to carry","carry"], answer:"will carry", note:"Ofrecimiento espontáneo → will."},
+  {id:"fw1-13", cat:"shall_io", blank:"___ I open the window?", options:["Shall","Will","Should"], answer:"Shall", note:"Shall I...? = ¿Quieres que yo...? — ofrecimiento."},
+  {id:"fw1-14", cat:"shall_io", blank:"___ we go for a walk?", options:["Shall","Will","Should"], answer:"Shall", note:"Shall we...? = ¿Quedamos en...? — sugerencia."},
+  {id:"fw1-15", cat:"shall_io", blank:"___ I help you with that?", options:["Shall","Will","Should"], answer:"Shall", note:"Shall I...? para ofrecer ayuda."},
+  {id:"fw1-16", cat:"error", choose:true, options:["I will to help you.","I'll help you.","I'm will help you."], answer:"I'll help you.", note:"will + infinitivo BASE (sin 'to'). Contracción: I'll.", errorProne:true},
+  {id:"fw1-17", cat:"error", choose:true, options:["'The phone is ringing.' 'I'm going to get it.'","'The phone is ringing.' 'I'll get it.'","'The phone is ringing.' 'I get it.'"], answer:"'The phone is ringing.' 'I'll get it.'", note:"Decisión espontánea (en el momento de hablar) → will, no going to.", errorProne:true},
+  {id:"fw1-18", cat:"error", choose:true, options:["Will she to pass the exam?","Will she pass the exam?","Does she will pass the exam?"], answer:"Will she pass the exam?", note:"Will + sujeto + infinitivo base (sin 'to').", errorProne:true}
+];
+const FW1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Estructura: will + infinitivo base</div><div class="b">Para todos los sujetos: <code>will + infinitivo</code>.<br>Contracción: <code>\'ll</code> (I\'ll, she\'ll, they\'ll...).<br>Negativa: <code>won\'t (= will not) + infinitivo</code>.<br>Pregunta: <code>Will + sujeto + infinitivo?</code><br>⚠️ Nunca "will to": <code>I\'ll help</code>, no "I\'ll to help".</div></div>' +
+  '<div class="psRule"><div class="h">2 · Predicciones (sin evidencia concreta)</div><div class="b">Opiniones y predicciones sobre el futuro, sin evidencia visible ahora mismo:<br><code>I think it\'ll snow tonight.</code><br><code>I\'m sure you\'ll pass.</code><br><code>Life will be very different in 2050.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Decisiones espontáneas y ofrecimientos</div><div class="b">Cuando decides algo EN EL MOMENTO de hablar (no antes):<br><code>\'The phone\'s ringing.\' \'I\'ll get it!\'</code><br>Para ofrecer o sugerir con I/we, se usa <b>Shall</b>:<br><code>Shall I open the window?</code> / <code>Shall we go?</code></div></div>';
+
+/* ================= CONTENIDO: WILL AND SHALL 2 ================= */
+const FW2_CAT_LABEL = {promesas:"PROMESAS", peticiones:"PETICIONES (WILL YOU?)", rechazo:"WON'T: RECHAZO", shall:"SHALL", error:"FRASE CORRECTA"};
+const FW2_BANK = [
+  {id:"fw2-1", cat:"promesas", blank:"I ___ (never/tell) anyone your secret.", options:["will never tell","am never going to tell","never tell"], answer:"will never tell", note:"will para promesas."},
+  {id:"fw2-2", cat:"promesas", blank:"Don't worry. I ___ (be) on time.", options:["will be","am going to be","am being"], answer:"will be", note:"Promesa → will."},
+  {id:"fw2-3", cat:"promesas", blank:"I promise I ___ (call) you when I arrive.", options:["will call","am going to call","am calling"], answer:"will call", note:"Promesa → will."},
+  {id:"fw2-4", cat:"promesas", blank:"If you don't study, you ___ (fail).", options:["will fail","are going to fail","fail"], answer:"will fail", note:"Advertencia / predicción → will."},
+  {id:"fw2-5", cat:"peticiones", blank:"___ you help me carry this?", options:["Will","Are","Shall"], answer:"Will", note:"Will you...? = ¿Puedes...? / ¿Me haces el favor de...? — petición."},
+  {id:"fw2-6", cat:"peticiones", blank:"___ you please be quiet?", options:["Will","Shall","Do"], answer:"Will", note:"Will you please...? = petición (puede sonar firme)."},
+  {id:"fw2-7", cat:"peticiones", blank:"___ you hold the door for me?", options:["Will","Shall","Are"], answer:"Will", note:"Petición informal con will you."},
+  {id:"fw2-8", cat:"rechazo", blank:"The car ___ (not/start) this morning — I think the battery is dead.", options:["won't start","isn't going to start","doesn't start"], answer:"won't start", note:"won't para objetos que 'se niegan a' funcionar (resistencia)."},
+  {id:"fw2-9", cat:"rechazo", blank:"She ___ (not/listen) to me, no matter what I say.", options:["won't listen","isn't going to listen","doesn't listen"], answer:"won't listen", note:"won't para rechazo o resistencia deliberada."},
+  {id:"fw2-10", cat:"rechazo", blank:"He ___ (not/eat) his vegetables — he hates them.", options:["won't eat","isn't going to eat","doesn't eat"], answer:"won't eat", note:"won't para negativa voluntaria."},
+  {id:"fw2-11", cat:"shall", blank:"___ we meet at 7?", options:["Shall","Will","Should"], answer:"Shall", note:"Shall we...? para sugerir una acción conjunta."},
+  {id:"fw2-12", cat:"shall", blank:"It's cold in here. ___ I close the window?", options:["Shall","Will","Should"], answer:"Shall", note:"Shall I...? para pedir confirmación de si hacer algo."},
+  {id:"fw2-13", cat:"shall", blank:"___ we start the meeting?", options:["Shall","Will","Do"], answer:"Shall", note:"Shall we...? para proponer empezar algo juntos."},
+  {id:"fw2-14", cat:"shall", blank:"'I don't know what to order.' '___ I choose for you?'", options:["Shall","Will","Should"], answer:"Shall", note:"Shall I...? para ofrecer ayuda."},
+  {id:"fw2-15", cat:"error", choose:true, options:["I promise I'm going to call you.","I promise I'll call you.","I promise I call you."], answer:"I promise I'll call you.", note:"Promesa → will.", errorProne:true},
+  {id:"fw2-16", cat:"error", choose:true, options:["The door isn't going to open — it's stuck.","The door won't open — it's stuck.","The door doesn't open — it's stuck."], answer:"The door won't open — it's stuck.", note:"Resistencia de objeto inanimado → won't.", errorProne:true},
+  {id:"fw2-17", cat:"error", choose:true, options:["Shall I to help you?","Shall I help you?","Will I help you?"], answer:"Shall I help you?", note:"Shall I + infinitivo base (sin 'to'). Ofrecimiento.", errorProne:true},
+  {id:"fw2-18", cat:"error", choose:true, options:["Will you please to be quiet?","Will you please be quiet?","Shall you please be quiet?"], answer:"Will you please be quiet?", note:"Will you + infinitivo base (sin 'to'). Petición.", errorProne:true}
+];
+const FW2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · will para promesas y advertencias</div><div class="b">Will expresa compromisos y predicciones con tono de certeza:<br><code>I\'ll call you as soon as I arrive.</code> (promesa)<br><code>If you don\'t study, you\'ll fail.</code> (advertencia)</div></div>' +
+  '<div class="psRule"><div class="h">2 · Will you...? para peticiones</div><div class="b"><code>Will you help me with this?</code> = ¿Me ayudas con esto?<br><code>Will you please be quiet?</code> = petición más firme.<br>⚠️ Nunca "Shall you...?" para peticiones.</div></div>' +
+  '<div class="psRule"><div class="h">3 · won\'t para rechazo y resistencia</div><div class="b">won\'t no solo es la negativa de will: también expresa que algo (o alguien) se niega o resiste:<br><code>The car won\'t start.</code> (el coche "no quiere" arrancar)<br><code>She won\'t listen to me.</code> (se niega a escuchar)</div></div>' +
+  '<div class="psRule"><div class="h">4 · Shall para I/we</div><div class="b"><code>Shall I...?</code> = ¿Quieres que yo...? / ¿Lo hago?<br><code>Shall we...?</code> = ¿Lo hacemos juntos? / ¿Quedamos en...?<br>Solo se usa con I y we, no con he/she/they.</div></div>';
+
+/* ================= CONTENIDO: I WILL AND I'M GOING TO ================= */
+const FWGT_CAT_LABEL = {will_esp:"WILL: ESPONTÁNEO / OPINIÓN", going_plan:"GOING TO: PLAN PREVIO", going_evid:"GOING TO: EVIDENCIA", contraste:"CONTRASTE", error:"FRASE CORRECTA"};
+const FWGT_BANK = [
+  {id:"fwgt-1", cat:"will_esp", blank:"'We've run out of coffee.' 'Don't worry, I ___ (buy) some.'", options:["will buy","am going to buy","buy"], answer:"will buy", note:"Decisión tomada AHORA, no planeada antes → will."},
+  {id:"fwgt-2", cat:"will_esp", blank:"'I'm tired.' 'OK, I ___ (drive) then.'", options:["will drive","am going to drive","drive"], answer:"will drive", note:"Decisión espontánea en respuesta a la situación → will."},
+  {id:"fwgt-3", cat:"will_esp", blank:"I think we ___ (win) the match tomorrow.", options:["will win","are going to win","win"], answer:"will win", note:"Predicción sin evidencia concreta (opinión) → will."},
+  {id:"fwgt-4", cat:"will_esp", blank:"I don't think she ___ (like) the present.", options:["will like","is going to like","likes"], answer:"will like", note:"Predicción / opinión personal → will."},
+  {id:"fwgt-5", cat:"going_plan", blank:"I ___ (sell) my car — I already talked to the dealer.", options:["am going to sell","will sell","sell"], answer:"am going to sell", note:"Decisión TOMADA ANTES de hablar → going to."},
+  {id:"fwgt-6", cat:"going_plan", blank:"She ___ (study) medicine — she applied last week.", options:["is going to study","will study","studies"], answer:"is going to study", note:"Plan ya decidido antes de este momento → going to."},
+  {id:"fwgt-7", cat:"going_plan", blank:"They ___ (have) a party this weekend — everything is ready.", options:["are going to have","will have","have"], answer:"are going to have", note:"Plan organizado de antemano → going to."},
+  {id:"fwgt-8", cat:"going_evid", blank:"Look! That ladder is very unstable. He ___ (fall)!", options:["is going to fall","will fall","falls"], answer:"is going to fall", note:"Evidencia visible (escalera inestable) → going to."},
+  {id:"fwgt-9", cat:"going_evid", blank:"Have you seen those clouds? It ___ (rain).", options:["is going to rain","will rain","rains"], answer:"is going to rain", note:"Evidencia visible (nubes) → going to."},
+  {id:"fwgt-10", cat:"going_evid", blank:"The economy ___ (collapse) if they don't change the policy — the signs are clear.", options:["is going to collapse","will collapse","collapses"], answer:"is going to collapse", note:"Predicción basada en signos actuales visibles → going to."},
+  {id:"fwgt-11", cat:"contraste", blank:"'Why did you buy all this food?' 'I ___ (cook) dinner for ten people tonight.'", options:["am going to cook","will cook","cook"], answer:"am going to cook", note:"Ya lo tenía planeado antes de hablar → going to."},
+  {id:"fwgt-12", cat:"contraste", blank:"'The kitchen is empty!' 'OK, I ___ (order) a pizza.'", options:["will order","am going to order","order"], answer:"will order", note:"Decisión espontánea, ahora mismo → will."},
+  {id:"fwgt-13", cat:"contraste", blank:"I believe that electric cars ___ (replace) petrol cars by 2040.", options:["will replace","are going to replace","replace"], answer:"will replace", note:"Predicción general sin evidencia específica → will."},
+  {id:"fwgt-14", cat:"error", choose:true, options:["'I'm hungry.' 'I'm going to make a sandwich.'","'I'm hungry.' 'I'll make a sandwich.'","'I'm hungry.' 'I make a sandwich.'"], answer:"'I'm hungry.' 'I'll make a sandwich.'", note:"Decisión espontánea → will. Going to implica que ya lo tenías planeado.", errorProne:true},
+  {id:"fwgt-15", cat:"error", choose:true, options:["I will study medicine — I decided last month.","I'm going to study medicine — I decided last month.","I study medicine — I decided last month."], answer:"I'm going to study medicine — I decided last month.", note:"Decisión tomada antes de hablar → going to.", errorProne:true},
+  {id:"fwgt-16", cat:"error", choose:true, options:["Look! The glass will fall!","Look! The glass is going to fall!","Look! The glass falls!"], answer:"Look! The glass is going to fall!", note:"Evidencia visual inmediata → going to.", errorProne:true}
+];
+const FWGT_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · will → decisión espontánea o predicción sin evidencia</div><div class="b">• Decides EN EL MOMENTO de hablar: <code>\'The phone\'s ringing.\' \'I\'ll get it!\'</code><br>• Predicción u opinión sin evidencia concreta: <code>I think it\'ll snow.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · going to → plan previo o predicción con evidencia</div><div class="b">• Ya lo decidiste antes de hablar: <code>I\'m going to sell my car.</code><br>• Evidencia visible ahora mismo: <code>Look at those clouds! It\'s going to rain.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · El truco para distinguirlos</div><div class="b">Pregúntate: ¿Lo decidiste AHORA? → <b>will</b>. ¿Lo decidiste ANTES? → <b>going to</b>.<br>¿Ves algo que lo hace inevitable? → <b>going to</b>. ¿Es una opinión? → <b>will</b>.</div></div>';
+
+/* ================= CONTENIDO: WILL BE DOING AND WILL HAVE DONE ================= */
+const FWBD_CAT_LABEL = {fut_cont:"FUTURO CONTINUO", fut_perf:"FUTURO PERFECTO", contraste:"CONTRASTE", error:"FRASE CORRECTA"};
+const FWBD_BANK = [
+  {id:"fwbd-1", cat:"fut_cont", blank:"This time tomorrow I ___ (fly) to New York.", options:["will be flying","will fly","am flying"], answer:"will be flying", note:"Futuro continuo: will + be + verbo-ing. Acción en curso en un momento futuro."},
+  {id:"fwbd-2", cat:"fut_cont", blank:"At 8pm I ___ (have) dinner with my boss.", options:["will be having","will have","am having"], answer:"will be having", note:"Acción que estará en curso a esa hora futura."},
+  {id:"fwbd-3", cat:"fut_cont", blank:"She ___ (not / work) tomorrow — it's her day off.", options:["won't be working","isn't going to work","isn't working"], answer:"won't be working", note:"Futuro continuo negativo: won't be + verbo-ing."},
+  {id:"fwbd-4", cat:"fut_cont", blank:"___ you ___ (use) the car this evening?", options:["Will / be using","Are / using","Will / use"], answer:"Will / be using", note:"Pregunta en futuro continuo → Will + sujeto + be + verbo-ing?"},
+  {id:"fwbd-5", cat:"fut_cont", blank:"Don't call me at 9 — I ___ (sleep).", options:["will be sleeping","will sleep","am sleeping"], answer:"will be sleeping", note:"Acción en curso en ese momento futuro → futuro continuo."},
+  {id:"fwbd-6", cat:"fut_cont", blank:"In ten years, many people ___ (work) from home.", options:["will be working","will work","are working"], answer:"will be working", note:"Situación en curso en el futuro → will be + -ing."},
+  {id:"fwbd-7", cat:"fut_perf", blank:"By the time you arrive, I ___ (finish) cooking.", options:["will have finished","will finish","am going to finish"], answer:"will have finished", note:"Futuro perfecto: will + have + participio. Acción completada ANTES de un punto futuro."},
+  {id:"fwbd-8", cat:"fut_perf", blank:"By next year, she ___ (live) here for ten years.", options:["will have lived","will live","is going to live"], answer:"will have lived", note:"'By + punto futuro' → will have + participio."},
+  {id:"fwbd-9", cat:"fut_perf", blank:"He ___ (not / read) the book by Friday.", options:["won't have read","won't read","isn't going to read"], answer:"won't have read", note:"Futuro perfecto negativo: won't have + participio."},
+  {id:"fwbd-10", cat:"fut_perf", blank:"___ you ___ (finish) the report by 5pm?", options:["Will / have finished","Will / finish","Are / going to finish"], answer:"Will / have finished", note:"Pregunta: Will + sujeto + have + participio?"},
+  {id:"fwbd-11", cat:"fut_perf", blank:"By the end of the year, they ___ (sell) over a million copies.", options:["will have sold","will sell","are going to sell"], answer:"will have sold", note:"'By the end of' + futuro perfecto."},
+  {id:"fwbd-12", cat:"contraste", blank:"At 9pm I ___ (watch) the match — don't call me then.", options:["will be watching","will have watched"], answer:"will be watching", note:"Acción EN CURSO a las 9pm → futuro continuo."},
+  {id:"fwbd-13", cat:"contraste", blank:"By 9pm I ___ (watch) the match — call me after that.", options:["will have watched","will be watching"], answer:"will have watched", note:"Acción COMPLETADA antes de las 9pm → futuro perfecto."},
+  {id:"fwbd-14", cat:"contraste", blank:"This time next week, she ___ (sit) on a beach in Spain.", options:["will be sitting","will have sat"], answer:"will be sitting", note:"'This time next week' → situación en curso en ese momento → futuro continuo."},
+  {id:"fwbd-15", cat:"error", choose:true, options:["This time tomorrow I will fly to Rome.","This time tomorrow I will be flying to Rome.","This time tomorrow I am flying to Rome."], answer:"This time tomorrow I will be flying to Rome.", note:"Acción en curso en un momento futuro → will be + verbo-ing.", errorProne:true},
+  {id:"fwbd-16", cat:"error", choose:true, options:["By next month, we will finish the project.","By next month, we will have finished the project.","By next month, we finish the project."], answer:"By next month, we will have finished the project.", note:"'By + tiempo futuro' + acción completada → futuro perfecto.", errorProne:true},
+  {id:"fwbd-17", cat:"error", choose:true, options:["Will you use the car this evening?","Will you be using the car this evening?","Are you using the car this evening?"], answer:"Will you be using the car this evening?", note:"Pregunta sobre si algo estará en curso → will be + -ing. Suena más cortés.", errorProne:true}
+];
+const FWBD_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Futuro continuo: will + be + verbo-ing</div><div class="b">Para acciones que estarán EN CURSO en un momento concreto del futuro:<br><code>This time tomorrow I\'ll be flying to New York.</code><br><code>At 8pm I\'ll be having dinner — don\'t call me.</code><br>También para preguntar cortésmente sobre los planes de alguien:<br><code>Will you be using the car this evening?</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · Futuro perfecto: will + have + participio</div><div class="b">Para acciones que estarán COMPLETADAS antes de un punto futuro:<br><code>By the time you arrive, I\'ll have finished cooking.</code><br><code>By next year, she\'ll have lived here for ten years.</code><br>Marcador clave: <b>by</b> (para / antes de) + punto en el tiempo.</div></div>' +
+  '<div class="psRule"><div class="h">3 · Continuo vs. perfecto</div><div class="b">• ¿La acción estará <b>en curso</b>? → <b>futuro continuo</b>: <code>At 9 I\'ll be watching the match.</code><br>• ¿La acción estará <b>terminada</b>? → <b>futuro perfecto</b>: <code>By 9 I\'ll have watched the match.</code></div></div>';
+
+/* ================= CONTENIDO: WHEN I DO / WHEN I'VE DONE, IF AND WHEN ================= */
+const FWI_CAT_LABEL = {when_if_simple:"WHEN/IF + PRES. SIMPLE", otros_conectores:"UNTIL / BEFORE / AFTER", when_pp:"WHEN + PRES. PERFECTO", error:"FRASE CORRECTA"};
+const FWI_BANK = [
+  {id:"fwi-1", cat:"when_if_simple", blank:"I'll call you when I ___ (arrive).", options:["arrive","will arrive","am arriving"], answer:"arrive", note:"Después de 'when' con sentido de futuro → presente simple, NUNCA will."},
+  {id:"fwi-2", cat:"when_if_simple", blank:"If it ___ (rain), we'll stay at home.", options:["rains","will rain","is raining"], answer:"rains", note:"Después de 'if' con sentido de futuro → presente simple, NUNCA will."},
+  {id:"fwi-3", cat:"when_if_simple", blank:"She'll tell him the news when she ___ (see) him.", options:["sees","will see","is seeing"], answer:"sees", note:"'when + futuro' → presente simple en la cláusula de tiempo."},
+  {id:"fwi-4", cat:"when_if_simple", blank:"If you ___ (need) help, just ask.", options:["need","will need","are needing"], answer:"need", note:"'if + futuro' → presente simple."},
+  {id:"fwi-5", cat:"when_if_simple", blank:"We'll start the meeting when everyone ___ (be) here.", options:["is","will be","are being"], answer:"is", note:"when → presente simple (no will) para el futuro."},
+  {id:"fwi-6", cat:"when_if_simple", blank:"Don't call me if it ___ (be) before 8am.", options:["is","will be","are"], answer:"is", note:"'if + futuro' → presente simple."},
+  {id:"fwi-7", cat:"otros_conectores", blank:"I'll wait here until you ___ (come) back.", options:["come","will come","are coming"], answer:"come", note:"until + cláusula de tiempo futura → presente simple."},
+  {id:"fwi-8", cat:"otros_conectores", blank:"She'll call you before she ___ (leave).", options:["leaves","will leave","is leaving"], answer:"leaves", note:"before + cláusula de tiempo futura → presente simple."},
+  {id:"fwi-9", cat:"otros_conectores", blank:"He'll feel much better after he ___ (find) a new job.", options:["finds","will find","is finding"], answer:"finds", note:"after + cláusula de tiempo futura → presente simple."},
+  {id:"fwi-10", cat:"otros_conectores", blank:"I won't leave until he ___ (apologise).", options:["apologises","will apologise","is apologising"], answer:"apologises", note:"until + futuro → presente simple."},
+  {id:"fwi-11", cat:"otros_conectores", blank:"As soon as she ___ (be) ready, we'll go.", options:["is","will be","is being"], answer:"is", note:"as soon as + presente simple (= en cuanto)."},
+  {id:"fwi-12", cat:"when_pp", blank:"I'll tell you when I ___ (make) a decision.", options:["have made","make","will make"], answer:"have made", note:"Énfasis en que la decisión debe estar TOMADA primero → when + presente perfecto."},
+  {id:"fwi-13", cat:"when_pp", blank:"When you ___ (read) this letter, please call me.", options:["have read","read","will read"], answer:"have read", note:"La lectura debe terminar primero → when + presente perfecto."},
+  {id:"fwi-14", cat:"when_pp", blank:"She'll be more confident when she ___ (practise) more.", options:["has practised","practises","will practise"], answer:"has practised", note:"La práctica debe estar completada → when + presente perfecto."},
+  {id:"fwi-15", cat:"when_pp", blank:"I'll write to you as soon as I ___ (settle in).", options:["have settled in","settle in","will settle in"], answer:"have settled in", note:"as soon as + presente perfecto: cuando me haya instalado."},
+  {id:"fwi-16", cat:"error", choose:true, options:["I'll call you when I will arrive.","I'll call you when I arrive.","I call you when I arrive."], answer:"I'll call you when I arrive.", note:"Cláusula de tiempo con 'when' → presente simple (no will).", errorProne:true},
+  {id:"fwi-17", cat:"error", choose:true, options:["If it will rain, we won't go.","If it rains, we won't go.","If it rains, we don't go."], answer:"If it rains, we won't go.", note:"'if + futuro' → presente simple en la cláusula con 'if'.", errorProne:true},
+  {id:"fwi-18", cat:"error", choose:true, options:["She'll wait until he will come back.","She'll wait until he comes back.","She waits until he comes back."], answer:"She'll wait until he comes back.", note:"until + cláusula de tiempo → presente simple.", errorProne:true},
+  {id:"fwi-19", cat:"error", choose:true, options:["I'll tell you when I'll make a decision.","I'll tell you when I make a decision.","I'll tell you when I have made a decision."], answer:"I'll tell you when I have made a decision.", note:"Cuando la acción previa debe estar terminada → when + presente perfecto.", errorProne:true}
+];
+const FWI_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · When/if + futuro → NUNCA will en la cláusula de tiempo</div><div class="b">Después de when, if, until, before, after, as soon as con sentido de futuro, se usa <b>presente simple</b>, NUNCA will:<br><code>I\'ll call you when I <u>arrive</u>.</code> (no "when I will arrive")<br><code>If it <u>rains</u>, we\'ll stay in.</code> (no "if it will rain")<br><code>She\'ll call you before she <u>leaves</u>.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · La regla se aplica a todos los conectores temporales</div><div class="b"><code>when, if, until, before, after, as soon as, once, by the time</code>:<br><code>I\'ll wait until he comes back.</code><br><code>She\'ll feel better once she finds a new job.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · When + presente perfecto (primera acción debe completarse)</div><div class="b">Si quieres enfatizar que la primera acción debe estar TERMINADA antes de la segunda, usa when + presente perfecto:<br><code>I\'ll tell you when I\'ve made a decision.</code> (cuando haya decidido)<br><code>When you\'ve read this, call me.</code><br>La diferencia con el presente simple es de énfasis.</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -2764,6 +2950,48 @@ const GU_UNITS = {
     color:"#92400e", pillBg:"#fef3c7", pillColor:"#78350f",
     subtitle:"Hábitos y estados pasados que ya no existen. Negativa (didn't use to) y pregunta (did you use to?). No confundir con be used to.",
     learnHtml: PPUSED_LEARN_HTML, catLabel: PPUSED_CAT_LABEL, bank: PPUSED_BANK
+  },
+  "future-present": {
+    id:"future-present", name:"Present tenses for the future", icon:"📆",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"Presente continuo para citas y planes concretos. Presente simple para horarios de transportes y espectáculos.",
+    learnHtml: FP_LEARN_HTML, catLabel: FP_CAT_LABEL, bank: FP_BANK
+  },
+  "going-to": {
+    id:"going-to", name:"I'm going to (do)", icon:"🎯",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"Intenciones y planes ya decididos. Predicciones con evidencia visible. am/is/are + going to + infinitivo.",
+    learnHtml: FGT_LEARN_HTML, catLabel: FGT_CAT_LABEL, bank: FGT_BANK
+  },
+  "will-1": {
+    id:"will-1", name:"will and shall 1", icon:"🔮",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Predicciones sin evidencia, decisiones espontáneas, ofrecimientos. Shall I/we para sugerencias.",
+    learnHtml: FW1_LEARN_HTML, catLabel: FW1_CAT_LABEL, bank: FW1_BANK
+  },
+  "will-2": {
+    id:"will-2", name:"will and shall 2", icon:"💬",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"Promesas, peticiones con Will you?, won't para rechazo. Shall para ofrecimientos y sugerencias con I/we.",
+    learnHtml: FW2_LEARN_HTML, catLabel: FW2_CAT_LABEL, bank: FW2_BANK
+  },
+  "will-vs-going-to": {
+    id:"will-vs-going-to", name:"I will and I'm going to", icon:"⚡",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"El contraste clave: decisión espontánea (will) vs. plan previo (going to). Predicción con o sin evidencia.",
+    learnHtml: FWGT_LEARN_HTML, catLabel: FWGT_CAT_LABEL, bank: FWGT_BANK
+  },
+  "will-be-doing": {
+    id:"will-be-doing", name:"will be doing and will have done", icon:"⏩",
+    color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
+    subtitle:"Futuro continuo (acción en curso en el futuro) y futuro perfecto (completada antes de un punto futuro).",
+    learnHtml: FWBD_LEARN_HTML, catLabel: FWBD_CAT_LABEL, bank: FWBD_BANK
+  },
+  "when-if": {
+    id:"when-if", name:"when I do / when I've done, if and when", icon:"🔀",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"Nunca will después de when/if/until/before/after. When + presente perfecto para énfasis en completitud.",
+    learnHtml: FWI_LEARN_HTML, catLabel: FWI_CAT_LABEL, bank: FWI_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
