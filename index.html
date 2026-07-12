@@ -4941,6 +4941,233 @@ const VP5_LEARN_HTML =
   '<div class="guRule"><div class="h">WITH = compañía o suministro</div><div class="b"><code>provide with, agree with, deal with</code>.</div></div>' +
   '<div class="guRule"><div class="h">ON = enfoque o gasto</div><div class="b"><code>concentrate on, spend money/time on</code>.</div></div>';
 
+/* ================= CONTENIDO: ADJECTIVES AND ADVERBS ================= */
+const ADJ_CAT_LABEL = {uso:"USO", error:"FRASE CORRECTA"};
+
+const IEA_BANK = [
+  {id:"iea-1",cat:"uso",blank:"The film was really ___ ; I fell asleep.",options:["boring","bored"],answer:"boring",note:"-ing describe lo que causa el sentimiento."},
+  {id:"iea-2",cat:"uso",blank:"I was ___ during the meeting.",options:["bored","boring"],answer:"bored",note:"-ed describe cómo se siente la persona."},
+  {id:"iea-3",cat:"uso",blank:"This book is very ___ .",options:["interesting","interested"],answer:"interesting",note:"la cosa causa interés → -ing."},
+  {id:"iea-4",cat:"uso",blank:"I'm ___ in learning Spanish.",options:["interested","interesting"],answer:"interested",note:"la persona siente interés → -ed."},
+  {id:"iea-5",cat:"uso",blank:"The news was ___ .",options:["surprising","surprised"],answer:"surprising",note:"la noticia causa sorpresa → -ing."},
+  {id:"iea-6",cat:"uso",blank:"I was ___ to see her there.",options:["surprised","surprising"],answer:"surprised",note:"la persona siente sorpresa → -ed."},
+  {id:"iea-7",cat:"uso",blank:"It was a really ___ experience.",options:["frightening","frightened"],answer:"frightening",note:"la experiencia causa miedo → -ing."},
+  {id:"iea-8",cat:"uso",blank:"The children were ___ of the dark.",options:["frightened","frightening"],answer:"frightened",note:"sienten miedo → -ed."},
+  {id:"iea-9",cat:"uso",blank:"I'm ___ about the exam results.",options:["worried","worrying"],answer:"worried",note:"sientes preocupación → -ed."},
+  {id:"iea-10",cat:"uso",blank:"The situation is quite ___ .",options:["worrying","worried"],answer:"worrying",note:"causa preocupación → -ing."},
+  {id:"iea-11",cat:"error",choose:true,options:["I am boring with this job.","I am bored with this job.","I am bore with this job."],answer:"I am bored with this job.",note:"sentimiento de la persona → -ed.",errorProne:true}
+];
+const IEA_LEARN_HTML =
+  '<div class="guRule"><div class="h">-ing = causa el sentimiento</div><div class="b">Describe a la cosa, situación o persona que PRODUCE el efecto: <code>a boring film, a surprising result</code>.</div></div>' +
+  '<div class="guRule"><div class="h">-ed = siente el sentimiento</div><div class="b">Describe cómo se siente una persona: <code>I was bored, she was surprised</code>.</div></div>';
+
+const AO_BANK = [
+  {id:"ao-1",cat:"uso",blank:"She bought a ___ dress.",options:["nice red","red nice"],answer:"nice red",note:"opinión antes que color."},
+  {id:"ao-2",cat:"uso",blank:"He has a ___ car.",options:["big old","old big"],answer:"big old",note:"tamaño antes que edad."},
+  {id:"ao-3",cat:"uso",blank:"They live in a ___ house.",options:["lovely old stone","stone old lovely"],answer:"lovely old stone",note:"opinión - edad - material."},
+  {id:"ao-4",cat:"uso",blank:"You look ___ today.",options:["tired","tiredly"],answer:"tired",note:"tras un verbo de enlace (look) va un adjetivo, no un adverbio."},
+  {id:"ao-5",cat:"uso",blank:"This soup tastes ___ .",options:["delicious","deliciously"],answer:"delicious",note:"taste + adjetivo."},
+  {id:"ao-6",cat:"uso",blank:"She seems ___ about the news.",options:["happy","happily"],answer:"happy",note:"seem + adjetivo."},
+  {id:"ao-7",cat:"uso",blank:"He felt ___ after the long journey.",options:["exhausted","exhaustedly"],answer:"exhausted",note:"feel + adjetivo."},
+  {id:"ao-8",cat:"error",choose:true,options:["She has a red nice car.","She has a nice red car.","She has nice a red car."],answer:"She has a nice red car.",note:"opinión antes que color.",errorProne:true},
+  {id:"ao-9",cat:"error",choose:true,options:["You look tiredly.","You look tired.","You are looking tiredly."],answer:"You look tired.",note:"look + adjetivo, nunca adverbio.",errorProne:true}
+];
+const AO_LEARN_HTML =
+  '<div class="guRule"><div class="h">Orden de adjetivos antes del sustantivo</div><div class="b">Opinión → tamaño → edad → forma → color → origen → material: <code>a lovely old stone house</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Verbos de enlace + adjetivo</div><div class="b">Tras <code>be, look, seem, feel, taste, smell, sound</code> va un ADJETIVO, no un adverbio: <code>You look tired</code>, no "tiredly".</div></div>';
+
+const AA1_BANK = [
+  {id:"aa1-1",cat:"uso",blank:"He is a ___ driver.",options:["careful","carefully"],answer:"careful",note:"adjetivo + sustantivo."},
+  {id:"aa1-2",cat:"uso",blank:"He drives ___ .",options:["carefully","careful"],answer:"carefully",note:"adverbio + verbo."},
+  {id:"aa1-3",cat:"uso",blank:"She's a ___ worker.",options:["quick","quickly"],answer:"quick",note:"adjetivo + sustantivo."},
+  {id:"aa1-4",cat:"uso",blank:"She finished the work ___ .",options:["quickly","quick"],answer:"quickly",note:"adverbio + verbo."},
+  {id:"aa1-5",cat:"uso",blank:"It was a ___ decision.",options:["sudden","suddenly"],answer:"sudden",note:"adjetivo + sustantivo."},
+  {id:"aa1-6",cat:"uso",blank:"He ___ stopped the car.",options:["suddenly","sudden"],answer:"suddenly",note:"adverbio + verbo."},
+  {id:"aa1-7",cat:"uso",blank:"They speak English ___ .",options:["perfectly","perfect"],answer:"perfectly",note:"adverbio + verbo."},
+  {id:"aa1-8",cat:"uso",blank:"That's a ___ answer.",options:["perfect","perfectly"],answer:"perfect",note:"adjetivo + sustantivo."},
+  {id:"aa1-9",cat:"error",choose:true,options:["She sings beautiful.","She sings beautifully.","She sing beautifully."],answer:"She sings beautifully.",note:"modifica al verbo → adverbio.",errorProne:true}
+];
+const AA1_LEARN_HTML =
+  '<div class="guRule"><div class="h">Adjetivos modifican sustantivos</div><div class="b"><code>a careful driver, a quick worker</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Adverbios modifican verbos</div><div class="b">Se forman normalmente con <b>-ly</b>: <code>He drives carefully, she works quickly</code>.</div></div>';
+
+const AA2_BANK = [
+  {id:"aa2-1",cat:"uso",blank:"She's a good singer. She sings ___ .",options:["well","good"],answer:"well",note:"adjetivo good → adverbio well."},
+  {id:"aa2-2",cat:"uso",blank:"He's a fast runner. He runs ___ .",options:["fast","fastly"],answer:"fast",note:"'fast' es igual como adjetivo y como adverbio."},
+  {id:"aa2-3",cat:"uso",blank:"I worked ___ all day.",options:["hard","hardly"],answer:"hard",note:"hard = mucho esfuerzo; hardly = apenas."},
+  {id:"aa2-4",cat:"uso",blank:"I ___ know him; we've only met once.",options:["hardly","hard"],answer:"hardly",note:"hardly = apenas."},
+  {id:"aa2-5",cat:"uso",blank:"The train arrived ___ .",options:["late","lately"],answer:"late",note:"late = tarde."},
+  {id:"aa2-6",cat:"uso",blank:"I haven't seen him ___ .",options:["lately","late"],answer:"lately",note:"lately = últimamente."},
+  {id:"aa2-7",cat:"uso",blank:"She did ___ in the exam.",options:["well","good"],answer:"well",note:"adverbio de good = well."},
+  {id:"aa2-8",cat:"uso",blank:"He's feeling ___ today.",options:["well","good"],answer:"well",note:"'well' como adjetivo = sano."},
+  {id:"aa2-9",cat:"error",choose:true,options:["He drives very good.","He drives very well.","He drives very goodly."],answer:"He drives very well.",note:"adverbio de good = well.",errorProne:true}
+];
+const AA2_LEARN_HTML =
+  '<div class="guRule"><div class="h">Adverbios irregulares</div><div class="b"><code>good → well</code>. <code>fast, hard, late</code> son iguales en adjetivo y adverbio.</div></div>' +
+  '<div class="guRule"><div class="h">La trampa: hard/hardly, late/lately</div><div class="b"><code>hard</code> (mucho esfuerzo) ≠ <code>hardly</code> (apenas). <code>late</code> (tarde) ≠ <code>lately</code> (últimamente). No son el adverbio "normal" del adjetivo.</div></div>';
+
+const SS_BANK = [
+  {id:"ss-1",cat:"uso",blank:"The film was ___ boring.",options:["so","such"],answer:"so",note:"so + adjetivo."},
+  {id:"ss-2",cat:"uso",blank:"It was ___ boring film.",options:["such a","so a"],answer:"such a",note:"such + a/an + sustantivo."},
+  {id:"ss-3",cat:"uso",blank:"She's ___ kind person.",options:["such a","so a"],answer:"such a",note:"such + a/an + sustantivo."},
+  {id:"ss-4",cat:"uso",blank:"He's ___ intelligent.",options:["so","such"],answer:"so",note:"so + adjetivo (sin sustantivo)."},
+  {id:"ss-5",cat:"uso",blank:"They were ___ nice people.",options:["such","so"],answer:"such",note:"such + sustantivo plural."},
+  {id:"ss-6",cat:"uso",blank:"I've never seen ___ a mess.",options:["such","so"],answer:"such",note:"such + a + sustantivo."},
+  {id:"ss-7",cat:"uso",blank:"It's ___ cold today!",options:["so","such"],answer:"so",note:"so + adjetivo."},
+  {id:"ss-8",cat:"error",choose:true,options:["It was so good film.","It was such a good film.","It was such good film."],answer:"It was such a good film.",note:"such + a + adjetivo + sustantivo singular.",errorProne:true}
+];
+const SS_LEARN_HTML =
+  '<div class="guRule"><div class="h">so + adjetivo/adverbio</div><div class="b">Sin sustantivo: <code>so boring, so cold</code>.</div></div>' +
+  '<div class="guRule"><div class="h">such + (a/an) + sustantivo</div><div class="b">Con sustantivo (con o sin adjetivo delante): <code>such a mess, such a boring film, such nice people</code>.</div></div>';
+
+const ET_BANK = [
+  {id:"et-1",cat:"uso",blank:"This coffee isn't ___ .",options:["hot enough","enough hot"],answer:"hot enough",note:"enough va DESPUÉS del adjetivo."},
+  {id:"et-2",cat:"uso",blank:"This coffee is ___ hot to drink.",options:["too","enough"],answer:"too",note:"too va ANTES del adjetivo."},
+  {id:"et-3",cat:"uso",blank:"We didn't have ___ time.",options:["enough","too"],answer:"enough",note:"enough + sustantivo (antes)."},
+  {id:"et-4",cat:"uso",blank:"He's not ___ to drive.",options:["old enough","enough old"],answer:"old enough",note:"adjetivo + enough."},
+  {id:"et-5",cat:"uso",blank:"It's ___ late to call her now.",options:["too","enough"],answer:"too",note:"too + adjetivo."},
+  {id:"et-6",cat:"uso",blank:"Is there ___ food for everyone?",options:["enough","too"],answer:"enough",note:"enough + sustantivo."},
+  {id:"et-7",cat:"uso",blank:"She's ___ tired to continue.",options:["too","enough"],answer:"too",note:"too + adjetivo."},
+  {id:"et-8",cat:"error",choose:true,options:["This bag is enough big.","This bag is big enough.","This bag is enough for big."],answer:"This bag is big enough.",note:"enough va DESPUÉS del adjetivo.",errorProne:true}
+];
+const ET_LEARN_HTML =
+  '<div class="guRule"><div class="h">enough</div><div class="b">Después del adjetivo/adverbio: <code>old enough, big enough</code>. Antes del sustantivo: <code>enough time, enough food</code>.</div></div>' +
+  '<div class="guRule"><div class="h">too</div><div class="b">Siempre ANTES del adjetivo/adverbio: <code>too hot, too late</code>. Idea de "demasiado" (negativo), distinto de "very".</div></div>';
+
+const QR_BANK = [
+  {id:"qr-1",cat:"uso",blank:"The film was ___ good, but not amazing.",options:["quite","completely"],answer:"quite",note:"quite + adjetivo graduable = bastante."},
+  {id:"qr-2",cat:"uso",blank:"It's ___ impossible to finish by tomorrow.",options:["quite","fairly"],answer:"quite",note:"quite + adjetivo no graduable (impossible, perfect) = totalmente."},
+  {id:"qr-3",cat:"uso",blank:"The weather is ___ nice today.",options:["quite","totally"],answer:"quite",note:"quite + adjetivo graduable = bastante."},
+  {id:"qr-4",cat:"uso",blank:"She's ___ tall for her age.",options:["rather","totally"],answer:"rather",note:"rather = bastante."},
+  {id:"qr-5",cat:"uso",blank:"The test was ___ difficult.",options:["fairly","totally"],answer:"fairly",note:"fairly = bastante, de forma neutra."},
+  {id:"qr-6",cat:"uso",blank:"That's ___ amazing news!",options:["quite","fairly"],answer:"quite",note:"quite + adjetivo extremo = totalmente."},
+  {id:"qr-7",cat:"uso",blank:"I'm ___ sure she's right.",options:["quite","a bit"],answer:"quite",note:"quite sure = bastante seguro."},
+  {id:"qr-8",cat:"error",choose:true,options:["She's pretty tired today.","She's pretty tired for today.","She's pretty tired at today."],answer:"She's pretty tired today.",note:"pretty (bastante) + adjetivo, sin preposición extra.",errorProne:true}
+];
+const QR_LEARN_HTML =
+  '<div class="guRule"><div class="h">quite: dos significados</div><div class="b">Con adjetivos graduables (good, nice, big) = "bastante": <code>quite good</code>. Con adjetivos extremos/no graduables (amazing, impossible, perfect) = "totalmente": <code>quite amazing</code>.</div></div>' +
+  '<div class="guRule"><div class="h">rather, fairly, pretty</div><div class="b">Todos significan aproximadamente "bastante", con matices: <code>rather</code> a veces indica sorpresa o algo no del todo positivo; <code>fairly</code> es más neutro; <code>pretty</code> es informal.</div></div>';
+
+const C1_BANK = [
+  {id:"c1cmp-1",cat:"uso",blank:"This car is ___ than that one.",options:["cheaper","more cheap"],answer:"cheaper",note:"adjetivo corto + -er."},
+  {id:"c1cmp-2",cat:"uso",blank:"This book is ___ than the film.",options:["more interesting","interestinger"],answer:"more interesting",note:"adjetivo largo → more + adjetivo."},
+  {id:"c1cmp-3",cat:"uso",blank:"Today is ___ than yesterday.",options:["hotter","more hot"],answer:"hotter",note:"consonante final se dobla: hot → hotter."},
+  {id:"c1cmp-4",cat:"uso",blank:"She's ___ than her sister.",options:["taller","more tall"],answer:"taller",note:"adjetivo corto + -er."},
+  {id:"c1cmp-5",cat:"uso",blank:"This is ___ than I expected.",options:["better","gooder"],answer:"better",note:"good → better (irregular)."},
+  {id:"c1cmp-6",cat:"uso",blank:"The weather got ___ .",options:["worse","badder"],answer:"worse",note:"bad → worse (irregular)."},
+  {id:"c1cmp-7",cat:"uso",blank:"My house is ___ from the city than yours.",options:["further","more far"],answer:"further",note:"far → further/farther (irregular)."},
+  {id:"c1cmp-8",cat:"uso",blank:"This exercise is ___ than the last one.",options:["easier","more easy"],answer:"easier",note:"consonante + y → -ier: easy → easier."},
+  {id:"c1cmp-9",cat:"error",choose:true,options:["This is more good than that.","This is better than that.","This is gooder than that."],answer:"This is better than that.",note:"good → better (irregular).",errorProne:true}
+];
+const C1_LEARN_HTML =
+  '<div class="guRule"><div class="h">Adjetivos cortos (1 sílaba, o 2 acabados en -y) → -er</div><div class="b"><code>cheap → cheaper, easy → easier, hot → hotter</code> (se dobla la consonante final tras vocal corta).</div></div>' +
+  '<div class="guRule"><div class="h">Adjetivos largos (2+ sílabas) → more + adjetivo</div><div class="b"><code>more interesting, more expensive</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Irregulares</div><div class="b"><code>good → better, bad → worse, far → further/farther</code>.</div></div>';
+
+const C2_BANK = [
+  {id:"c2cmp-1",cat:"uso",blank:"This phone is ___ than my old one.",options:["much better","much good"],answer:"much better",note:"much + comparativo, para intensificar."},
+  {id:"c2cmp-2",cat:"uso",blank:"She's ___ taller than me.",options:["a bit","a bit of"],answer:"a bit",note:"a bit + comparativo, diferencia pequeña."},
+  {id:"c2cmp-3",cat:"uso",blank:"The new model is ___ expensive than the old one.",options:["far more","far most"],answer:"far more",note:"far + comparativo, gran diferencia."},
+  {id:"c2cmp-4",cat:"uso",blank:"Are you feeling ___ today?",options:["any better","more better"],answer:"any better",note:"'any better' en preguntas/negativas."},
+  {id:"c2cmp-5",cat:"uso",blank:"I don't feel ___ .",options:["any better","more better"],answer:"any better",note:"'any better' en negativas."},
+  {id:"c2cmp-6",cat:"uso",blank:"It's ___ colder today than yesterday.",options:["slightly","slight"],answer:"slightly",note:"slightly + comparativo, diferencia pequeña."},
+  {id:"c2cmp-7",cat:"uso",blank:"He runs ___ faster than his brother.",options:["a lot","a lot of"],answer:"a lot",note:"a lot + comparativo, para intensificar."},
+  {id:"c2cmp-8",cat:"error",choose:true,options:["I feel more better today.","I feel a lot better today.","I feel more good today."],answer:"I feel a lot better today.",note:"'better' ya es comparativo; no se dice 'more better'.",errorProne:true}
+];
+const C2_LEARN_HTML =
+  '<div class="guRule"><div class="h">Intensificar un comparativo</div><div class="b">Gran diferencia: <code>much, a lot, far</code> + comparativo. Diferencia pequeña: <code>a bit, slightly</code> + comparativo.</div></div>' +
+  '<div class="guRule"><div class="h">any better / no better</div><div class="b">En preguntas y negativas: <code>Are you feeling any better? I don\'t feel any better.</code></div></div>';
+
+const C3_BANK = [
+  {id:"c3cmp-1",cat:"uso",blank:"She's ___ tall as her brother.",options:["as","so","than"],answer:"as",note:"as + adjetivo + as (igualdad)."},
+  {id:"c3cmp-2",cat:"uso",blank:"This book isn't ___ interesting as the last one.",options:["as","than","so much"],answer:"as",note:"not as...as (desigualdad)."},
+  {id:"c3cmp-3",cat:"uso",blank:"He earns twice ___ much as me.",options:["as","than","so"],answer:"as",note:"twice as much as."},
+  {id:"c3cmp-4",cat:"uso",blank:"This flat is ___ expensive as that one, maybe even more.",options:["as","than","so"],answer:"as",note:"as...as."},
+  {id:"c3cmp-5",cat:"uso",blank:"My car is older ___ yours.",options:["than","as","that"],answer:"than",note:"comparativo + than."},
+  {id:"c3cmp-6",cat:"uso",blank:"The film wasn't ___ good as the book.",options:["as","than","more"],answer:"as",note:"not as...as."},
+  {id:"c3cmp-7",cat:"uso",blank:"This room is half ___ big as the other one.",options:["as","than","so"],answer:"as",note:"half as big as."},
+  {id:"c3cmp-8",cat:"error",choose:true,options:["She's as tall than her brother.","She's as tall as her brother.","She's so tall as her brother."],answer:"She's as tall as her brother.",note:"as + adjetivo + as, no 'than'.",errorProne:true}
+];
+const C3_LEARN_HTML =
+  '<div class="guRule"><div class="h">as + adjetivo + as (igualdad)</div><div class="b"><code>as tall as, as good as</code>. Negativa: <code>not as tall as</code> (también "not so...as").</div></div>' +
+  '<div class="guRule"><div class="h">twice/half + as...as</div><div class="b"><code>twice as much as, half as big as</code>.</div></div>' +
+  '<div class="guRule"><div class="h">comparativo + than</div><div class="b"><code>older than, more expensive than</code> — nunca "as" con than.</div></div>';
+
+const SUP_BANK = [
+  {id:"sup-1",cat:"uso",blank:"This is ___ river in the country.",options:["the longest","longest","the more long"],answer:"the longest",note:"adjetivo corto → the + -est."},
+  {id:"sup-2",cat:"uso",blank:"That was ___ film I've ever seen.",options:["the most enjoyable","the enjoyablest","most enjoyable"],answer:"the most enjoyable",note:"adjetivo largo → the most + adjetivo."},
+  {id:"sup-3",cat:"uso",blank:"He's ___ student in the class.",options:["the best","the goodest","most good"],answer:"the best",note:"good → the best (irregular)."},
+  {id:"sup-4",cat:"uso",blank:"This is ___ day of my life!",options:["the worst","the baddest","most bad"],answer:"the worst",note:"bad → the worst (irregular)."},
+  {id:"sup-5",cat:"uso",blank:"That's ___ hotel in town.",options:["the cheapest","cheaper","the more cheap"],answer:"the cheapest",note:"adjetivo corto → the + -est."},
+  {id:"sup-6",cat:"uso",blank:"She lives ___ from the office.",options:["the furthest","furthest","the far"],answer:"the furthest",note:"far → the furthest (irregular)."},
+  {id:"sup-7",cat:"uso",blank:"This is one of ___ cities in Europe.",options:["the most beautiful","the beautifulest","most beautiful"],answer:"the most beautiful",note:"adjetivo largo → the most + adjetivo."},
+  {id:"sup-8",cat:"error",choose:true,options:["This is the most easy exercise.","This is the easiest exercise.","This is the easyest exercise."],answer:"This is the easiest exercise.",note:"consonante + y → -iest: easy → easiest.",errorProne:true}
+];
+const SUP_LEARN_HTML =
+  '<div class="guRule"><div class="h">the + -est (adjetivos cortos)</div><div class="b"><code>the longest, the cheapest, the easiest</code>.</div></div>' +
+  '<div class="guRule"><div class="h">the most + adjetivo (adjetivos largos)</div><div class="b"><code>the most enjoyable, the most beautiful</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Irregulares</div><div class="b"><code>good → the best, bad → the worst, far → the furthest</code>.</div></div>';
+
+const WO1_BANK = [
+  {id:"wo1-1",cat:"uso",blank:"I ___ every day after work.",options:["go for a walk","go a walk for"],answer:"go for a walk",note:"expresión fija, no se altera el orden."},
+  {id:"wo1-2",cat:"uso",blank:"She put ___ on the table.",options:["the book down","down the book"],answer:"the book down",note:"con un sustantivo, el orden habitual es verbo + objeto + partícula."},
+  {id:"wo1-3",cat:"uso",blank:"We usually have dinner ___ .",options:["at home in the evening","in the evening at home"],answer:"at home in the evening",note:"el lugar suele ir antes que el tiempo al final de la frase."},
+  {id:"wo1-4",cat:"error",choose:true,options:["I like very much this book.","I like this book very much.","I very much like this book."],answer:"I like this book very much.",note:"no se separa el verbo de su objeto: like + objeto + very much.",errorProne:true},
+  {id:"wo1-5",cat:"error",choose:true,options:["She speaks well English.","She speaks English well.","She well speaks English."],answer:"She speaks English well.",note:"verbo + objeto, el adverbio de modo va después.",errorProne:true},
+  {id:"wo1-6",cat:"error",choose:true,options:["We went in 2020 to Italy.","We went to Italy in 2020.","We in 2020 went to Italy."],answer:"We went to Italy in 2020.",note:"lugar antes que tiempo al final de la frase.",errorProne:true},
+  {id:"wo1-7",cat:"error",choose:true,options:["I met yesterday my friend at the park.","I met my friend at the park yesterday.","Yesterday I met at the park my friend."],answer:"I met my friend at the park yesterday.",note:"no se interrumpe verbo + objeto; el tiempo suele ir al final.",errorProne:true},
+  {id:"wo1-8",cat:"error",choose:true,options:["I saw in London my cousin.","I saw my cousin in London.","In London I saw my cousin last week."],answer:"I saw my cousin in London.",note:"no se interrumpe verbo + objeto.",errorProne:true},
+  {id:"wo1-9",cat:"error",choose:true,options:["We ate quickly our dinner.","We ate our dinner quickly.","We quickly ate our dinner."],answer:"We ate our dinner quickly.",note:"verbo + objeto + adverbio de modo.",errorProne:true}
+];
+const WO1_LEARN_HTML =
+  '<div class="guRule"><div class="h">Verbo + objeto, sin interrupciones</div><div class="b">En inglés, el verbo y su objeto van SIEMPRE juntos: <code>I like this book very much</code>, nunca "I like very much this book".</div></div>' +
+  '<div class="guRule"><div class="h">Lugar antes que tiempo</div><div class="b">Al final de la frase, el lugar suele ir antes que el tiempo: <code>I met my friend at the park yesterday</code>.</div></div>';
+
+const WO2_BANK = [
+  {id:"wo2-1",cat:"uso",blank:"I ___ drink coffee in the morning.",options:["always","am always"],answer:"always",note:"con verbo normal, el adverbio va ANTES."},
+  {id:"wo2-2",cat:"uso",blank:"She ___ late for work.",options:["is often","often is"],answer:"is often",note:"con 'be', el adverbio va DESPUÉS."},
+  {id:"wo2-3",cat:"uso",blank:"He can ___ speak French.",options:["already","already can"],answer:"already",note:"con un modal, el adverbio va después del modal."},
+  {id:"wo2-4",cat:"uso",blank:"We ___ go to the cinema on Fridays.",options:["usually","are usually"],answer:"usually",note:"con verbo normal, antes."},
+  {id:"wo2-5",cat:"uso",blank:"I have ___ seen that film.",options:["never","not never"],answer:"never",note:"con el auxiliar 'have', el adverbio va después de él."},
+  {id:"wo2-6",cat:"uso",blank:"They ___ visit us.",options:["rarely","are rarely"],answer:"rarely",note:"con verbo normal, antes."},
+  {id:"wo2-7",cat:"uso",blank:"She ___ tired after work.",options:["is usually","usually is"],answer:"is usually",note:"con 'be', después."},
+  {id:"wo2-8",cat:"error",choose:true,options:["I always am tired on Mondays.","I am always tired on Mondays.","I am tired always on Mondays."],answer:"I am always tired on Mondays.",note:"con 'be', el adverbio va después.",errorProne:true},
+  {id:"wo2-9",cat:"error",choose:true,options:["He speaks always the truth.","He always speaks the truth.","He speaks the truth always."],answer:"He always speaks the truth.",note:"con verbos normales, el adverbio va antes.",errorProne:true}
+];
+const WO2_LEARN_HTML =
+  '<div class="guRule"><div class="h">Adverbios de frecuencia (always, often, never, usually...)</div><div class="b">Con verbos normales → ANTES del verbo: <code>I always go</code>.<br>Con "be" → DESPUÉS: <code>She is often late</code>.<br>Con modales/auxiliares → DESPUÉS de ellos: <code>He can already speak French, I have never seen it</code>.</div></div>';
+
+const SY_BANK = [
+  {id:"sy-1",cat:"uso",blank:"Is he ___ working here?",options:["still","yet","already"],answer:"still",note:"still = ¿sigue...?"},
+  {id:"sy-2",cat:"uso",blank:"Have you finished ___ ?",options:["yet","still","already"],answer:"yet",note:"yet en preguntas = ¿ya?"},
+  {id:"sy-3",cat:"uso",blank:"I haven't finished ___ .",options:["yet","still","already"],answer:"yet",note:"yet en negativas = todavía no."},
+  {id:"sy-4",cat:"uso",blank:"I've ___ finished my homework.",options:["already","yet","still"],answer:"already",note:"already en afirmativa = ya (antes de lo esperado)."},
+  {id:"sy-5",cat:"uso",blank:"She ___ lives in London.",options:["still","yet","already"],answer:"still",note:"still = todavía/sigue."},
+  {id:"sy-6",cat:"uso",blank:"He doesn't work here ___ .",options:["any more","still","yet"],answer:"any more",note:"not...any more = ya no."},
+  {id:"sy-7",cat:"uso",blank:"Are you ___ hungry?",options:["still","yet","already"],answer:"still",note:"still = todavía."},
+  {id:"sy-8",cat:"error",choose:true,options:["I haven't seen him already.","I haven't seen him yet.","I haven't seen him still."],answer:"I haven't seen him yet.",note:"negativa 'todavía no' → yet, no 'already'.",errorProne:true},
+  {id:"sy-9",cat:"error",choose:true,options:["He no longer smokes.","He doesn't longer smoke.","He longer doesn't smoke."],answer:"He no longer smokes.",note:"no longer = ya no (posición fija antes del verbo).",errorProne:true}
+];
+const SY_LEARN_HTML =
+  '<div class="guRule"><div class="h">still</div><div class="b">Algo continúa: <code>She still lives here</code> (todavía/sigue). Va en medio de la frase.</div></div>' +
+  '<div class="guRule"><div class="h">yet</div><div class="b">En negativas y preguntas, al final: <code>Have you finished yet? I haven\'t finished yet.</code></div></div>' +
+  '<div class="guRule"><div class="h">already</div><div class="b">En afirmativas, algo ha pasado antes de lo esperado: <code>I\'ve already finished</code>.</div></div>' +
+  '<div class="guRule"><div class="h">any more / no longer</div><div class="b">Algo ha dejado de ser cierto: <code>He doesn\'t work here any more</code> = <code>He no longer works here</code>.</div></div>';
+
+const EV_BANK = [
+  {id:"ev-1",cat:"uso",blank:"He ___ speaks Japanese!",options:["even","already"],answer:"even",note:"even = incluso (sorpresa)."},
+  {id:"ev-2",cat:"uso",blank:"She's so strong she can ___ lift a car.",options:["even","already"],answer:"even",note:"even para enfatizar algo sorprendente."},
+  {id:"ev-3",cat:"uso",blank:"___ my little sister can do this.",options:["Even","Already"],answer:"Even",note:"even al inicio de la frase."},
+  {id:"ev-4",cat:"uso",blank:"I ___ forgot my own birthday!",options:["even","still"],answer:"even",note:"even para enfatizar."},
+  {id:"ev-5",cat:"uso",blank:"He didn't ___ say hello.",options:["even","already"],answer:"even",note:"not even = ni siquiera."},
+  {id:"ev-6",cat:"uso",blank:"___ it rains, we'll go to the beach.",options:["Even if","Even though"],answer:"Even if",note:"even if = incluso si (condición hipotética/incierta)."},
+  {id:"ev-7",cat:"uso",blank:"___ he was tired, he finished the race.",options:["Even though","Even if"],answer:"Even though",note:"even though = aunque (hecho real)."},
+  {id:"ev-8",cat:"error",choose:true,options:["He didn't even say hello.","He didn't say even hello.","He even didn't say hello."],answer:"He didn't even say hello.",note:"'even' va antes del verbo principal, después del auxiliar.",errorProne:true}
+];
+const EV_LEARN_HTML =
+  '<div class="guRule"><div class="h">even = incluso</div><div class="b">Enfatiza algo sorprendente. Se coloca como los adverbios de frecuencia: antes del verbo normal, después de "be"/auxiliares/modales: <code>He even speaks Japanese. I have even met her.</code></div></div>' +
+  '<div class="guRule"><div class="h">even though vs. even if</div><div class="b"><code>even though</code> = aunque (hecho real, ya sucedió). <code>even if</code> = incluso si (condición hipotética).</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -5722,6 +5949,96 @@ const GU_UNITS = {
     color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
     subtitle:"believe in, translate into, provide with, agree with, concentrate on.",
     learnHtml: VP5_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: VP5_BANK
+  },
+  "ing-ed-adj": {
+    id:"ing-ed-adj", name:"Adjectives ending in -ing and -ed", icon:"😴",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"-ing describe lo que causa el sentimiento; -ed describe cómo se siente la persona.",
+    learnHtml: IEA_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: IEA_BANK
+  },
+  "adj-order": {
+    id:"adj-order", name:"Adjectives: a nice new house, you look tired", icon:"🎨",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Orden de adjetivos antes del sustantivo, y adjetivo (no adverbio) tras verbos de enlace.",
+    learnHtml: AO_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: AO_BANK
+  },
+  "adj-adv-1": {
+    id:"adj-adv-1", name:"Adjectives and adverbs 1 (quick/quickly)", icon:"🏃",
+    color:"#059669", pillBg:"#d1fae5", pillColor:"#065f46",
+    subtitle:"Adjetivos modifican sustantivos; adverbios (-ly) modifican verbos.",
+    learnHtml: AA1_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: AA1_BANK
+  },
+  "adj-adv-2": {
+    id:"adj-adv-2", name:"Adjectives and adverbs 2 (well, fast, hard/hardly)", icon:"⚡",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#115e59",
+    subtitle:"Adverbios irregulares, y la trampa de hard/hardly y late/lately.",
+    learnHtml: AA2_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: AA2_BANK
+  },
+  "so-such": {
+    id:"so-such", name:"so and such", icon:"💫",
+    color:"#db2777", pillBg:"#fce7f3", pillColor:"#9d174d",
+    subtitle:"so + adjetivo/adverbio, such + (a/an) + sustantivo.",
+    learnHtml: SS_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: SS_BANK
+  },
+  "enough-too": {
+    id:"enough-too", name:"enough and too", icon:"⚖️",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"enough va después del adjetivo; too va antes.",
+    learnHtml: ET_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: ET_BANK
+  },
+  "quite-rather": {
+    id:"quite-rather", name:"quite, pretty, rather and fairly", icon:"🌤️",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"Matices de 'bastante': quite (dos significados), rather, fairly, pretty.",
+    learnHtml: QR_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: QR_BANK
+  },
+  "comparative-1": {
+    id:"comparative-1", name:"Comparative 1 (cheaper, more expensive)", icon:"📊",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"Adjetivos cortos + -er, adjetivos largos + more, e irregulares.",
+    learnHtml: C1_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: C1_BANK
+  },
+  "comparative-2": {
+    id:"comparative-2", name:"Comparative 2 (much better / any better)", icon:"📈",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"Intensificar comparativos (much, a bit, far) y 'any better' en preguntas/negativas.",
+    learnHtml: C2_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: C2_BANK
+  },
+  "comparative-3": {
+    id:"comparative-3", name:"Comparative 3 (as…as / than)", icon:"🔀",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#991b1b",
+    subtitle:"as + adjetivo + as (igualdad) frente a comparativo + than (desigualdad).",
+    learnHtml: C3_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: C3_BANK
+  },
+  "superlative": {
+    id:"superlative", name:"Superlative (the longest, the most enjoyable)", icon:"🏆",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"the + -est, the most + adjetivo, e irregulares.",
+    learnHtml: SUP_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: SUP_BANK
+  },
+  "word-order-1": {
+    id:"word-order-1", name:"Word order 1: verb + object; place and time", icon:"🧩",
+    color:"#475569", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"El verbo nunca se separa de su objeto; el lugar suele ir antes que el tiempo.",
+    learnHtml: WO1_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: WO1_BANK
+  },
+  "word-order-2": {
+    id:"word-order-2", name:"Word order 2: adverbs with the verb", icon:"🔁",
+    color:"#65a30d", pillBg:"#ecfccb", pillColor:"#365314",
+    subtitle:"Posición de los adverbios de frecuencia según el tipo de verbo.",
+    learnHtml: WO2_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: WO2_BANK
+  },
+  "still-yet": {
+    id:"still-yet", name:"still, any more, yet, already", icon:"⏳",
+    color:"#ea580c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"still (sigue), yet (todavía/ya), already (ya), any more/no longer (ya no).",
+    learnHtml: SY_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: SY_BANK
+  },
+  "even": {
+    id:"even", name:"even", icon:"➕",
+    color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
+    subtitle:"even para enfatizar lo sorprendente, y even though vs. even if.",
+    learnHtml: EV_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: EV_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
