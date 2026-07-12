@@ -5168,6 +5168,117 @@ const EV_LEARN_HTML =
   '<div class="guRule"><div class="h">even = incluso</div><div class="b">Enfatiza algo sorprendente. Se coloca como los adverbios de frecuencia: antes del verbo normal, después de "be"/auxiliares/modales: <code>He even speaks Japanese. I have even met her.</code></div></div>' +
   '<div class="guRule"><div class="h">even though vs. even if</div><div class="b"><code>even though</code> = aunque (hecho real, ya sucedió). <code>even if</code> = incluso si (condición hipotética).</div></div>';
 
+/* ================= CONTENIDO: APÉNDICES ================= */
+const APP_CAT_LABEL = {uso:"USO", error:"FRASE CORRECTA"};
+
+const APV_BANK = [
+  {id:"appv-1",cat:"uso",blank:"go → went → ___",options:["gone","went","goed"],answer:"gone",note:"participio de go = gone."},
+  {id:"appv-2",cat:"uso",blank:"see → saw → ___",options:["seen","saw","seed"],answer:"seen",note:"participio de see = seen."},
+  {id:"appv-3",cat:"uso",blank:"eat → ate → ___",options:["eaten","ate","eated"],answer:"eaten",note:"participio de eat = eaten."},
+  {id:"appv-4",cat:"uso",blank:"take → took → ___",options:["taken","took","taked"],answer:"taken",note:"participio de take = taken."},
+  {id:"appv-5",cat:"uso",blank:"write → wrote → ___",options:["written","wrote","writed"],answer:"written",note:"participio de write = written."},
+  {id:"appv-6",cat:"uso",blank:"break → broke → ___",options:["broken","broke","breaked"],answer:"broken",note:"participio de break = broken."},
+  {id:"appv-7",cat:"uso",blank:"begin → began → ___",options:["begun","began","begined"],answer:"begun",note:"participio de begin = begun."},
+  {id:"appv-8",cat:"uso",blank:"drive → drove → ___",options:["driven","drove","drived"],answer:"driven",note:"participio de drive = driven."},
+  {id:"appv-9",cat:"uso",blank:"choose → chose → ___",options:["chosen","chose","choosed"],answer:"chosen",note:"participio de choose = chosen."},
+  {id:"appv-10",cat:"uso",blank:"speak → spoke → ___",options:["spoken","spoke","speaked"],answer:"spoken",note:"participio de speak = spoken."},
+  {id:"appv-11",cat:"error",choose:true,options:["I have wrote a letter.","I have written a letter.","I have write a letter."],answer:"I have written a letter.",note:"participio de write = written, no 'wrote'.",errorProne:true},
+  {id:"appv-12",cat:"error",choose:true,options:["She has went home.","She has gone home.","She has go home."],answer:"She has gone home.",note:"participio de go = gone, no 'went'.",errorProne:true}
+];
+const APV_LEARN_HTML =
+  '<div class="guRule"><div class="h">Verbos regulares</div><div class="b">Pasado y participio son iguales: base + <b>-ed</b>: <code>work → worked → worked</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Verbos irregulares</div><div class="b">Pasado y participio suelen ser DISTINTOS y hay que memorizarlos: <code>go → went → gone</code>, <code>write → wrote → written</code>, <code>see → saw → seen</code>.</div></div>' +
+  '<div class="guRule"><div class="h">La trampa más común</div><div class="b">Usar el pasado simple en vez del participio con "have": <code>I have gone</code>, nunca "I have went".</div></div>';
+
+const APT_BANK = [
+  {id:"appt-1",cat:"uso",blank:"I ___ TV when the phone rang.",options:["was watching","watched"],answer:"was watching",note:"acción en curso interrumpida → pasado continuo."},
+  {id:"appt-2",cat:"uso",blank:"She ___ in London for ten years.",options:["has lived","lived"],answer:"has lived",note:"situación que continúa → present perfect."},
+  {id:"appt-3",cat:"uso",blank:"He ___ football every Saturday.",options:["plays","is playing"],answer:"plays",note:"rutina → presente simple."},
+  {id:"appt-4",cat:"uso",blank:"Look! It ___ !",options:["is raining","rains"],answer:"is raining",note:"ahora mismo → presente continuo."},
+  {id:"appt-5",cat:"uso",blank:"I ___ my keys yesterday.",options:["lost","have lost"],answer:"lost",note:"tiempo pasado terminado (yesterday) → pasado simple."},
+  {id:"appt-6",cat:"uso",blank:"Have you ever ___ sushi?",options:["eaten","ate"],answer:"eaten",note:"experiencia de vida, sin tiempo concreto → present perfect."},
+  {id:"appt-7",cat:"uso",blank:"When I arrived, she had already ___ .",options:["left","leave"],answer:"left",note:"pasado perfecto: acción anterior a otra acción pasada."},
+  {id:"appt-8",cat:"error",choose:true,options:["I am knowing the answer.","I know the answer.","I known the answer."],answer:"I know the answer.",note:"verbo de estado → presente simple.",errorProne:true}
+];
+const APT_LEARN_HTML =
+  '<div class="guRule"><div class="h">Resumen del presente y el pasado</div><div class="b">Rutina/hecho general → presente simple. Ahora mismo → presente continuo. Hecho terminado con tiempo concreto (yesterday) → pasado simple. Acción en curso interrumpida → pasado continuo. Conexión con el presente / experiencia de vida → present perfect. Acción anterior a otra acción pasada → past perfect.</div></div>';
+
+const APF_BANK = [
+  {id:"appf-1",cat:"uso",blank:"I think it ___ rain later.",options:["will","is going to"],answer:"will",note:"predicción sin evidencia concreta → will."},
+  {id:"appf-2",cat:"uso",blank:"Look at those clouds! It ___ rain.",options:["is going to","will"],answer:"is going to",note:"evidencia visible ahora mismo → going to."},
+  {id:"appf-3",cat:"uso",blank:"I ___ call you tomorrow.",options:["will","am going to"],answer:"will",note:"decisión espontánea, tomada en el momento de hablar → will."},
+  {id:"appf-4",cat:"uso",blank:"We ___ to Paris next month; we've already booked the flights.",options:["are going","will go"],answer:"are going",note:"plan ya organizado → presente continuo."},
+  {id:"appf-5",cat:"uso",blank:"The train ___ at 9pm.",options:["leaves","will leave"],answer:"leaves",note:"horario fijo → presente simple."},
+  {id:"appf-6",cat:"uso",blank:"By next year, I ___ here for a decade.",options:["will have worked","will work"],answer:"will have worked",note:"future perfect: algo completado antes de un momento futuro."},
+  {id:"appf-7",cat:"uso",blank:"This time tomorrow, I ___ on a beach.",options:["will be lying","will lie"],answer:"will be lying",note:"future continuous: acción en curso en un momento futuro."},
+  {id:"appf-8",cat:"error",choose:true,options:["I will going to the party.","I am going to the party.","I going to the party."],answer:"I am going to the party.",note:"presente continuo con valor de futuro para planes ya organizados.",errorProne:true}
+];
+const APF_LEARN_HTML =
+  '<div class="guRule"><div class="h">Resumen del futuro</div><div class="b"><code>will</code>: predicciones sin evidencia y decisiones espontáneas. <code>going to</code>: predicciones con evidencia visible y planes/intenciones. Presente continuo: planes ya organizados con hora/lugar. Presente simple: horarios fijos (trenes, clases).</div></div>' +
+  '<div class="guRule"><div class="h">Formas compuestas</div><div class="b"><code>will be -ing</code> (future continuous) = en curso en un momento futuro. <code>will have + participio</code> (future perfect) = completado antes de un momento futuro.</div></div>';
+
+const APM_BANK = [
+  {id:"appm-1",cat:"uso",blank:"You ___ smoke here; it's forbidden.",options:["mustn't","don't have to"],answer:"mustn't",note:"prohibición → mustn't."},
+  {id:"appm-2",cat:"uso",blank:"You ___ come if you don't want to.",options:["don't have to","mustn't"],answer:"don't have to",note:"no es necesario → don't have to."},
+  {id:"appm-3",cat:"uso",blank:"She ___ speak three languages.",options:["can","must"],answer:"can",note:"habilidad → can."},
+  {id:"appm-4",cat:"uso",blank:"You ___ be tired after such a long trip.",options:["must","can"],answer:"must",note:"deducción lógica → must."},
+  {id:"appm-5",cat:"uso",blank:"It ___ rain later; the sky is grey.",options:["might","must"],answer:"might",note:"posibilidad → might."},
+  {id:"appm-6",cat:"uso",blank:"___ you help me with this bag?",options:["Could","Must"],answer:"Could",note:"petición educada → could."},
+  {id:"appm-7",cat:"uso",blank:"You ___ see a doctor about that cough.",options:["should","can"],answer:"should",note:"consejo → should."},
+  {id:"appm-8",cat:"uso",blank:"I ___ swim when I was five.",options:["could","can"],answer:"could",note:"habilidad en el pasado → could."},
+  {id:"appm-9",cat:"error",choose:true,options:["You should to see a doctor.","You should see a doctor.","You should seeing a doctor."],answer:"You should see a doctor.",note:"modal + base, sin 'to'.",errorProne:true}
+];
+const APM_LEARN_HTML =
+  '<div class="guRule"><div class="h">Resumen de modales</div><div class="b">Habilidad: <code>can/could</code>. Prohibición: <code>mustn\'t</code>. No necesario: <code>don\'t have to</code>. Deducción: <code>must</code>. Posibilidad: <code>might/may</code>. Consejo: <code>should</code>. Petición educada: <code>could/would you</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Regla común a todos</div><div class="b">Los modales SIEMPRE van seguidos de la forma base del verbo, sin "to": <code>should go</code>, no "should to go".</div></div>';
+
+const APS_BANK = [
+  {id:"apps-1",cat:"uso",blank:"___ = I am",options:["I'm","I've","I'd"],answer:"I'm",note:"I'm = I am."},
+  {id:"apps-2",cat:"uso",blank:"___ = you have",options:["you've","you're","you'd"],answer:"you've",note:"you've = you have."},
+  {id:"apps-3",cat:"uso",blank:"___ = did not",options:["didn't","doesn't","don't"],answer:"didn't",note:"didn't = did not."},
+  {id:"apps-4",cat:"uso",blank:"___ = she will",options:["she'll","she's","she'd"],answer:"she'll",note:"she'll = she will."},
+  {id:"apps-5",cat:"uso",blank:"___ = they would / they had",options:["they'd","they've","they're"],answer:"they'd",note:"'d puede ser 'would' o 'had', según el contexto."},
+  {id:"apps-6",cat:"uso",blank:"___ = is not",options:["isn't","aren't","wasn't"],answer:"isn't",note:"isn't = is not."},
+  {id:"apps-7",cat:"uso",blank:"___ = we are",options:["we're","we've","we'll"],answer:"we're",note:"we're = we are."},
+  {id:"apps-8",cat:"uso",blank:"___ = cannot",options:["can't","couldn't","won't"],answer:"can't",note:"can't = cannot (una sola palabra)."},
+  {id:"apps-9",cat:"uso",blank:"___ = will not",options:["won't","wouldn't","don't"],answer:"won't",note:"won't = will not (forma irregular, no 'willn't')."},
+  {id:"apps-10",cat:"error",choose:true,options:["Its raining today.","It's raining today.","Its's raining today."],answer:"It's raining today.",note:"it's (con apóstrofo) = it is; 'its' sin apóstrofo es posesivo.",errorProne:true}
+];
+const APS_LEARN_HTML =
+  '<div class="guRule"><div class="h">Formas cortas más comunes</div><div class="b"><code>I\'m, you\'re, he\'s, we\'re, they\'re</code> (be). <code>I\'ve, you\'ve, she\'s, we\'ve</code> (have). <code>don\'t, doesn\'t, didn\'t</code> (do). <code>won\'t, can\'t, isn\'t, aren\'t, wasn\'t, weren\'t</code>.</div></div>' +
+  '<div class="guRule"><div class="h">La trampa de \'d y \'s</div><div class="b"><code>\'d</code> puede ser "would" o "had" según el contexto. <code>\'s</code> puede ser "is", "has" o posesivo ("Tom\'s car").</div></div>' +
+  '<div class="guRule"><div class="h">it\'s vs. its</div><div class="b"><code>it\'s</code> (con apóstrofo) = it is/it has. <code>its</code> (sin apóstrofo) = posesivo: <code>The dog wagged its tail.</code></div></div>';
+
+const APSP_BANK = [
+  {id:"appsp-1",cat:"uso",blank:"run → ___ (con -ing)",options:["running","runing"],answer:"running",note:"consonante final tras vocal corta → se dobla."},
+  {id:"appsp-2",cat:"uso",blank:"make → ___ (con -ing)",options:["making","makeing"],answer:"making",note:"e muda final desaparece antes de -ing."},
+  {id:"appsp-3",cat:"uso",blank:"city → ___ (plural)",options:["cities","citys"],answer:"cities",note:"consonante + y → -ies."},
+  {id:"appsp-4",cat:"uso",blank:"box → ___ (plural)",options:["boxes","boxs"],answer:"boxes",note:"-x → -es."},
+  {id:"appsp-5",cat:"uso",blank:"big → ___ (comparativo)",options:["bigger","biger"],answer:"bigger",note:"consonante final tras vocal corta → se dobla."},
+  {id:"appsp-6",cat:"uso",blank:"happy → ___ (comparativo)",options:["happier","happyer"],answer:"happier",note:"consonante + y → -ier."},
+  {id:"appsp-7",cat:"uso",blank:"study → ___ (3ª persona)",options:["studies","studys"],answer:"studies",note:"consonante + y → -ies."},
+  {id:"appsp-8",cat:"uso",blank:"watch → ___ (3ª persona)",options:["watches","watchs"],answer:"watches",note:"-ch → -es."},
+  {id:"appsp-9",cat:"error",choose:true,options:["She stoped the car.","She stopped the car.","She stoped the car."],answer:"She stopped the car.",note:"stop dobla la consonante final: stopped.",errorProne:true}
+];
+const APSP_LEARN_HTML =
+  '<div class="guRule"><div class="h">Reglas de ortografía más importantes</div><div class="b">Consonante final tras vocal corta (una sílaba) → se dobla: <code>run → running, big → bigger, stop → stopped</code>.<br>e muda final → desaparece ante -ing: <code>make → making</code>.<br>Consonante + y → -ies/-ier: <code>city → cities, happy → happier</code>.<br>-ch, -sh, -ss, -x, -o → -es: <code>watch → watches, box → boxes</code>.</div></div>';
+
+const APA_BANK = [
+  {id:"appa-1",cat:"uso",blank:"BrE 'flat' = AmE ___",options:["apartment","house","room"],answer:"apartment",note:"flat (BrE) = apartment (AmE)."},
+  {id:"appa-2",cat:"uso",blank:"BrE 'lift' = AmE ___",options:["elevator","escalator","stairs"],answer:"elevator",note:"lift (BrE) = elevator (AmE)."},
+  {id:"appa-3",cat:"uso",blank:"BrE 'holiday' = AmE ___",options:["vacation","holyday","vacance"],answer:"vacation",note:"holiday (BrE) = vacation (AmE)."},
+  {id:"appa-4",cat:"uso",blank:"BrE 'trousers' = AmE ___",options:["pants","trousers","underpants"],answer:"pants",note:"trousers (BrE) = pants (AmE)."},
+  {id:"appa-5",cat:"uso",blank:"BrE 'colour' = AmE ___",options:["color","colour","colur"],answer:"color",note:"ortografía: -our (BrE) → -or (AmE)."},
+  {id:"appa-6",cat:"uso",blank:"BrE 'centre' = AmE ___",options:["center","centre","centar"],answer:"center",note:"ortografía: -re (BrE) → -er (AmE)."},
+  {id:"appa-7",cat:"uso",blank:"BrE 'travelled' = AmE ___",options:["traveled","travelled","travellled"],answer:"traveled",note:"en AmE no se dobla la 'l' final."},
+  {id:"appa-8",cat:"uso",blank:"BrE 'autumn' = AmE ___",options:["fall","autumn","falls"],answer:"fall",note:"autumn (BrE) = fall (AmE)."},
+  {id:"appa-9",cat:"error",choose:true,options:["In American English, 'color' is spelled 'colour'.","In American English, 'colour' is spelled 'color'.","Both spellings are British."],answer:"In American English, 'colour' is spelled 'color'.",note:"AmE simplifica -our a -or.",errorProne:true}
+];
+const APA_LEARN_HTML =
+  '<div class="guRule"><div class="h">Vocabulario distinto</div><div class="b"><code>flat/apartment, lift/elevator, holiday/vacation, trousers/pants, autumn/fall</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Ortografía distinta</div><div class="b">BrE <code>-our</code> → AmE <code>-or</code> (<code>colour/color</code>). BrE <code>-re</code> → AmE <code>-er</code> (<code>centre/center</code>). AmE no dobla la "l" final (<code>travelled/traveled</code>).</div></div>' +
+  '<div class="guRule"><div class="h">Esta app usa inglés británico</div><div class="b">Como convención principal, con las variantes americanas señaladas cuando son relevantes.</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -6039,6 +6150,48 @@ const GU_UNITS = {
     color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
     subtitle:"even para enfatizar lo sorprendente, y even though vs. even if.",
     learnHtml: EV_LEARN_HTML, catLabel: ADJ_CAT_LABEL, bank: EV_BANK
+  },
+  "app-1-verbs": {
+    id:"app-1-verbs", name:"Appendix 1: Regular and irregular verbs", icon:"📖",
+    color:"#475569", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"Pasado y participio de los verbos irregulares más comunes.",
+    learnHtml: APV_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APV_BANK
+  },
+  "app-2-tenses": {
+    id:"app-2-tenses", name:"Appendix 2: Present and past tenses", icon:"⏰",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"Repaso mixto: presente simple/continuo, pasado simple/continuo, present perfect y past perfect.",
+    learnHtml: APT_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APT_BANK
+  },
+  "app-3-future": {
+    id:"app-3-future", name:"Appendix 3: The future", icon:"🔮",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"Repaso mixto: will, going to, presente continuo/simple con valor de futuro.",
+    learnHtml: APF_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APF_BANK
+  },
+  "app-4-modals": {
+    id:"app-4-modals", name:"Appendix 4: Modal verbs", icon:"🧠",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Repaso mixto: can/could, must/mustn't, might, should, would.",
+    learnHtml: APM_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APM_BANK
+  },
+  "app-5-shortforms": {
+    id:"app-5-shortforms", name:"Appendix 5: Short forms", icon:"✂️",
+    color:"#db2777", pillBg:"#fce7f3", pillColor:"#9d174d",
+    subtitle:"Contracciones: I'm, you've, didn't, won't... y la trampa de it's/its.",
+    learnHtml: APS_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APS_BANK
+  },
+  "app-6-spelling": {
+    id:"app-6-spelling", name:"Appendix 6: Spelling", icon:"🔤",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"Reglas de ortografía: -ing, plurales, comparativos y 3ª persona.",
+    learnHtml: APSP_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APSP_BANK
+  },
+  "app-7-american": {
+    id:"app-7-american", name:"Appendix 7: American English", icon:"🇺🇸",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#991b1b",
+    subtitle:"Vocabulario y ortografía: diferencias entre inglés británico y americano.",
+    learnHtml: APA_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APA_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
