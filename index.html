@@ -334,6 +334,8 @@ input[type=range]#zoomSlider{width:100%; margin:8px 0 4px; height:40px; accent-c
     <div id="module-av" class="module"></div>
     <div id="module-rd" class="module"></div>
     <div id="module-gt" class="module"></div>
+    <div id="module-lst" class="module"></div>
+    <div id="module-wr" class="module"></div>
 
   </main>
 
@@ -1697,6 +1699,12 @@ const MODULES = [
   { id:"reading", name:"Reading", icon:"📚", color:"var(--accent)", bg:"var(--accent-bg)",
     desc:"Los 5 tipos de tarea del Reading del Aptis, con corrección al momento.",
     status:"ready", mastery: () => rdMasteryStats(), enter: () => enterRD() },
+  { id:"listening", name:"Listening", icon:"🎧", color:"#4f46e5", bg:"#e0e7ff",
+    desc:"El navegador lee diálogos y anuncios en voz alta; tú respondes preguntas de comprensión.",
+    status:"ready", mastery: () => lstMasteryStats(), enter: () => enterLST() },
+  { id:"writing", name:"Writing", icon:"✍️", color:"#db2777", bg:"#fce7f3",
+    desc:"Las 4 tareas de Writing del Aptis: respuestas cortas, opinión, email y ensayo, con checklist y respuesta modelo.",
+    status:"ready", mastery: () => wrMasteryStats(), enter: () => enterWR() },
   { id:"grammar-test", name:"Grammar & Vocab Test", icon:"📝", color:"#4338ca", bg:"#eef2ff",
     desc:"Test de 50 preguntas de gramática y vocabulario, con explicación.",
     status:"ready", mastery: () => gtMasteryStats(), enter: () => enterGT() },
@@ -1742,7 +1750,7 @@ function renderCategoryMenu(catId){
   });
 }
 let currentCategoryId = null;
-function allModuleEls(){ return ["module-ioa","module-catmenu","module-gu","module-vocab","module-av","module-rd","module-gt"].map(id=>document.getElementById(id)); }
+function allModuleEls(){ return ["module-ioa","module-catmenu","module-gu","module-vocab","module-av","module-rd","module-gt","module-lst","module-wr"].map(id=>document.getElementById(id)); }
 function allNavEls(){ return ["nav-ioa","nav-gu","nav-vocab","nav-av","nav-rd","nav-gt"].map(id=>document.getElementById(id)); }
 let brandBackAction = showHub;
 function showHub(){
@@ -7423,6 +7431,302 @@ function enterRD(){
   rdState = APP.modules["reading"];
   enterModuleUI("module-rd","nav-rd");
   rdRenderMenu();
+}
+
+/* ================= MÓDULO: LISTENING (síntesis de voz del navegador, sin archivos de audio) ================= */
+let lstState = null;
+const LST_DEFAULT = { best:{} };
+function getLSTState(){
+  APP.modules["listening"] = mergeDefaults(LST_DEFAULT, APP.modules["listening"] || {});
+  return APP.modules["listening"];
+}
+const LISTENING_PARTS = [
+  { id:"lst-1", title:"Weekend plans", desc:"Diálogo informal entre amigos",
+    instructions:"Escucha la conversación entre Sarah y Tom y responde a las preguntas.",
+    script:"Sarah: Hi Tom, are you free this weekend? Tom: I think so. Why, what's up? Sarah: A few of us are going hiking on Saturday morning. Do you want to come? Tom: That sounds great, but I promised my mum I'd help her move some furniture on Saturday. What about Sunday? Sarah: Sunday could work. We were also thinking about having a barbecue in the evening if the weather's nice. Tom: Perfect, count me in for the barbecue. What time should I arrive? Sarah: Around six. Bring something to drink if you can. Tom: Will do. See you Sunday!",
+    questions:[
+      {q:"Why can't Tom go hiking on Saturday?", options:["He's working","He's helping his mother","He doesn't like hiking","He's ill"], answer:1},
+      {q:"What time does the barbecue start?", options:["Five o'clock","Six o'clock","Seven o'clock","Eight o'clock"], answer:1},
+      {q:"What does Tom need to bring?", options:["Food","A drink","Chairs","Nothing"], answer:1},
+      {q:"Which day is the barbecue?", options:["Saturday","Sunday","Friday","Monday"], answer:1}
+    ] },
+  { id:"lst-2", title:"Museum announcement", desc:"Anuncio de radio",
+    instructions:"Escucha el anuncio sobre el museo y responde a las preguntas.",
+    script:"Good morning, listeners. We have an important update for anyone planning to visit the City History Museum this month. Due to renovation work, the museum will be closed on Mondays and Tuesdays throughout August. It will remain open as usual from Wednesday to Sunday, from nine in the morning until five in the afternoon. Entry is free for children under twelve, and there's a fifty percent discount for students with a valid ID. The gift shop, however, will stay open every day, including Mondays and Tuesdays, from ten until four. For more information, visit the museum's website.",
+    questions:[
+      {q:"Why is the museum closed on some days?", options:["Holiday","Renovation work","Lack of staff","Bad weather"], answer:1},
+      {q:"Which days is the museum closed in August?", options:["Saturday and Sunday","Wednesday and Thursday","Monday and Tuesday","Friday and Saturday"], answer:2},
+      {q:"What time does the museum close?", options:["4pm","5pm","6pm","9am"], answer:1},
+      {q:"Who gets a discount?", options:["Children under 12","Teachers","Students with a valid ID","Tourists"], answer:2},
+      {q:"What stays open every day?", options:["The whole museum","The gift shop","The café","Nothing"], answer:1}
+    ] },
+  { id:"lst-3", title:"Job interview voicemail", desc:"Mensaje de voz",
+    instructions:"Escucha el mensaje de voz y responde a las preguntas.",
+    script:"Hi, this is Claire calling from Bright Solutions. I'm calling about your interview for the marketing assistant position. We'd like to invite you to come in next Thursday at half past ten in the morning. The interview should take about forty-five minutes, and you'll be meeting with two people from our team. Please bring a copy of your CV and a form of ID. If Thursday doesn't work for you, please call me back before Friday so we can arrange another time. My number is 020 7946 0958. We look forward to meeting you.",
+    questions:[
+      {q:"What position is the interview for?", options:["Sales manager","Marketing assistant","Receptionist","Accountant"], answer:1},
+      {q:"What day is the interview?", options:["Monday","Wednesday","Thursday","Friday"], answer:2},
+      {q:"What time is the interview?", options:["9:30","10:00","10:30","11:30"], answer:2},
+      {q:"How long will the interview last?", options:["15 minutes","30 minutes","45 minutes","60 minutes"], answer:2},
+      {q:"What should the candidate bring?", options:["Nothing special","A laptop","CV and ID","A reference letter"], answer:2}
+    ] },
+  { id:"lst-4", title:"At the restaurant", desc:"Diálogo transaccional",
+    instructions:"Escucha al camarero y al cliente y responde a las preguntas.",
+    script:"Waiter: Good evening. Are you ready to order? Customer: Yes, I think so. Could I have the grilled chicken with vegetables, please? Waiter: Of course. And would you like anything to drink? Customer: Just a sparkling water for me, thanks. Oh, and could you make sure there's no garlic in the sauce? I'm allergic. Waiter: No problem, I'll let the kitchen know. Anything else? Customer: Actually, could we also get some bread while we wait? Waiter: Of course, I'll bring that right away.",
+    questions:[
+      {q:"What does the customer order?", options:["Grilled fish","Grilled chicken with vegetables","Pasta","A salad"], answer:1},
+      {q:"What does the customer ask the waiter to avoid?", options:["Salt","Garlic","Onion","Cheese"], answer:1},
+      {q:"What drink does the customer choose?", options:["Still water","Sparkling water","Orange juice","Nothing"], answer:1},
+      {q:"What extra thing does the customer ask for?", options:["More vegetables","Bread","A dessert menu","The bill"], answer:1}
+    ] },
+  { id:"lst-5", title:"Weather forecast", desc:"Monólogo informativo",
+    instructions:"Escucha la previsión del tiempo y responde a las preguntas.",
+    script:"And now for the weather. Today will start off cloudy with some light rain in the morning, especially in the north of the country. Temperatures will reach around fifteen degrees by midday. Things should clear up in the afternoon, with sunny spells expected from about three o'clock onwards. However, it will get windy later in the evening, so if you're heading out, make sure to take a jacket. Tomorrow looks much better, with warm, dry weather expected across the whole country, and temperatures reaching twenty-two degrees.",
+    questions:[
+      {q:"What's the weather like this morning?", options:["Sunny","Cloudy with light rain","Snowing","Very hot"], answer:1},
+      {q:"What temperature will it reach by midday?", options:["10 degrees","15 degrees","22 degrees","30 degrees"], answer:1},
+      {q:"When will it get sunny?", options:["From 9am","From midday","From 3pm","It won't"], answer:2},
+      {q:"What will the weather be like tomorrow?", options:["Cold and rainy","Warm and dry","Windy and cloudy","Snowy"], answer:1}
+    ] }
+];
+function lstMasteryStats(){
+  const st = getLSTState();
+  let mastered = 0;
+  LISTENING_PARTS.forEach(p => { if((st.best[p.id]||0) >= 70) mastered++; });
+  return {mastered: mastered, total: LISTENING_PARTS.length};
+}
+let lstPlaysLeft = {}, lstAnswers = {};
+function lstSpeak(text, rate){
+  if(!('speechSynthesis' in window)){ alert('Tu navegador no soporta la síntesis de voz. Prueba con Chrome, Edge o Safari.'); return; }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-GB';
+  utter.rate = rate || 0.95;
+  window.speechSynthesis.speak(utter);
+}
+function enterLST(){
+  lstState = getLSTState();
+  enterModuleUI("module-lst", null, "‹ Módulos", showHub);
+  lstRenderMenu();
+}
+function lstRenderMenu(){
+  document.getElementById("brand").textContent = "‹ Módulos";
+  brandBackAction = showHub;
+  const cards = LISTENING_PARTS.map((p,i) => {
+    const best = lstState.best[p.id] || 0;
+    return '<button class="modCard" data-p="'+p.id+'">' +
+        '<div class="modIcon" style="background:#e0e7ff;">'+(i+1)+'</div>' +
+        '<div class="modBody">' +
+          '<div class="modName">'+esc(p.title)+'</div>' +
+          '<div class="modDesc">'+esc(p.desc)+'</div>' +
+          '<div class="modMeta">'+(best ? '<span>Mejor resultado: '+best+'%</span>' : '<span>Sin empezar</span>')+'</div>' +
+        '</div><div class="modChevron">›</div>' +
+      '</button>';
+  }).join("");
+  document.getElementById("module-lst").innerHTML =
+    '<h2 class="title">🎧 Listening</h2>' +
+    '<p class="subtitle">El navegador lee el audio en voz alta (necesitas Chrome, Edge o Safari, y el volumen encendido). Como en el examen real, solo puedes escuchar cada audio dos veces — lee las preguntas antes de darle a reproducir.</p>' +
+    cards;
+  document.querySelectorAll("#module-lst .modCard").forEach(btn => {
+    btn.addEventListener("click", () => lstRenderPart(btn.dataset.p));
+  });
+}
+function lstRenderPart(partId){
+  const part = LISTENING_PARTS.find(p => p.id === partId);
+  if(!part) return;
+  if(lstPlaysLeft[partId] === undefined) lstPlaysLeft[partId] = 2;
+  if(!lstAnswers[partId]) lstAnswers[partId] = {};
+  document.getElementById("brand").textContent = "‹ Listening";
+  brandBackAction = lstRenderMenu;
+  lstDrawPart(part, false);
+}
+function lstDrawPart(part, checked){
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  const plays = lstPlaysLeft[part.id];
+  const answers = lstAnswers[part.id];
+  let html = '<h2 class="title">🎧 '+esc(part.title)+'</h2>';
+  html += '<p class="subtitle">'+esc(part.instructions)+'</p>';
+  html += '<div class="card">';
+  html += '<button class="btn btn-primary" id="lstPlayBtn"'+(plays<=0?' disabled':'')+'>▶️ Escuchar ('+Math.max(plays,0)+' '+(plays===1?'vez restante':'veces restantes')+')</button>';
+  if(checked){
+    html += '<div style="margin-top:14px;"><p class="smallMuted" style="margin-bottom:6px;">📝 Transcripción:</p><div class="sentence" style="white-space:pre-line; font-size:14px; line-height:1.7; text-align:left;">'+esc(part.script)+'</div></div>';
+  }
+  html += '</div>';
+  html += '<div class="card">';
+  part.questions.forEach((q, qi) => {
+    const sel = answers[qi];
+    html += '<div style="margin-bottom:18px;">';
+    html += '<p style="font-weight:700; margin-bottom:8px;">'+(qi+1)+'. '+esc(q.q)+'</p>';
+    html += '<div>'+q.options.map((o,oi) => {
+      let cls = "optionCard";
+      if(checked){
+        if(oi===q.answer) cls += " selected correct";
+        else if(oi===sel) cls += " selected wrong";
+      } else if(oi===sel) cls += " selected";
+      return '<button class="'+cls+'" data-qi="'+qi+'" data-oi="'+oi+'"'+(checked?' disabled':'')+'>'+esc(o)+'</button>';
+    }).join("")+'</div></div>';
+  });
+  if(!checked){
+    html += '<button class="btn btn-primary" id="lstCheckBtn">Corregir</button>';
+  } else {
+    const total = part.questions.length;
+    let correct = 0;
+    part.questions.forEach((q,qi) => { if(answers[qi]===q.answer) correct++; });
+    const pct = Math.round(correct/total*100);
+    lstState.best[part.id] = Math.max(lstState.best[part.id]||0, pct);
+    saveState();
+    html += '<div class="feedback '+(pct>=70?"correct":"wrong")+'"><div class="fbTitle">Resultado: '+correct+'/'+total+' ('+pct+'%)</div></div>';
+    html += '<button class="btn btn-outline" id="lstRetryBtn">Volver a intentar</button>';
+  }
+  html += '</div>';
+  document.getElementById("module-lst").innerHTML = html;
+  const playBtn = document.getElementById("lstPlayBtn");
+  if(playBtn) playBtn.addEventListener("click", () => {
+    if(lstPlaysLeft[part.id] <= 0) return;
+    lstPlaysLeft[part.id]--;
+    lstSpeak(part.script);
+    lstDrawPart(part, checked);
+  });
+  if(!checked){
+    document.querySelectorAll("#module-lst .optionCard").forEach(btn => {
+      btn.addEventListener("click", () => {
+        lstAnswers[part.id][parseInt(btn.dataset.qi,10)] = parseInt(btn.dataset.oi,10);
+        lstDrawPart(part, false);
+      });
+    });
+    const checkBtn = document.getElementById("lstCheckBtn");
+    if(checkBtn) checkBtn.addEventListener("click", () => lstDrawPart(part, true));
+  } else {
+    const retryBtn = document.getElementById("lstRetryBtn");
+    if(retryBtn) retryBtn.addEventListener("click", () => { lstAnswers[part.id] = {}; lstDrawPart(part, false); });
+  }
+}
+
+/* ================= MÓDULO: WRITING (prompts + checklist + respuesta modelo, sin corrección automática) ================= */
+let wrState = null;
+const WR_DEFAULT = { drafts:{}, done:{} };
+function getWRState(){
+  APP.modules["writing"] = mergeDefaults(WR_DEFAULT, APP.modules["writing"] || {});
+  return APP.modules["writing"];
+}
+const WRITING_TASKS = [
+  { id:"wr-short-1", icon:"📋", title:"Sobre ti", typeLabel:"Respuestas cortas (Aptis Part 1)", targetWords:"5-10 palabras por respuesta",
+    prompt:"Responde estas preguntas sobre ti con frases completas y breves:\n1. What's your favourite hobby?\n2. How do you usually travel to work or school?\n3. What did you do last weekend?\n4. What's your favourite type of food?\n5. Where would you like to go on your next holiday?",
+    checklist:["¿Has respondido con una frase completa, no solo una palabra?","¿Has contestado exactamente lo que se pregunta?","¿Has revisado mayúsculas y ortografía básica?"],
+    modelAnswer:"1. My favourite hobby is playing the guitar.\n2. I usually travel to work by bus.\n3. Last weekend I visited my grandparents.\n4. My favourite type of food is Italian food.\n5. I'd like to go to Portugal on my next holiday." },
+  { id:"wr-opinion-1", icon:"💬", title:"Opiniones breves", typeLabel:"Opinión breve (Aptis Part 2)", targetWords:"~30 palabras por tema",
+    prompt:"Da tu opinión sobre estos tres temas en unas 30 palabras cada uno. Da una opinión clara y al menos una razón:\n1. Is it better to live in a city or in the countryside?\n2. Should students wear school uniforms?\n3. Is social media good or bad for teenagers?",
+    checklist:["¿Das una opinión clara desde la primera frase?","¿Incluyes al menos una razón que la justifique?","¿Te mantienes cerca de las 30 palabras?"],
+    modelAnswer:"1. In my opinion, living in a city is better because there are more job opportunities and things to do, although the countryside is quieter and more relaxing.\n2. I think school uniforms are a good idea because they reduce pressure about fashion and make students feel equal.\n3. I believe social media can be harmful for teenagers because it often affects their self-esteem and takes up too much of their time." },
+  { id:"wr-email-1", icon:"✉️", title:"Email informal: cambiar un plan", typeLabel:"Email informal (Aptis Part 3)", targetWords:"50-70 palabras",
+    prompt:"A friend has invited you to their birthday party next Saturday, but you already have other plans. Write a reply (50-70 words):\n- Thank them for the invitation\n- Explain why you can't come\n- Suggest meeting another day",
+    checklist:["¿Empiezas con un saludo informal (Hi/Hey + nombre)?","¿Agradeces la invitación?","¿Explicas el motivo de forma educada y breve?","¿Propones una alternativa concreta?","¿Terminas con una despedida informal?"],
+    modelAnswer:"Hi Laura,\n\nThank you so much for inviting me to your birthday party on Saturday! I'd love to come, but I'm afraid I already have plans to visit my family that day.\n\nWould you like to meet up for coffee the following weekend instead? I really want to celebrate with you.\n\nLet me know what works for you!\n\nTake care,\nAlex" },
+  { id:"wr-email-2", icon:"📧", title:"Email formal: producto dañado", typeLabel:"Email formal (Aptis Part 3)", targetWords:"80-100 palabras",
+    prompt:"You bought a product online that arrived damaged. Write an email to the company (80-100 words):\n- Explain what you ordered and when\n- Describe the problem\n- Ask for a solution (refund or replacement)",
+    checklist:["¿Usas un registro formal (Dear Sir/Madam o Dear + apellido)?","¿Explicas claramente qué compraste y cuándo?","¿Describes el problema con detalle?","¿Pides una solución concreta?","¿Terminas con 'Yours faithfully' o 'Yours sincerely'?"],
+    modelAnswer:"Dear Sir or Madam,\n\nI am writing to complain about an order I received on 3rd July. I ordered a coffee machine, but when it arrived, the glass jug was broken and the box was badly damaged.\n\nI have attached photos showing the damage. As this is clearly a fault with the delivery, I would like to request either a full refund or a replacement product as soon as possible.\n\nI look forward to your prompt response.\n\nYours faithfully,\nJordan Smith" },
+  { id:"wr-essay-1", icon:"📝", title:"Ensayo: trabajar desde casa", typeLabel:"Ensayo de opinión (Aptis Part 4)", targetWords:"~200 palabras",
+    prompt:"Some people think that working from home is better than working in an office. Others disagree. Discuss both views and give your own opinion. Write about 200 words.",
+    checklist:["¿Tienes una introducción que presenta el tema?","¿Presentas argumentos a favor de trabajar desde casa?","¿Presentas argumentos a favor de trabajar en la oficina?","¿Das tu propia opinión de forma clara?","¿Usas conectores (however, in addition, on the other hand, in conclusion)?","¿Tienes una conclusión que resume tu postura?"],
+    modelAnswer:"Nowadays, more and more companies allow their employees to work from home, and this has become a topic of debate.\n\nOn the one hand, working from home offers many advantages. Employees save time and money on commuting, and they often feel more relaxed working in a familiar environment. In addition, it gives people more flexibility to organise their day around their personal lives.\n\nOn the other hand, working in an office also has clear benefits. It is easier to communicate with colleagues face to face, which can improve teamwork and reduce misunderstandings. Furthermore, some people find it difficult to separate work from their personal life when working from home, which can lead to stress.\n\nIn my opinion, a mixture of both is the best solution. Working from home a few days a week allows employees to enjoy more flexibility, while still going to the office regularly keeps them connected to their team.\n\nIn conclusion, although both options have advantages and disadvantages, I believe a hybrid model offers the best balance for most people." },
+  { id:"wr-essay-2", icon:"📝", title:"Ensayo: menos deberes", typeLabel:"Ensayo de opinión (Aptis Part 4)", targetWords:"~200 palabras",
+    prompt:"Many schools are reducing the amount of homework they give to students. Do you think this is a good idea? Write about 200 words giving your opinion.",
+    checklist:["¿Presentas el tema en la introducción?","¿Explicas por qué reducir los deberes puede ser positivo?","¿Explicas también posibles desventajas?","¿Das tu opinión personal de forma clara?","¿Usas conectores para organizar las ideas?","¿Terminas con una conclusión?"],
+    modelAnswer:"In recent years, many schools have started to reduce the amount of homework they give, and I think this is a positive change.\n\nFirstly, children spend many hours at school already, and too much homework leaves little time for rest, hobbies or spending time with family. This can lead to stress and even affect their motivation to learn. Moreover, some studies suggest that excessive homework does not necessarily improve academic results.\n\nHowever, homework can also be useful. It helps students practise what they have learned and develop good study habits. Without any homework at all, some students might struggle to review the material on their own.\n\nIn my opinion, a small, meaningful amount of homework is better than either extreme. Instead of giving lots of repetitive exercises, teachers should focus on quality tasks that really help students understand the topic.\n\nTo sum up, while homework still has a role to play, reducing the quantity and improving the quality seems like a sensible approach for most students." }
+];
+function wrMasteryStats(){
+  const st = getWRState();
+  let mastered = 0;
+  WRITING_TASKS.forEach(t => { if(st.done[t.id]) mastered++; });
+  return {mastered: mastered, total: WRITING_TASKS.length};
+}
+function wrCountWords(s){
+  const t = (s||"").trim();
+  return t ? t.split(/\s+/).length : 0;
+}
+function enterWR(){
+  wrState = getWRState();
+  enterModuleUI("module-wr", null, "‹ Módulos", showHub);
+  wrRenderMenu();
+}
+function wrRenderMenu(){
+  document.getElementById("brand").textContent = "‹ Módulos";
+  brandBackAction = showHub;
+  const cards = WRITING_TASKS.map(t => {
+    const done = wrState.done[t.id];
+    return '<button class="modCard" data-t="'+t.id+'">' +
+        '<div class="modIcon" style="background:#fce7f3;">'+t.icon+'</div>' +
+        '<div class="modBody">' +
+          '<div class="modName">'+esc(t.title)+'</div>' +
+          '<div class="modDesc">'+esc(t.typeLabel)+' · '+esc(t.targetWords)+'</div>' +
+          '<div class="modMeta">'+(done ? '<span>✅ Practicado</span>' : '<span>Sin empezar</span>')+'</div>' +
+        '</div><div class="modChevron">›</div>' +
+      '</button>';
+  }).join("");
+  document.getElementById("module-wr").innerHTML =
+    '<h2 class="title">✍️ Writing</h2>' +
+    '<p class="subtitle">Practica las 4 tareas típicas del Aptis: respuestas cortas, opiniones breves, email y ensayo. Sin corrección automática — usa la checklist y la respuesta modelo para autoevaluarte.</p>' +
+    '<div class="card" id="wrConnectorsCard" style="cursor:pointer;">' +
+      '<div class="psRule" style="margin:0;"><div class="h">🔗 Conectores útiles para el ensayo (toca para ver)</div><div class="b" id="wrConnectorsBody" style="display:none;">' +
+        '<b>Añadir ideas:</b> in addition, furthermore, moreover, also<br>' +
+        '<b>Contrastar:</b> however, on the other hand, although, despite this, whereas<br>' +
+        '<b>Dar razones:</b> because, since, due to, as a result of<br>' +
+        '<b>Consecuencia:</b> therefore, as a result, consequently, so<br>' +
+        '<b>Opinión personal:</b> in my opinion, personally, I believe that, as far as I\'m concerned<br>' +
+        '<b>Concluir:</b> in conclusion, to sum up, overall, all things considered' +
+      '</div></div>' +
+    '</div>' +
+    cards;
+  document.querySelectorAll("#module-wr .modCard").forEach(btn => {
+    btn.addEventListener("click", () => wrRenderTask(btn.dataset.t));
+  });
+  const connCard = document.getElementById("wrConnectorsCard");
+  if(connCard) connCard.addEventListener("click", () => {
+    const body = document.getElementById("wrConnectorsBody");
+    body.style.display = body.style.display === "none" ? "block" : "none";
+  });
+}
+function wrRenderTask(taskId){
+  const task = WRITING_TASKS.find(t => t.id === taskId);
+  if(!task) return;
+  document.getElementById("brand").textContent = "‹ Writing";
+  brandBackAction = wrRenderMenu;
+  wrDrawTask(task);
+}
+function wrDrawTask(task){
+  const draft = wrState.drafts[task.id] || "";
+  const done = !!wrState.done[task.id];
+  let html = '<h2 class="title">'+task.icon+' '+esc(task.title)+'</h2>';
+  html += '<p class="subtitle">'+esc(task.typeLabel)+' · Objetivo: '+esc(task.targetWords)+'</p>';
+  html += '<div class="card"><p style="font-size:14.5px; line-height:1.6; white-space:pre-line; margin:0;">'+esc(task.prompt)+'</p></div>';
+  html += '<div class="card">';
+  html += '<textarea id="wrTextarea" rows="8" style="width:100%; box-sizing:border-box; padding:10px; border-radius:10px; border:1px solid #e5e7eb; font-family:inherit; font-size:14px;" placeholder="Escribe aquí tu respuesta...">'+esc(draft)+'</textarea>';
+  html += '<p class="smallMuted" id="wrWordCount" style="margin-top:6px;">'+wrCountWords(draft)+' palabras</p>';
+  html += '</div>';
+  html += '<div class="card">';
+  html += '<div class="psRule" style="margin-bottom:10px; cursor:pointer;" id="wrChecklistToggle"><div class="h">✅ Checklist de autoevaluación (toca para ver)</div><div class="b" id="wrChecklistBody" style="display:none;"><ul style="margin:6px 0 0 18px; padding:0;">'+task.checklist.map(c=>'<li style="margin-bottom:4px;">'+esc(c)+'</li>').join("")+'</ul></div></div>';
+  html += '<div class="psRule" style="margin:0; cursor:pointer;" id="wrModelToggle"><div class="h">📝 Ver respuesta modelo (toca para ver)</div><div class="b" id="wrModelBody" style="display:none; white-space:pre-line;">'+esc(task.modelAnswer)+'</div></div>';
+  html += '</div>';
+  html += '<button class="btn '+(done?'btn-outline':'btn-primary')+'" id="wrDoneBtn">'+(done?'✅ Practicado (toca para desmarcar)':'Marcar como practicado')+'</button>';
+  document.getElementById("module-wr").innerHTML = html;
+  const ta = document.getElementById("wrTextarea");
+  ta.addEventListener("input", () => {
+    wrState.drafts[task.id] = ta.value;
+    document.getElementById("wrWordCount").textContent = wrCountWords(ta.value) + " palabras";
+    saveState();
+  });
+  document.getElementById("wrChecklistToggle").addEventListener("click", () => {
+    const b = document.getElementById("wrChecklistBody"); b.style.display = b.style.display==="none"?"block":"none";
+  });
+  document.getElementById("wrModelToggle").addEventListener("click", () => {
+    const b = document.getElementById("wrModelBody"); b.style.display = b.style.display==="none"?"block":"none";
+  });
+  document.getElementById("wrDoneBtn").addEventListener("click", () => {
+    wrState.done[task.id] = !wrState.done[task.id];
+    saveState();
+    wrDrawTask(task);
+  });
 }
 
 /* ================= INICIALIZACIÓN ================= */
