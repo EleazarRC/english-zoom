@@ -2001,7 +2001,8 @@ function enterGU(unitId){
   guState = getGUState(unit);
   const cat = CATEGORY_TREE.find(c => c.units.some(u=>u.id===unitId));
   const backLabel = cat ? "‹ "+cat.name : "‹ Módulos";
-  enterModuleUI("module-gu","nav-gu", backLabel, () => enterCategory(cat ? cat.id : currentCategoryId));
+  const backAction = cat ? (() => enterCategory(cat.id)) : showHub;
+  enterModuleUI("module-gu","nav-gu", backLabel, backAction);
   guExam = {phase:"intro", queue:null, idx:0, score:0};
   guShowView("aprender");
 }
@@ -5171,24 +5172,137 @@ const EV_LEARN_HTML =
 /* ================= CONTENIDO: APÉNDICES ================= */
 const APP_CAT_LABEL = {uso:"USO", error:"FRASE CORRECTA"};
 
+const APV_CAT_LABEL = {igual:"PASADO = PARTICIPIO", distinto:"PASADO ≠ PARTICIPIO", error:"FRASE CORRECTA"};
 const APV_BANK = [
-  {id:"appv-1",cat:"uso",blank:"go → went → ___",options:["gone","went","goed"],answer:"gone",note:"participio de go = gone."},
-  {id:"appv-2",cat:"uso",blank:"see → saw → ___",options:["seen","saw","seed"],answer:"seen",note:"participio de see = seen."},
-  {id:"appv-3",cat:"uso",blank:"eat → ate → ___",options:["eaten","ate","eated"],answer:"eaten",note:"participio de eat = eaten."},
-  {id:"appv-4",cat:"uso",blank:"take → took → ___",options:["taken","took","taked"],answer:"taken",note:"participio de take = taken."},
-  {id:"appv-5",cat:"uso",blank:"write → wrote → ___",options:["written","wrote","writed"],answer:"written",note:"participio de write = written."},
-  {id:"appv-6",cat:"uso",blank:"break → broke → ___",options:["broken","broke","breaked"],answer:"broken",note:"participio de break = broken."},
-  {id:"appv-7",cat:"uso",blank:"begin → began → ___",options:["begun","began","begined"],answer:"begun",note:"participio de begin = begun."},
-  {id:"appv-8",cat:"uso",blank:"drive → drove → ___",options:["driven","drove","drived"],answer:"driven",note:"participio de drive = driven."},
-  {id:"appv-9",cat:"uso",blank:"choose → chose → ___",options:["chosen","chose","choosed"],answer:"chosen",note:"participio de choose = chosen."},
-  {id:"appv-10",cat:"uso",blank:"speak → spoke → ___",options:["spoken","spoke","speaked"],answer:"spoken",note:"participio de speak = spoken."},
-  {id:"appv-11",cat:"error",choose:true,options:["I have wrote a letter.","I have written a letter.","I have write a letter."],answer:"I have written a letter.",note:"participio de write = written, no 'wrote'.",errorProne:true},
-  {id:"appv-12",cat:"error",choose:true,options:["She has went home.","She has gone home.","She has go home."],answer:"She has gone home.",note:"participio de go = gone, no 'went'.",errorProne:true}
+  {id:"irv-1",cat:"igual",blank:"bring → ___",options:["brought","bringed"],answer:"brought"},
+  {id:"irv-2",cat:"igual",blank:"build → ___",options:["built","builded"],answer:"built"},
+  {id:"irv-3",cat:"igual",blank:"buy → ___",options:["bought","buyed"],answer:"bought"},
+  {id:"irv-4",cat:"igual",blank:"catch → ___",options:["caught","catched"],answer:"caught"},
+  {id:"irv-5",cat:"igual",blank:"cost → ___",options:["cost","costed"],answer:"cost"},
+  {id:"irv-6",cat:"igual",blank:"cut → ___",options:["cut","cutted"],answer:"cut"},
+  {id:"irv-7",cat:"igual",blank:"deal → ___",options:["dealt","dealed"],answer:"dealt"},
+  {id:"irv-8",cat:"igual",blank:"dig → ___",options:["dug","digged"],answer:"dug"},
+  {id:"irv-9",cat:"igual",blank:"feed → ___",options:["fed","feeded"],answer:"fed"},
+  {id:"irv-10",cat:"igual",blank:"feel → ___",options:["felt","feeled"],answer:"felt"},
+  {id:"irv-11",cat:"igual",blank:"fight → ___",options:["fought","fighted"],answer:"fought"},
+  {id:"irv-12",cat:"igual",blank:"find → ___",options:["found","finded"],answer:"found"},
+  {id:"irv-13",cat:"igual",blank:"get → ___",options:["got","getted"],answer:"got"},
+  {id:"irv-14",cat:"igual",blank:"hang (un cuadro) → ___",options:["hung","hanged"],answer:"hung",note:"'hanged' se usa solo para ahorcar a una persona."},
+  {id:"irv-15",cat:"igual",blank:"have → ___",options:["had","haved"],answer:"had"},
+  {id:"irv-16",cat:"igual",blank:"hear → ___",options:["heard","heared"],answer:"heard"},
+  {id:"irv-17",cat:"igual",blank:"hit → ___",options:["hit","hitted"],answer:"hit"},
+  {id:"irv-18",cat:"igual",blank:"hold → ___",options:["held","holded"],answer:"held"},
+  {id:"irv-19",cat:"igual",blank:"keep → ___",options:["kept","keeped"],answer:"kept"},
+  {id:"irv-20",cat:"igual",blank:"kneel → ___",options:["knelt","kneeled"],answer:"knelt",note:"'kneeled' también se acepta en inglés americano."},
+  {id:"irv-21",cat:"igual",blank:"lay (colocar algo) → ___",options:["laid","layed"],answer:"laid"},
+  {id:"irv-22",cat:"igual",blank:"lead → ___",options:["led","leaded"],answer:"led"},
+  {id:"irv-23",cat:"igual",blank:"lean → ___",options:["leant","leaned"],answer:"leant",note:"'leaned' también se acepta, sobre todo en inglés americano."},
+  {id:"irv-24",cat:"igual",blank:"leap → ___",options:["leapt","leaped"],answer:"leapt",note:"'leaped' también se acepta en inglés americano."},
+  {id:"irv-25",cat:"igual",blank:"learn → ___",options:["learnt","learned"],answer:"learnt",note:"'learned' también se acepta, sobre todo en inglés americano."},
+  {id:"irv-26",cat:"igual",blank:"leave → ___",options:["left","leaved"],answer:"left"},
+  {id:"irv-27",cat:"igual",blank:"lend → ___",options:["lent","lended"],answer:"lent"},
+  {id:"irv-28",cat:"igual",blank:"let → ___",options:["let","letted"],answer:"let"},
+  {id:"irv-29",cat:"igual",blank:"light → ___",options:["lit","lighted"],answer:"lit",note:"'lighted' también existe, sobre todo como adjetivo."},
+  {id:"irv-30",cat:"igual",blank:"lose → ___",options:["lost","losed"],answer:"lost"},
+  {id:"irv-31",cat:"igual",blank:"make → ___",options:["made","maked"],answer:"made"},
+  {id:"irv-32",cat:"igual",blank:"mean → ___",options:["meant","meaned"],answer:"meant"},
+  {id:"irv-33",cat:"igual",blank:"meet → ___",options:["met","meeted"],answer:"met"},
+  {id:"irv-34",cat:"igual",blank:"pay → ___",options:["paid","payed"],answer:"paid"},
+  {id:"irv-35",cat:"igual",blank:"put → ___",options:["put","putted"],answer:"put"},
+  {id:"irv-36",cat:"igual",blank:"quit → ___",options:["quit","quited"],answer:"quit"},
+  {id:"irv-37",cat:"igual",blank:"read → ___ (misma grafía, distinta pronunciación)",options:["read","readed"],answer:"read"},
+  {id:"irv-38",cat:"igual",blank:"say → ___",options:["said","sayed"],answer:"said"},
+  {id:"irv-39",cat:"igual",blank:"sell → ___",options:["sold","selled"],answer:"sold"},
+  {id:"irv-40",cat:"igual",blank:"send → ___",options:["sent","sended"],answer:"sent"},
+  {id:"irv-41",cat:"igual",blank:"set → ___",options:["set","setted"],answer:"set"},
+  {id:"irv-42",cat:"igual",blank:"shine → ___",options:["shone","shined"],answer:"shone",note:"'shined' se usa cuando hay un objeto: he shined his shoes."},
+  {id:"irv-43",cat:"igual",blank:"shoot → ___",options:["shot","shooted"],answer:"shot"},
+  {id:"irv-44",cat:"igual",blank:"shut → ___",options:["shut","shutted"],answer:"shut"},
+  {id:"irv-45",cat:"igual",blank:"sit → ___",options:["sat","sitted"],answer:"sat"},
+  {id:"irv-46",cat:"igual",blank:"sleep → ___",options:["slept","sleeped"],answer:"slept"},
+  {id:"irv-47",cat:"igual",blank:"smell → ___",options:["smelt","smelled"],answer:"smelt",note:"'smelled' también se acepta, sobre todo en inglés americano."},
+  {id:"irv-48",cat:"igual",blank:"spell → ___",options:["spelt","spelled"],answer:"spelt",note:"'spelled' también se acepta, sobre todo en inglés americano."},
+  {id:"irv-49",cat:"igual",blank:"spend → ___",options:["spent","spended"],answer:"spent"},
+  {id:"irv-50",cat:"igual",blank:"spill → ___",options:["spilt","spilled"],answer:"spilt",note:"'spilled' también se acepta, sobre todo en inglés americano."},
+  {id:"irv-51",cat:"igual",blank:"spit → ___",options:["spat","spitted"],answer:"spat"},
+  {id:"irv-52",cat:"igual",blank:"split → ___",options:["split","splitted"],answer:"split"},
+  {id:"irv-53",cat:"igual",blank:"spread → ___",options:["spread","spreaded"],answer:"spread"},
+  {id:"irv-54",cat:"igual",blank:"stand → ___",options:["stood","standed"],answer:"stood"},
+  {id:"irv-55",cat:"igual",blank:"stick → ___",options:["stuck","sticked"],answer:"stuck"},
+  {id:"irv-56",cat:"igual",blank:"sting → ___",options:["stung","stinged"],answer:"stung"},
+  {id:"irv-57",cat:"igual",blank:"strike → ___",options:["struck","striked"],answer:"struck"},
+  {id:"irv-58",cat:"igual",blank:"sweep → ___",options:["swept","sweeped"],answer:"swept"},
+  {id:"irv-59",cat:"igual",blank:"swing → ___",options:["swung","swinged"],answer:"swung"},
+  {id:"irv-60",cat:"igual",blank:"teach → ___",options:["taught","teached"],answer:"taught"},
+  {id:"irv-61",cat:"igual",blank:"tell → ___",options:["told","telled"],answer:"told"},
+  {id:"irv-62",cat:"igual",blank:"think → ___",options:["thought","thinked"],answer:"thought"},
+  {id:"irv-63",cat:"igual",blank:"understand → ___",options:["understood","understanded"],answer:"understood"},
+  {id:"irv-64",cat:"igual",blank:"upset → ___",options:["upset","upsetted"],answer:"upset"},
+  {id:"irv-65",cat:"igual",blank:"win → ___",options:["won","winned"],answer:"won"},
+  {id:"irv-66",cat:"igual",blank:"burst → ___",options:["burst","bursted"],answer:"burst"},
+  {id:"irv-67",cat:"igual",blank:"bet → ___",options:["bet","betted"],answer:"bet"},
+  {id:"irv-68",cat:"distinto",blank:"begin → began → ___",options:["begun","began","beginned"],answer:"begun"},
+  {id:"irv-69",cat:"distinto",blank:"bite → bit → ___",options:["bitten","bit","bited"],answer:"bitten"},
+  {id:"irv-70",cat:"distinto",blank:"blow → blew → ___",options:["blown","blew","blowed"],answer:"blown"},
+  {id:"irv-71",cat:"distinto",blank:"break → broke → ___",options:["broken","broke","breaked"],answer:"broken"},
+  {id:"irv-72",cat:"distinto",blank:"choose → chose → ___",options:["chosen","chose","choosed"],answer:"chosen"},
+  {id:"irv-73",cat:"distinto",blank:"do → did → ___",options:["done","did","doed"],answer:"done"},
+  {id:"irv-74",cat:"distinto",blank:"draw → drew → ___",options:["drawn","drew","drawed"],answer:"drawn"},
+  {id:"irv-75",cat:"distinto",blank:"drink → drank → ___",options:["drunk","drank","drinked"],answer:"drunk"},
+  {id:"irv-76",cat:"distinto",blank:"drive → drove → ___",options:["driven","drove","drived"],answer:"driven"},
+  {id:"irv-77",cat:"distinto",blank:"eat → ate → ___",options:["eaten","ate","eated"],answer:"eaten"},
+  {id:"irv-78",cat:"distinto",blank:"fall → fell → ___",options:["fallen","fell","falled"],answer:"fallen"},
+  {id:"irv-79",cat:"distinto",blank:"fly → flew → ___",options:["flown","flew","flyed"],answer:"flown"},
+  {id:"irv-80",cat:"distinto",blank:"forget → forgot → ___",options:["forgotten","forgot","forgetted"],answer:"forgotten"},
+  {id:"irv-81",cat:"distinto",blank:"forgive → forgave → ___",options:["forgiven","forgave","forgived"],answer:"forgiven"},
+  {id:"irv-82",cat:"distinto",blank:"freeze → froze → ___",options:["frozen","froze","freezed"],answer:"frozen"},
+  {id:"irv-83",cat:"distinto",blank:"give → gave → ___",options:["given","gave","gived"],answer:"given"},
+  {id:"irv-84",cat:"distinto",blank:"go → went → ___",options:["gone","went","goed"],answer:"gone",note:"la trampa más común: 'I have gone', nunca 'I have went'."},
+  {id:"irv-85",cat:"distinto",blank:"grow → grew → ___",options:["grown","grew","growed"],answer:"grown"},
+  {id:"irv-86",cat:"distinto",blank:"hide → hid → ___",options:["hidden","hid","hided"],answer:"hidden"},
+  {id:"irv-87",cat:"distinto",blank:"know → knew → ___",options:["known","knew","knowed"],answer:"known"},
+  {id:"irv-88",cat:"distinto",blank:"mistake → mistook → ___",options:["mistaken","mistook","mistaked"],answer:"mistaken"},
+  {id:"irv-89",cat:"distinto",blank:"ride → rode → ___",options:["ridden","rode","rided"],answer:"ridden"},
+  {id:"irv-90",cat:"distinto",blank:"ring → rang → ___",options:["rung","rang","ringed"],answer:"rung"},
+  {id:"irv-91",cat:"distinto",blank:"rise → rose → ___",options:["risen","rose","rised"],answer:"risen"},
+  {id:"irv-92",cat:"distinto",blank:"see → saw → ___",options:["seen","saw","seed"],answer:"seen"},
+  {id:"irv-93",cat:"distinto",blank:"shake → shook → ___",options:["shaken","shook","shaked"],answer:"shaken"},
+  {id:"irv-94",cat:"distinto",blank:"show → showed → ___",options:["shown","showed","shone"],answer:"shown",note:"'show' es mixto: pasado regular (showed), participio irregular (shown)."},
+  {id:"irv-95",cat:"distinto",blank:"shrink → shrank → ___",options:["shrunk","shrank","shrinked"],answer:"shrunk"},
+  {id:"irv-96",cat:"distinto",blank:"sing → sang → ___",options:["sung","sang","singed"],answer:"sung"},
+  {id:"irv-97",cat:"distinto",blank:"speak → spoke → ___",options:["spoken","spoke","speaked"],answer:"spoken"},
+  {id:"irv-98",cat:"distinto",blank:"spring → sprang → ___",options:["sprung","sprang","springed"],answer:"sprung"},
+  {id:"irv-99",cat:"distinto",blank:"steal → stole → ___",options:["stolen","stole","stealed"],answer:"stolen"},
+  {id:"irv-100",cat:"distinto",blank:"swear → swore → ___",options:["sworn","swore","sweared"],answer:"sworn"},
+  {id:"irv-101",cat:"distinto",blank:"swim → swam → ___",options:["swum","swam","swimmed"],answer:"swum"},
+  {id:"irv-102",cat:"distinto",blank:"take → took → ___",options:["taken","took","taked"],answer:"taken"},
+  {id:"irv-103",cat:"distinto",blank:"tear → tore → ___",options:["torn","tore","teared"],answer:"torn"},
+  {id:"irv-104",cat:"distinto",blank:"throw → threw → ___",options:["thrown","threw","throwed"],answer:"thrown"},
+  {id:"irv-105",cat:"distinto",blank:"wake → woke → ___",options:["woken","woke","waked"],answer:"woken"},
+  {id:"irv-106",cat:"distinto",blank:"wear → wore → ___",options:["worn","wore","weared"],answer:"worn"},
+  {id:"irv-107",cat:"distinto",blank:"write → wrote → ___",options:["written","wrote","writed"],answer:"written"},
+  {id:"irv-108",cat:"distinto",blank:"stink → stank → ___",options:["stunk","stank","stinked"],answer:"stunk"},
+  {id:"irv-109",cat:"distinto",blank:"bear (dar a luz) → bore → ___",options:["born","bore","beared"],answer:"born",note:"'borne' se usa en otros sentidos (soportar, llevar); 'born' es para nacer."},
+  {id:"irv-110",cat:"distinto",blank:"forbid → forbade → ___",options:["forbidden","forbade","forbidded"],answer:"forbidden"},
+  {id:"irv-111",cat:"distinto",blank:"lie (estar tumbado) → lay → ___",options:["lain","lay","lied"],answer:"lain",note:"ojo: 'lied' es de 'lie' (mentir), un verbo regular distinto."},
+  {id:"irv-112",cat:"distinto",blank:"come → came → ___",options:["come","came","comed"],answer:"come",note:"caso especial: el participio es igual a la base."},
+  {id:"irv-113",cat:"distinto",blank:"become → became → ___",options:["become","became","becomed"],answer:"become",note:"mismo patrón que come: el participio es igual a la base."},
+  {id:"irv-114",cat:"distinto",blank:"run → ran → ___",options:["run","ran","runned"],answer:"run",note:"caso especial: el participio es igual a la base."},
+  {id:"irv-115",cat:"distinto",blank:"overcome → overcame → ___",options:["overcome","overcame","overcomed"],answer:"overcome",note:"mismo patrón que come: el participio es igual a la base."},
+  {id:"irv-116",cat:"error",choose:true,options:["I have went to Paris twice.","I have gone to Paris twice.","I have go to Paris twice."],answer:"I have gone to Paris twice.",note:"participio de go = gone, no 'went'.",errorProne:true},
+  {id:"irv-117",cat:"error",choose:true,options:["She has wrote three books.","She has written three books.","She has write three books."],answer:"She has written three books.",note:"participio de write = written.",errorProne:true},
+  {id:"irv-118",cat:"error",choose:true,options:["He has broke his leg.","He has broken his leg.","He has break his leg."],answer:"He has broken his leg.",note:"participio de break = broken.",errorProne:true},
+  {id:"irv-119",cat:"error",choose:true,options:["They have ate all the food.","They have eaten all the food.","They have eat all the food."],answer:"They have eaten all the food.",note:"participio de eat = eaten.",errorProne:true},
+  {id:"irv-120",cat:"error",choose:true,options:["I seen him yesterday.","I saw him yesterday.","I have saw him yesterday."],answer:"I saw him yesterday.",note:"pasado simple = saw (no 'seen', que es el participio y necesita 'have').",errorProne:true},
+  {id:"irv-121",cat:"error",choose:true,options:["We have did our homework.","We have done our homework.","We have do our homework."],answer:"We have done our homework.",note:"participio de do = done.",errorProne:true},
+  {id:"irv-122",cat:"error",choose:true,options:["He has drove to work.","He has driven to work.","He has drive to work."],answer:"He has driven to work.",note:"participio de drive = driven.",errorProne:true},
+  {id:"irv-123",cat:"error",choose:true,options:["The baby was born in 2020.","The baby was borned in 2020.","The baby was bear in 2020."],answer:"The baby was born in 2020.",note:"'born' (nacer) no lleva -ed extra.",errorProne:true}
 ];
 const APV_LEARN_HTML =
-  '<div class="guRule"><div class="h">Verbos regulares</div><div class="b">Pasado y participio son iguales: base + <b>-ed</b>: <code>work → worked → worked</code>.</div></div>' +
-  '<div class="guRule"><div class="h">Verbos irregulares</div><div class="b">Pasado y participio suelen ser DISTINTOS y hay que memorizarlos: <code>go → went → gone</code>, <code>write → wrote → written</code>, <code>see → saw → seen</code>.</div></div>' +
-  '<div class="guRule"><div class="h">La trampa más común</div><div class="b">Usar el pasado simple en vez del participio con "have": <code>I have gone</code>, nunca "I have went".</div></div>';
+  '<div class="guRule"><div class="h">Más de 110 verbos irregulares, agrupados por patrón</div><div class="b">La forma más eficaz de memorizarlos es por grupos, no en orden alfabético.</div></div>' +
+  '<div class="guRule"><div class="h">Grupo 1: pasado = participio</div><div class="b"><code>bring → brought → brought</code>, <code>buy → bought → bought</code>, <code>make → made → made</code>. Es el grupo más numeroso.</div></div>' +
+  '<div class="guRule"><div class="h">Grupo 2: pasado ≠ participio</div><div class="b"><code>go → went → gone</code>, <code>write → wrote → written</code>, <code>see → saw → seen</code>. Aquí está la trampa más común: usar el pasado en vez del participio con "have": <code>I have gone</code>, nunca "I have went".</div></div>' +
+  '<div class="guRule"><div class="h">Casos especiales: participio = base</div><div class="b"><code>come → came → come</code>, <code>become → became → become</code>, <code>run → ran → run</code>. El participio "vuelve" a la forma base, no se parece al pasado.</div></div>';
 
 const APT_BANK = [
   {id:"appt-1",cat:"uso",blank:"I ___ TV when the phone rang.",options:["was watching","watched"],answer:"was watching",note:"acción en curso interrumpida → pasado continuo."},
@@ -6154,8 +6268,8 @@ const GU_UNITS = {
   "app-1-verbs": {
     id:"app-1-verbs", name:"Appendix 1: Regular and irregular verbs", icon:"📖",
     color:"#475569", pillBg:"#f1f5f9", pillColor:"#1e293b",
-    subtitle:"Pasado y participio de los verbos irregulares más comunes.",
-    learnHtml: APV_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APV_BANK
+    subtitle:"Pasado y participio de más de 110 verbos irregulares, agrupados por patrón.",
+    learnHtml: APV_LEARN_HTML, catLabel: APV_CAT_LABEL, bank: APV_BANK
   },
   "app-2-tenses": {
     id:"app-2-tenses", name:"Appendix 2: Present and past tenses", icon:"⏰",
