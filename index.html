@@ -4252,6 +4252,190 @@ const ANAP_LEARN_HTML =
   '<div class="psRule"><div class="h">2 \u00b7 of para cosas y conceptos</div><div class="b">Para partes, cantidades y relaciones con cosas:<br><code>the beginning of the film, the name of the company</code>.</div></div>' +
   '<div class="psRule"><div class="h">3 \u00b7 \'s usos especiales</div><div class="b">Tiendas: <code>at the baker\'s, at the chemist\'s</code>.<br>La casa de alguien: <code>I\'m going to Tom\'s.</code><br>Tiempo: <code>yesterday\'s news, today\'s meeting</code>.</div></div>';
 
+/* ================= CONTENIDO: PHRASAL VERBS ================= */
+const PHR_CAT_LABEL = {uso:"USO", error:"FRASE CORRECTA"};
+
+const PHR1_BANK = [
+  {id:"phr1-1",cat:"uso",blank:"I ___ smoking last year.",options:["gave up","gave out","gave away"],answer:"gave up",note:"give up = dejar un hábito."},
+  {id:"phr1-2",cat:"uso",blank:"She ___ two children on her own.",options:["brought up","brought in","brought back"],answer:"brought up",note:"bring up = criar."},
+  {id:"phr1-3",cat:"uso",blank:"The meeting was ___ until next week.",options:["put off","put on","put out"],answer:"put off",note:"put off = posponer."},
+  {id:"phr1-4",cat:"uso",blank:"He ___ the invitation politely.",options:["turned down","turned up","turned off"],answer:"turned down",note:"turn down = rechazar."},
+  {id:"phr1-5",cat:"uso",blank:"They ___ the old building last year.",options:["pulled down","pulled up","pulled out"],answer:"pulled down",note:"pull down = demoler."},
+  {id:"phr1-6",cat:"uso",blank:"I'm ___ my keys; have you seen them?",options:["looking for","looking after","looking into"],answer:"looking for",note:"look for = buscar."},
+  {id:"phr1-7",cat:"uso",blank:"Who's going to ___ the baby while you're at work?",options:["look after","look for","look up"],answer:"look after",note:"look after = cuidar."},
+  {id:"phr1-8",cat:"uso",blank:"I need to ___ this word in the dictionary.",options:["look up","look after","look for"],answer:"look up",note:"look up = buscar información (diccionario)."},
+  {id:"phr1-9",cat:"uso",blank:"The fire alarm ___ suddenly.",options:["went off","went out","went on"],answer:"went off",note:"go off = sonar (alarma)."},
+  {id:"phr1-10",cat:"uso",blank:"Please ___ your seatbelt.",options:["put on","put off","put out"],answer:"put on",note:"put on = ponerse algo."},
+  {id:"phr1-11",cat:"error",choose:true,options:["I gave up smoking.","I gave smoking up up.","I gave up to smoke."],answer:"I gave up smoking.",note:"give up + gerundio.",errorProne:true},
+  {id:"phr1-12",cat:"error",choose:true,options:["She looked after of the children.","She looked after the children.","She looked the children after."],answer:"She looked after the children.",note:"look after no lleva 'of' y no se separa.",errorProne:true}
+];
+const PHR1_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Qué es un phrasal verb</div><div class="b">Verbo + partícula (in, out, up, down, on, off, away, back...) cuyo significado casi nunca se deduce de las palabras sueltas: <code>give up</code> no es "dar arriba", es <b>dejar/renunciar</b>.</div></div>' +
+  '<div class="guRule"><div class="h">2 · Separables vs. inseparables</div><div class="b">Muchos son separables con un objeto sustantivo: <code>turn down the offer</code> = <code>turn the offer down</code>. Con pronombre, SIEMPRE separados: <code>turn it down</code> (no "turn down it"). Otros son inseparables: <code>look after the kids</code>, nunca "look the kids after".</div></div>' +
+  '<div class="guRule"><div class="h">3 · Un mismo verbo, muchas partículas</div><div class="b"><code>look for</code> (buscar), <code>look after</code> (cuidar), <code>look up</code> (buscar info), <code>look into</code> (investigar) — la partícula cambia todo el significado.</div></div>';
+
+const PHR2_BANK = [
+  {id:"phr2-1",cat:"uso",blank:"Please come ___; it's cold outside.",options:["in","out"],answer:"in",note:"come in = entrar."},
+  {id:"phr2-2",cat:"uso",blank:"He broke ___ of prison.",options:["out","in"],answer:"out",note:"break out = escapar."},
+  {id:"phr2-3",cat:"uso",blank:"Someone ___ our house last night and stole the TV.",options:["broke into","broke out of","broke down"],answer:"broke into",note:"break into = entrar por la fuerza."},
+  {id:"phr2-4",cat:"uso",blank:"The police finally ___ what had happened.",options:["found out","found in","found off"],answer:"found out",note:"find out = descubrir."},
+  {id:"phr2-5",cat:"uso",blank:"We ___ of milk, can you buy some?",options:["ran out","ran in","ran off"],answer:"ran out",note:"run out (of) = quedarse sin."},
+  {id:"phr2-6",cat:"uso",blank:"Please ___ this form in capital letters.",options:["fill in","fill up","fill off"],answer:"fill in",note:"fill in a form = rellenar (fill out en inglés americano)."},
+  {id:"phr2-7",cat:"uso",blank:"Don't ___ the best parts of the story!",options:["leave out","leave in","leave off"],answer:"leave out",note:"leave out = omitir."},
+  {id:"phr2-8",cat:"uso",blank:"Can you help me ___ this problem?",options:["sort out","sort in","sort off"],answer:"sort out",note:"sort out = resolver/organizar."},
+  {id:"phr2-9",cat:"uso",blank:"I ___ at the gym every morning.",options:["work out","work in","work off"],answer:"work out",note:"work out = hacer ejercicio."},
+  {id:"phr2-10",cat:"uso",blank:"We decided to ___ tonight instead of cooking.",options:["eat out","eat in","eat off"],answer:"eat out",note:"eat out = comer fuera."},
+  {id:"phr2-11",cat:"uso",blank:"Please ___ your homework by Friday.",options:["hand in","hand out","hand off"],answer:"hand in",note:"hand in = entregar."},
+  {id:"phr2-12",cat:"uso",blank:"The teacher ___ the exam papers.",options:["handed out","handed in","handed off"],answer:"handed out",note:"hand out = repartir."},
+  {id:"phr2-13",cat:"error",choose:true,options:["The fire brigade put out the fire.","The fire brigade put the fire out of.","The fire brigade put out of the fire."],answer:"The fire brigade put out the fire.",note:"put out = apagar.",errorProne:true},
+  {id:"phr2-14",cat:"error",choose:true,options:["I ran out milk.","I ran out of milk.","I ran of milk out."],answer:"I ran out of milk.",note:"run out OF something.",errorProne:true}
+];
+const PHR2_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · IN = entrar / dentro</div><div class="b"><code>come in, fill in, hand in, leave in, eat in</code>.</div></div>' +
+  '<div class="guRule"><div class="h">2 · OUT = salir / descubrir / agotarse</div><div class="b"><code>break out, find out, run out (of), sort out, work out, eat out, hand out, leave out</code>.</div></div>' +
+  '<div class="guRule"><div class="h">3 · break INTO vs. break OUT (OF)</div><div class="b"><code>break into</code> a place = entrar por la fuerza. <code>break out (of)</code> = escapar de un sitio (prisión, guerra).</div></div>';
+
+const PHR3_BANK = [
+  {id:"phr3-1",cat:"uso",blank:"Dinosaurs ___ millions of years ago.",options:["died out","died down","passed out"],answer:"died out",note:"die out = extinguirse."},
+  {id:"phr3-2",cat:"uso",blank:"Turn off the lights and ___ the candle.",options:["put out","put off","put down"],answer:"put out",note:"put out = apagar (fuego/vela)."},
+  {id:"phr3-3",cat:"uso",blank:"The old shop finally ___ .",options:["went out of business","went out from business","went off business"],answer:"went out of business",note:"go out of business = cerrar un negocio."},
+  {id:"phr3-4",cat:"uso",blank:"He was knocked ___ in the boxing match.",options:["out","off","down"],answer:"out",note:"knock out = dejar inconsciente."},
+  {id:"phr3-5",cat:"uso",blank:"Please ___ any mistakes in red pen.",options:["cross out","cross off","cross down"],answer:"cross out",note:"cross out = tachar."},
+  {id:"phr3-6",cat:"uso",blank:"The tickets ___ within an hour.",options:["sold out","sold off","sold down"],answer:"sold out",note:"sell out = agotarse."},
+  {id:"phr3-7",cat:"uso",blank:"These shoes are ___ ; I need new ones.",options:["worn out","worn off","worn down"],answer:"worn out",note:"worn out = gastado/desgastado."},
+  {id:"phr3-8",cat:"uso",blank:"The teacher ___ the mistake in my essay.",options:["pointed out","pointed off","pointed up"],answer:"pointed out",note:"point out = señalar."},
+  {id:"phr3-9",cat:"uso",blank:"They ___ the plan carefully before starting.",options:["worked out","worked off","worked up"],answer:"worked out",note:"work out = idear/calcular."},
+  {id:"phr3-10",cat:"uso",blank:"The company will ___ this project by the army.",options:["carry out","carry off","carry away"],answer:"carry out",note:"carry out = llevar a cabo."},
+  {id:"phr3-11",cat:"uso",blank:"Can you ___ what this word means from the context?",options:["work out","work off","work up"],answer:"work out",note:"work out = deducir."},
+  {id:"phr3-12",cat:"error",choose:true,options:["The old cinema went out of business.","The old cinema went out business.","The old cinema went business out."],answer:"The old cinema went out of business.",note:"go out OF business.",errorProne:true},
+  {id:"phr3-13",cat:"error",choose:true,options:["These shoes are worn out.","These shoes are worn out of.","These shoes are out worn."],answer:"These shoes are worn out.",note:"worn out, sin preposición extra.",errorProne:true}
+];
+const PHR3_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · OUT = desaparecer / apagarse</div><div class="b"><code>die out, put out, go out of business, worn out</code>.</div></div>' +
+  '<div class="guRule"><div class="h">2 · OUT = revelar / descubrir</div><div class="b"><code>point out, work out, find out</code> (visto en la unidad anterior).</div></div>' +
+  '<div class="guRule"><div class="h">3 · OUT = hacer con esfuerzo / hasta el final</div><div class="b"><code>carry out</code> (llevar a cabo), <code>sell out</code> (agotarse las existencias), <code>knock out</code> (dejar fuera de combate), <code>cross out</code> (tachar).</div></div>';
+
+const PHR4_BANK = [
+  {id:"phr4-1",cat:"uso",blank:"Please ___ your coat before you leave.",options:["put on","put off","put out"],answer:"put on",note:"put on = ponerse ropa."},
+  {id:"phr4-2",cat:"uso",blank:"Can you ___ the lights? It's too dark.",options:["switch on","switch off","switch out"],answer:"switch on",note:"switch on = encender."},
+  {id:"phr4-3",cat:"uso",blank:"Don't forget to ___ the oven when you finish cooking.",options:["switch off","switch on","switch out"],answer:"switch off",note:"switch off = apagar."},
+  {id:"phr4-4",cat:"uso",blank:"We ___ the bus at the next stop.",options:["get off","get on","get out"],answer:"get off",note:"get off = bajarse del transporte."},
+  {id:"phr4-5",cat:"uso",blank:"Hurry up and ___ the train, it's leaving!",options:["get on","get off","get in"],answer:"get on",note:"get on = subirse al transporte."},
+  {id:"phr4-6",cat:"uso",blank:"Can I ___ these jeans before I buy them?",options:["try on","try out","try off"],answer:"try on",note:"try on = probarse ropa."},
+  {id:"phr4-7",cat:"uso",blank:"The meeting was ___ because the boss was ill.",options:["put off","put on","put out"],answer:"put off",note:"put off = aplazar."},
+  {id:"phr4-8",cat:"uso",blank:"The alarm ___ automatically at 7am.",options:["goes off","goes on","goes out"],answer:"goes off",note:"go off = sonar (despertador)."},
+  {id:"phr4-9",cat:"uso",blank:"We ___ early to avoid the traffic.",options:["set off","set on","set out of"],answer:"set off",note:"set off = ponerse en marcha."},
+  {id:"phr4-10",cat:"uso",blank:"Please ___ your computer before the exam.",options:["turn off","turn on","turn out"],answer:"turn off",note:"turn off = apagar."},
+  {id:"phr4-11",cat:"uso",blank:"Could you ___ the radio? I want to hear the news.",options:["turn on","turn off","turn out"],answer:"turn on",note:"turn on = encender."},
+  {id:"phr4-12",cat:"error",choose:true,options:["She put on her jacket.","She put her on jacket.","She put jacket on her."],answer:"She put on her jacket.",note:"put on + objeto, o put + objeto + on.",errorProne:true},
+  {id:"phr4-13",cat:"error",choose:true,options:["I get off the bus at the station.","I get off of the bus at the station.","I get down the bus at the station."],answer:"I get off the bus at the station.",note:"get off, sin preposición extra.",errorProne:true}
+];
+const PHR4_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Ropa y aparatos</div><div class="b"><code>put on / take off</code> (ropa), <code>switch on/off</code>, <code>turn on/off</code> (aparatos) — casi intercambiables.</div></div>' +
+  '<div class="guRule"><div class="h">2 · Transporte</div><div class="b"><code>get on</code> (subir a bus/tren/avión), <code>get off</code> (bajar). Para coches se usa <code>get in / get out of</code>.</div></div>' +
+  '<div class="guRule"><div class="h">3 · Planes y sonidos</div><div class="b"><code>put off</code> (aplazar), <code>set off</code> (ponerse en marcha), <code>go off</code> (sonar una alarma).</div></div>';
+
+const PHR5_BANK = [
+  {id:"phr5-1",cat:"uso",blank:"Please ___ ; I want to hear the rest of the story.",options:["go on","go off","go out"],answer:"go on",note:"go on = continuar."},
+  {id:"phr5-2",cat:"uso",blank:"Despite the rain, they decided to ___ with the wedding.",options:["carry on","carry off","carry out"],answer:"carry on",note:"carry on = continuar."},
+  {id:"phr5-3",cat:"uso",blank:"___ a minute, I'll be right back.",options:["Hold on","Hold off","Hold up"],answer:"Hold on",note:"hold on = esperar un momento."},
+  {id:"phr5-4",cat:"uso",blank:"How are you ___ with your new job?",options:["getting on","getting off","getting out"],answer:"getting on",note:"get on (with) = llevarse bien / progresar."},
+  {id:"phr5-5",cat:"uso",blank:"She always ___ about her expensive car.",options:["shows off","shows up","shows out"],answer:"shows off",note:"show off = presumir."},
+  {id:"phr5-6",cat:"uso",blank:"The teacher ___ him for being late again.",options:["told off","told on","told out"],answer:"told off",note:"tell off = regañar."},
+  {id:"phr5-7",cat:"uso",blank:"The concert was ___ due to bad weather.",options:["called off","called out","called on"],answer:"called off",note:"call off = cancelar."},
+  {id:"phr5-8",cat:"uso",blank:"It will take years for the loan to ___ .",options:["pay off","pay out","pay up"],answer:"pay off",note:"pay off = saldarse/dar fruto."},
+  {id:"phr5-9",cat:"uso",blank:"The company had to ___ 200 workers.",options:["lay off","lay out","lay down"],answer:"lay off",note:"lay off = despedir por recorte."},
+  {id:"phr5-10",cat:"uso",blank:"I ___ during the film; it was so boring.",options:["dozed off","dozed on","dozed out"],answer:"dozed off",note:"doze off = quedarse dormido."},
+  {id:"phr5-11",cat:"uso",blank:"This deal seems too good — I think it's a ___ .",options:["rip-off","rip-on","rip-out"],answer:"rip-off",note:"rip-off (sustantivo) = timo/estafa."},
+  {id:"phr5-12",cat:"error",choose:true,options:["Go on with your story.","Go on your story.","Go on of your story."],answer:"Go on with your story.",note:"go on WITH something.",errorProne:true},
+  {id:"phr5-13",cat:"error",choose:true,options:["The wedding was called off.","The wedding was called out.","The wedding was called down."],answer:"The wedding was called off.",note:"call off = cancelar.",errorProne:true}
+];
+const PHR5_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Continuar</div><div class="b"><code>go on, carry on, hold on</code> — seguir con algo o esperar.</div></div>' +
+  '<div class="guRule"><div class="h">2 · Relaciones y comportamiento</div><div class="b"><code>get on (with)</code> = llevarse bien. <code>show off</code> = presumir. <code>tell off</code> = regañar.</div></div>' +
+  '<div class="guRule"><div class="h">3 · Cancelar, pagar, despedir</div><div class="b"><code>call off</code> (cancelar), <code>pay off</code> (saldar/compensar), <code>lay off</code> (despedir por recorte de plantilla, distinto de "fire" = despedir por mal desempeño).</div></div>';
+
+const PHR6_BANK = [
+  {id:"phr6-1",cat:"uso",blank:"Please ___ ; the film is starting.",options:["sit down","sit up","sit off"],answer:"sit down",note:"sit down = sentarse."},
+  {id:"phr6-2",cat:"uso",blank:"Everyone please ___ for the national anthem.",options:["stand up","stand down","stand off"],answer:"stand up",note:"stand up = ponerse de pie."},
+  {id:"phr6-3",cat:"uso",blank:"___ ! Everything will be fine.",options:["Calm down","Calm up","Calm off"],answer:"Calm down",note:"calm down = calmarse."},
+  {id:"phr6-4",cat:"uso",blank:"The car suddenly ___ on the motorway.",options:["broke down","broke up","broke off"],answer:"broke down",note:"break down = averiarse."},
+  {id:"phr6-5",cat:"uso",blank:"Please ___ ; you're driving too fast.",options:["slow down","slow up","slow off"],answer:"slow down",note:"slow down = ir más despacio."},
+  {id:"phr6-6",cat:"uso",blank:"Can you ___ the music? It's too quiet.",options:["turn up","turn down","turn off"],answer:"turn up",note:"turn up = subir el volumen."},
+  {id:"phr6-7",cat:"uso",blank:"Could you ___ the TV? It's too loud.",options:["turn down","turn up","turn off"],answer:"turn down",note:"turn down = bajar el volumen."},
+  {id:"phr6-8",cat:"uso",blank:"He felt ___ when his best friend moved away.",options:["let down","let up","let out"],answer:"let down",note:"let down = decepcionar."},
+  {id:"phr6-9",cat:"uso",blank:"They're going to ___ the old building next month.",options:["knock down","knock up","knock out"],answer:"knock down",note:"knock down = derribar."},
+  {id:"phr6-10",cat:"uso",blank:"I don't like when people ___ personal topics at dinner.",options:["bring up","bring down","bring out"],answer:"bring up",note:"bring up = sacar un tema a colación."},
+  {id:"phr6-11",cat:"uso",blank:"She was ___ by loving parents.",options:["brought up","brought down","brought out"],answer:"brought up",note:"bring up = criar."},
+  {id:"phr6-12",cat:"error",choose:true,options:["The car broke down on the motorway.","The car broke down of the motorway.","The car broke the motorway down."],answer:"The car broke down on the motorway.",note:"break down es intransitivo.",errorProne:true},
+  {id:"phr6-13",cat:"error",choose:true,options:["He let his family down.","He let down his family down.","He let his family off."],answer:"He let his family down.",note:"let down = decepcionar, no 'let off' (perdonar un castigo).",errorProne:true}
+];
+const PHR6_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Movimiento físico</div><div class="b"><code>sit down, stand up, knock down</code>.</div></div>' +
+  '<div class="guRule"><div class="h">2 · Estado de ánimo y ritmo</div><div class="b"><code>calm down, slow down, break down</code> (avería o crisis emocional), <code>let down</code> (decepcionar).</div></div>' +
+  '<div class="guRule"><div class="h">3 · Volumen y temas</div><div class="b"><code>turn up/down</code> (subir/bajar volumen), <code>bring up</code> (mencionar un tema, o criar a un hijo).</div></div>';
+
+const PHR7_BANK = [
+  {id:"phr7-1",cat:"uso",blank:"They're going to ___ a new business next year.",options:["set up","set down","set off"],answer:"set up",note:"set up = crear/montar."},
+  {id:"phr7-2",cat:"uso",blank:"He ___ a great excuse for being late.",options:["made up","made down","made out"],answer:"made up",note:"make up = inventar."},
+  {id:"phr7-3",cat:"uso",blank:"After the argument, they finally ___ .",options:["made up","made out","made off"],answer:"made up",note:"make up (with somebody) = reconciliarse."},
+  {id:"phr7-4",cat:"uso",blank:"The company is trying to ___ its sales.",options:["build up","build down","build off"],answer:"build up",note:"build up = aumentar gradualmente."},
+  {id:"phr7-5",cat:"uso",blank:"You need to ___ if we want to catch the train.",options:["speed up","speed down","speed off"],answer:"speed up",note:"speed up = acelerar."},
+  {id:"phr7-6",cat:"uso",blank:"Could you ___ this box? It's very light.",options:["pick up","pick on","pick out"],answer:"pick up",note:"pick up = recoger/levantar."},
+  {id:"phr7-7",cat:"uso",blank:"What time do you usually ___ ?",options:["wake up","wake off","wake down"],answer:"wake up",note:"wake up = despertarse."},
+  {id:"phr7-8",cat:"uso",blank:"I'm trying to ___ money for a new laptop.",options:["save up","save off","save out"],answer:"save up",note:"save up = ahorrar."},
+  {id:"phr7-9",cat:"uso",blank:"Can you ___ the data before the computer crashes?",options:["back up","back off","back down"],answer:"back up",note:"back up = hacer copia de seguridad."},
+  {id:"phr7-10",cat:"uso",blank:"I had to run to ___ with my friends.",options:["catch up","catch on","catch out"],answer:"catch up",note:"catch up (with) = alcanzar/ponerse al día."},
+  {id:"phr7-11",cat:"uso",blank:"Let's ___ the kitchen before guests arrive.",options:["clear up","clear off","clear out"],answer:"clear up",note:"clear up = ordenar."},
+  {id:"phr7-12",cat:"error",choose:true,options:["They set up a new company.","They set a new company up on.","They set on a new company."],answer:"They set up a new company.",note:"set up = crear/fundar.",errorProne:true},
+  {id:"phr7-13",cat:"error",choose:true,options:["I need to catch up with my work.","I need to catch up of my work.","I need to catch on my work."],answer:"I need to catch up with my work.",note:"catch up WITH something.",errorProne:true}
+];
+const PHR7_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Crear / empezar</div><div class="b"><code>set up, build up, make up</code> (inventar).</div></div>' +
+  '<div class="guRule"><div class="h">2 · Aumentar / acelerar</div><div class="b"><code>speed up, build up, save up</code> (ahorrar poco a poco).</div></div>' +
+  '<div class="guRule"><div class="h">3 · Alcanzar / recuperar</div><div class="b"><code>catch up (with), pick up, wake up, back up, clear up</code>.</div></div>';
+
+const PHR8_BANK = [
+  {id:"phr8-1",cat:"uso",blank:"Please ___ your vegetables.",options:["eat up","eat off","eat down"],answer:"eat up",note:"eat up = comerse todo."},
+  {id:"phr8-2",cat:"uso",blank:"We ___ all the milk this morning.",options:["used up","used off","used out"],answer:"used up",note:"use up = agotar/consumir todo."},
+  {id:"phr8-3",cat:"uso",blank:"He couldn't ___ the pressure and quit.",options:["put up with","put down with","put on with"],answer:"put up with",note:"put up with = soportar/aguantar."},
+  {id:"phr8-4",cat:"uso",blank:"They decided to ___ after five years together.",options:["split up","split down","split off"],answer:"split up",note:"split up = separarse (pareja)."},
+  {id:"phr8-5",cat:"uso",blank:"My best friend and I never ___ .",options:["break up","break down","break off"],answer:"break up",note:"break up = terminar una relación."},
+  {id:"phr8-6",cat:"uso",blank:"I always ___ my keys and phone.",options:["mix up","mix off","mix down"],answer:"mix up",note:"mix up = confundir."},
+  {id:"phr8-7",cat:"uso",blank:"The robbers ___ the bank for an hour.",options:["held up","held down","held off"],answer:"held up",note:"hold up = atracar."},
+  {id:"phr8-8",cat:"uso",blank:"Sorry I'm late — I got ___ in traffic.",options:["held up","held down","held off"],answer:"held up",note:"held up = retrasado."},
+  {id:"phr8-9",cat:"uso",blank:"He didn't ___ for the meeting.",options:["show up","show off","show out"],answer:"show up",note:"show up = aparecer/presentarse."},
+  {id:"phr8-10",cat:"uso",blank:"Let's ___ your room before your parents arrive.",options:["tidy up","tidy off","tidy down"],answer:"tidy up",note:"tidy up = ordenar."},
+  {id:"phr8-11",cat:"uso",blank:"We need to ___ this mess right now.",options:["clean up","clean off","clean out"],answer:"clean up",note:"clean up = limpiar."},
+  {id:"phr8-12",cat:"error",choose:true,options:["He couldn't put up with the noise.","He couldn't put with up the noise.","He couldn't put the noise up with."],answer:"He couldn't put up with the noise.",note:"put up with, orden fijo.",errorProne:true},
+  {id:"phr8-13",cat:"error",choose:true,options:["They split up last month.","They split down last month.","They split off last month."],answer:"They split up last month.",note:"split up = romper una relación.",errorProne:true}
+];
+const PHR8_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Terminar / consumir del todo</div><div class="b"><code>eat up, use up, finish up</code> — la idea de "hasta el final".</div></div>' +
+  '<div class="guRule"><div class="h">2 · Relaciones que terminan</div><div class="b"><code>split up, break up</code> = separarse una pareja. <code>make up</code> (visto antes) = reconciliarse, lo contrario.</div></div>' +
+  '<div class="guRule"><div class="h">3 · Orden y aparición</div><div class="b"><code>tidy up, clean up, show up</code> (aparecer), <code>hold up</code> (atracar / retrasar), <code>put up with</code> (soportar, expresión de 3 palabras que no se separa).</div></div>';
+
+const PHR9_BANK = [
+  {id:"phr9-1",cat:"uso",blank:"The thief ___ before the police arrived.",options:["ran away","ran back","ran up"],answer:"ran away",note:"run away = huir."},
+  {id:"phr9-2",cat:"uso",blank:"Please ___ your toys after playing.",options:["put away","put back","put off"],answer:"put away",note:"put away = guardar/recoger."},
+  {id:"phr9-3",cat:"uso",blank:"Don't ___ good food; give it to someone who needs it.",options:["throw away","throw back","give off"],answer:"throw away",note:"throw away = tirar/desperdiciar."},
+  {id:"phr9-4",cat:"uso",blank:"He decided to ___ all his old clothes to charity.",options:["give away","give back","give off"],answer:"give away",note:"give away = regalar/donar."},
+  {id:"phr9-5",cat:"uso",blank:"Can I ___ this jacket? It doesn't fit me.",options:["take back","take away","take off"],answer:"take back",note:"take back = devolver a la tienda."},
+  {id:"phr9-6",cat:"uso",blank:"The waiter asked if we wanted the food to ___ .",options:["take away","take back","take off"],answer:"take away",note:"takeaway = comida para llevar."},
+  {id:"phr9-7",cat:"uso",blank:"How did they ___ with cheating on the exam?",options:["get away","get back","get off"],answer:"get away",note:"get away with = salirse con la suya."},
+  {id:"phr9-8",cat:"uso",blank:"Please ___ these books to the shelf.",options:["put back","put away","put off"],answer:"put back",note:"put back = devolver a su sitio."},
+  {id:"phr9-9",cat:"uso",blank:"When did you ___ from your trip?",options:["get back","get away","get off"],answer:"get back",note:"get back = volver."},
+  {id:"phr9-10",cat:"uso",blank:"Could you ___ my dictionary tomorrow?",options:["give back","give away","give off"],answer:"give back",note:"give back = devolver."},
+  {id:"phr9-11",cat:"uso",blank:"I need to ___ this money by next week.",options:["pay back","pay away","pay off"],answer:"pay back",note:"pay back = devolver dinero prestado."},
+  {id:"phr9-12",cat:"uso",blank:"Looking ___ , I should have studied more.",options:["back","away","off"],answer:"back",note:"look back (on) = mirar atrás/recordar."},
+  {id:"phr9-13",cat:"error",choose:true,options:["She threw away the old newspapers.","She threw the old newspapers away of.","She threw off the old newspapers."],answer:"She threw away the old newspapers.",note:"throw away, sin preposición extra.",errorProne:true},
+  {id:"phr9-14",cat:"error",choose:true,options:["He got away with the crime.","He got away of the crime.","He got off with the crime for money."],answer:"He got away with the crime.",note:"get away WITH something.",errorProne:true}
+];
+const PHR9_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · AWAY = alejarse / desprenderse</div><div class="b"><code>run away, put away, throw away, give away</code>.</div></div>' +
+  '<div class="guRule"><div class="h">2 · BACK = devolver / regresar</div><div class="b"><code>put back, take back, give back, pay back, get back, look back</code>.</div></div>' +
+  '<div class="guRule"><div class="h">3 · get away with</div><div class="b">Salirse con la suya sin castigo: <code>He got away with it</code> = se salió con la suya.</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -4787,6 +4971,60 @@ const GU_UNITS = {
     color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
     subtitle:"'s para personas (singular/plural). Of para cosas y conceptos. 's en tiendas, casas y expresiones de tiempo.",
     learnHtml: ANAP_LEARN_HTML, catLabel: ANAP_CAT_LABEL, bank: ANAP_BANK
+  },
+  "phrasal-1": {
+    id:"phrasal-1", name:"Phrasal verbs 1: introduction", icon:"🧲",
+    color:"#475569", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"Qué es un phrasal verb, separables vs. inseparables, y un mismo verbo con varias partículas.",
+    learnHtml: PHR1_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR1_BANK
+  },
+  "phrasal-2": {
+    id:"phrasal-2", name:"Phrasal verbs 2: in/out", icon:"🚪",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"IN para entrar/dentro, OUT para salir, descubrir o agotarse.",
+    learnHtml: PHR2_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR2_BANK
+  },
+  "phrasal-3": {
+    id:"phrasal-3", name:"Phrasal verbs 3: out", icon:"🔥",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#991b1b",
+    subtitle:"Más usos de OUT: desaparecer, revelar, y hacer algo hasta el final.",
+    learnHtml: PHR3_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR3_BANK
+  },
+  "phrasal-4": {
+    id:"phrasal-4", name:"Phrasal verbs 4: on/off (1)", icon:"💡",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"Ropa, aparatos y transporte: put on/take off, switch on/off, get on/off.",
+    learnHtml: PHR4_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR4_BANK
+  },
+  "phrasal-5": {
+    id:"phrasal-5", name:"Phrasal verbs 5: on/off (2)", icon:"🔄",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Continuar, relaciones, cancelar y despedir: go on, show off, call off, lay off.",
+    learnHtml: PHR5_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR5_BANK
+  },
+  "phrasal-6": {
+    id:"phrasal-6", name:"Phrasal verbs 6: up/down", icon:"⬆️",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"Movimiento físico, estado de ánimo y volumen: sit down, calm down, turn up/down.",
+    learnHtml: PHR6_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR6_BANK
+  },
+  "phrasal-7": {
+    id:"phrasal-7", name:"Phrasal verbs 7: up (1)", icon:"🚀",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"Crear, aumentar y alcanzar: set up, build up, catch up, back up.",
+    learnHtml: PHR7_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR7_BANK
+  },
+  "phrasal-8": {
+    id:"phrasal-8", name:"Phrasal verbs 8: up (2)", icon:"🧹",
+    color:"#db2777", pillBg:"#fce7f3", pillColor:"#9d174d",
+    subtitle:"Terminar del todo, relaciones que se rompen y poner orden: eat up, split up, tidy up.",
+    learnHtml: PHR8_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR8_BANK
+  },
+  "phrasal-9": {
+    id:"phrasal-9", name:"Phrasal verbs 9: away/back", icon:"🔙",
+    color:"#4d7c0f", pillBg:"#ecfccb", pillColor:"#365314",
+    subtitle:"AWAY para alejarse, BACK para devolver o regresar.",
+    learnHtml: PHR9_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR9_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
