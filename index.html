@@ -3481,6 +3481,299 @@ const QTG_LEARN_HTML =
   '<div class="psRule"><div class="h">2 · Casos especiales</div><div class="b"><code>I am right, aren\'t I?</code> (excepción)<br><code>Nobody came, did they?</code> (sujeto negativo → tag afirmativa con they)<br><code>Let\'s go, shall we?</code><br><code>Don\'t be late, will you?</code></div></div>' +
   '<div class="psRule"><div class="h">3 · Entonación</div><div class="b">Tag con entonación descendente → confirmas algo que crees saber.<br>Tag con entonación ascendente → genuinamente no estás seguro.</div></div>';
 
+/* ================= CONTENIDO: RELATIVE CLAUSES 1 (WHO/THAT/WHICH) ================= */
+const REL1_CAT_LABEL = {who_p:"WHO (PERSONAS)",which_c:"WHICH (COSAS)",that_a:"THAT (PERSONAS/COSAS)",error:"FRASE CORRECTA"};
+const REL1_BANK = [
+  {id:"rel1-1",cat:"who_p",blank:"The woman ___ lives next door is a doctor.",options:["who","which","that"],answer:"who",note:"who para personas: la mujer que vive..."},
+  {id:"rel1-2",cat:"who_p",blank:"Do you know the man ___ works in that shop?",options:["who","which","where"],answer:"who",note:"who (o that) para personas."},
+  {id:"rel1-3",cat:"who_p",blank:"The people ___ were at the party seemed friendly.",options:["who","which","whose"],answer:"who",note:"who para personas."},
+  {id:"rel1-4",cat:"which_c",blank:"The film ___ we saw last night was fantastic.",options:["which","who","whose"],answer:"which",note:"which para cosas: la pel\u00edcula que vimos..."},
+  {id:"rel1-5",cat:"which_c",blank:"I lost the keys ___ you gave me.",options:["which","who","whose"],answer:"which",note:"which (o that) para cosas."},
+  {id:"rel1-6",cat:"which_c",blank:"The car ___ I bought last year has broken down.",options:["which","who","that"],answer:"which",note:"which o that para cosas. Ambos correctos."},
+  {id:"rel1-7",cat:"that_a",blank:"The only thing ___ I remember is the music.",options:["that","which","who"],answer:"that",note:"Despu\u00e9s de 'the only': that es preferible."},
+  {id:"rel1-8",cat:"that_a",blank:"Everything ___ she said was true.",options:["that","which","who"],answer:"that",note:"Despu\u00e9s de 'everything/nothing/something': that."},
+  {id:"rel1-9",cat:"that_a",blank:"The best film ___ I've ever seen is Inception.",options:["that","which","who"],answer:"that",note:"Despu\u00e9s de superlativo: that."},
+  {id:"rel1-10",cat:"who_p",blank:"She married a man ___ she met at university.",options:["who","which","whose"],answer:"who",note:"who o that para personas en funci\u00f3n de objeto."},
+  {id:"rel1-11",cat:"which_c",blank:"The book ___ you recommended was excellent.",options:["which","who","what"],answer:"which",note:"which o that para cosas en funci\u00f3n de objeto."},
+  {id:"rel1-12",cat:"error",choose:true,options:["The person which helped me was very kind.","The person who helped me was very kind.","The person that helped me was very kind."],answer:"The person who helped me was very kind.",note:"Para personas: who o that (no which).",errorProne:true},
+  {id:"rel1-13",cat:"error",choose:true,options:["The car who I bought is red.","The car which I bought is red.","The car that I bought is red."],answer:"The car which I bought is red.",note:"Para cosas: which o that (no who).",errorProne:true},
+  {id:"rel1-14",cat:"error",choose:true,options:["The girl who live next door is my sister.","The girl who lives next door is my sister.","The girl which lives next door is my sister."],answer:"The girl who lives next door is my sister.",note:"El verbo concuerda con el sujeto real (the girl): lives (3\u00aa persona).",errorProne:true}
+];
+const REL1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 who para personas</div><div class="b">The woman <code>who</code> lives next door is a doctor.<br>He\'s the man <code>who</code> I saw yesterday.</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 which para cosas</div><div class="b">The film <code>which</code> we saw was fantastic.<br>I lost the keys <code>which</code> you gave me.</div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 that para personas o cosas</div><div class="b"><code>that</code> puede sustituir a who o which en cl\u00e1usulas definitorias.<br>Es obligatorio despu\u00e9s de: superlativo, only, everything/nothing/something: <code>The best film that I\'ve ever seen.</code></div></div>';
+
+/* ================= CONTENIDO: RELATIVE CLAUSES 2 (OMITTING WHO/THAT/WHICH) ================= */
+const REL2_CAT_LABEL = {omitir:"CU\u00c1NDO OMITIR",conservar:"CU\u00c1NDO CONSERVAR",error:"FRASE CORRECTA"};
+const REL2_BANK = [
+  {id:"rel2-1",cat:"omitir",blank:"The man ___ yesterday was my uncle.",options:["I saw","I see","saw I"],answer:"I saw",note:"Pronombre relativo omitido: The man I saw yesterday. El relativo es OBJETO del verbo de la cl\u00e1usula."},
+  {id:"rel2-2",cat:"omitir",blank:"The film ___ last night was boring.",options:["we watched","which we watched","that we watched"],answer:"we watched",note:"Se puede omitir which/that cuando es OBJETO: The film we watched."},
+  {id:"rel2-3",cat:"omitir",blank:"The book ___ was brilliant.",options:["she recommended","she recommends which","which she recommended"],answer:"she recommended",note:"The book she recommended: pronombre en funci\u00f3n de objeto omitido."},
+  {id:"rel2-4",cat:"conservar",blank:"The woman ___ lives next door is a doctor.",options:["who","that","which"],answer:"who",note:"who NO se puede omitir aqu\u00ed: es el SUJETO del verbo 'lives'."},
+  {id:"rel2-5",cat:"conservar",blank:"Did you see the dog ___ ran across the road?",options:["that","which","who"],answer:"that",note:"El pronombre es SUJETO (ran): no se puede omitir."},
+  {id:"rel2-6",cat:"conservar",blank:"The earthquake ___ happened last year caused great damage.",options:["that","which","who"],answer:"that",note:"El pronombre es SUJETO (happened): no se puede omitir."},
+  {id:"rel2-7",cat:"omitir",blank:"Is this the film ___ you were talking about?",options:["\u2014","which","that"],answer:"\u2014",note:"Se puede omitir: 'you were talking about it' = relativo es objeto preposicional."},
+  {id:"rel2-8",cat:"conservar",blank:"The hotel ___ was built in 1920 is now a museum.",options:["which","that","\u2014"],answer:"which",note:"No se puede omitir: el relativo es SUJETO (was built)."},
+  {id:"rel2-9",cat:"omitir",blank:"The man ___ I told you about is here.",options:["\u2014","who","which"],answer:"\u2014",note:"Se puede omitir: 'I told you about him' = objeto."},
+  {id:"rel2-10",cat:"error",choose:true,options:["The man lived next door was my uncle.","The man who lived next door was my uncle.","The man that lived next door was my uncle."],answer:"The man who lived next door was my uncle.",note:"El pronombre relativo es SUJETO (lived): no se puede omitir.",errorProne:true},
+  {id:"rel2-11",cat:"error",choose:true,options:["The book which I read it was great.","The book which I read was great.","The book I read was great."],answer:"The book I read was great.",note:"No se repite el pronombre personal: no 'which I read IT'. Y se puede omitir which.",errorProne:true}
+];
+const REL2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Cu\u00e1ndo SE PUEDE omitir who/that/which</div><div class="b">Cuando el pronombre relativo es el OBJETO del verbo:<br><code>The film (which) we watched was boring.</code><br><code>The man (that) I saw was my uncle.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Cu\u00e1ndo NO se puede omitir</div><div class="b">Cuando el pronombre relativo es el SUJETO del verbo:<br><code>The woman <u>who</u> lives next door...</code> (who = sujeto de lives)<br><code>The earthquake <u>that</u> happened last year...</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 Truco r\u00e1pido</div><div class="b">Sustituye el relativo por un pronombre personal. Si la frase ya tiene sujeto, el relativo es objeto (omitible):<br>The film [I watched <i>it</i>] \u2192 tiene sujeto (I) \u2192 omitible.<br>The woman [<i>she</i> lives next door] \u2192 ser\u00eda sujeto \u2192 no omitible.</div></div>';
+
+/* ================= CONTENIDO: RELATIVE CLAUSES 3 (WHOSE/WHOM/WHERE) ================= */
+const REL3_CAT_LABEL = {whose:"WHOSE",where_when:"WHERE / WHEN / WHY",whom:"WHOM",error:"FRASE CORRECTA"};
+const REL3_BANK = [
+  {id:"rel3-1",cat:"whose",blank:"I met a man ___ wife is a famous actress.",options:["whose","who's","which"],answer:"whose",note:"whose = de quien. I met a man whose wife... (la esposa de ese hombre)."},
+  {id:"rel3-2",cat:"whose",blank:"That's the family ___ house burned down.",options:["whose","who's","which"],answer:"whose",note:"whose se usa tambi\u00e9n para cosas: la casa de esa familia."},
+  {id:"rel3-3",cat:"whose",blank:"She's the author ___ book I told you about.",options:["whose","who's","which"],answer:"whose",note:"whose book: el libro de esa autora."},
+  {id:"rel3-4",cat:"whose",blank:"He worked for a company ___ headquarters were in Tokyo.",options:["whose","that","which"],answer:"whose",note:"whose headquarters: la sede de esa compa\u00f1\u00eda."},
+  {id:"rel3-5",cat:"where_when",blank:"That's the hotel ___ we stayed last summer.",options:["where","which","in which"],answer:"where",note:"where para lugares: el hotel donde nos alojamos."},
+  {id:"rel3-6",cat:"where_when",blank:"Do you remember the day ___ we first met?",options:["when","that","which"],answer:"when",note:"when para tiempos: el d\u00eda en que nos conocimos."},
+  {id:"rel3-7",cat:"where_when",blank:"The town ___ she grew up has changed a lot.",options:["where","which","in that"],answer:"where",note:"where = in which para lugares."},
+  {id:"rel3-8",cat:"where_when",blank:"Is there a reason ___ he left so suddenly?",options:["why","when","which"],answer:"why",note:"why para razones: the reason why..."},
+  {id:"rel3-9",cat:"whom",blank:"The man ___ she married is a doctor.",options:["whom","who","which"],answer:"whom",note:"whom (forma objeto de who, formal): the man whom she married."},
+  {id:"rel3-10",cat:"whom",blank:"The person to ___ I sent the email never replied.",options:["whom","who","that"],answer:"whom",note:"Preposici\u00f3n + whom (formal): to whom I sent."},
+  {id:"rel3-11",cat:"error",choose:true,options:["The girl who's father is a doctor lives here.","The girl whose father is a doctor lives here.","The girl which father is a doctor lives here."],answer:"The girl whose father is a doctor lives here.",note:"whose = de quien (posesivo). who's = who is (abreviatura).",errorProne:true},
+  {id:"rel3-12",cat:"error",choose:true,options:["That's the city where I was born in.","That's the city where I was born.","That's the city which I was born."],answer:"That's the city where I was born.",note:"where ya incluye 'in': no se repite la preposici\u00f3n.",errorProne:true},
+  {id:"rel3-13",cat:"error",choose:true,options:["I remember the day which we met.","I remember the day when we met.","I remember the day that we met."],answer:"I remember the day when we met.",note:"when o that para tiempos (no which).",errorProne:true}
+];
+const REL3_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 whose (posesivo)</div><div class="b">Para indicar posesi\u00f3n (de quien/de lo que):<br><code>I met a man whose wife is an actress.</code><br><code>That\'s the company whose headquarters are in Tokyo.</code><br>\u26a0\ufe0f whose \u2260 who\'s (= who is)</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 where, when, why</div><div class="b"><code>where</code> para lugares (= in/at which): <code>The hotel where we stayed.</code><br><code>when</code> para tiempos (= on/in which): <code>The day when we met.</code><br><code>why</code> para razones: <code>The reason why he left.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 whom (formal, objeto)</div><div class="b">Forma objeto de who, en ingl\u00e9s formal:<br><code>The man whom she married is a doctor.</code><br>Con preposici\u00f3n al principio: <code>The person to whom I spoke.</code></div></div>';
+
+/* ================= CONTENIDO: RELATIVE CLAUSES 4 (EXTRA INFORMATION 1) ================= */
+const REL4_CAT_LABEL = {no_def:"CL\u00c1USULA NO DEFINITORIA",contraste:"DEFINITORIA VS NO DEFINITORIA",error:"FRASE CORRECTA"};
+const REL4_BANK = [
+  {id:"rel4-1",cat:"no_def",blank:"My brother, ___ lives in London, is a teacher.",options:["who","that","which"],answer:"who",note:"Cl\u00e1usula no definitoria (entre comas): siempre who/which, NUNCA that."},
+  {id:"rel4-2",cat:"no_def",blank:"My car, ___ I bought last year, has broken down.",options:["which","that","who"],answer:"which",note:"Cosas: which (nunca that) en cl\u00e1usulas no definitorias."},
+  {id:"rel4-3",cat:"no_def",blank:"Shakespeare, ___ was born in 1564, is the world's greatest playwright.",options:["who","that","which"],answer:"who",note:"Persona \u00fanica (nombre propio): cl\u00e1usula no definitoria con who."},
+  {id:"rel4-4",cat:"no_def",blank:"The Eiffel Tower, ___ is 330m tall, was built in 1889.",options:["which","that","who"],answer:"which",note:"Cosa \u00fanica (nombre propio): cl\u00e1usula no definitoria con which."},
+  {id:"rel4-5",cat:"no_def",blank:"She gave me the book, ___ I found fascinating.",options:["which","that","who"],answer:"which",note:"La segunda cl\u00e1usula a\u00f1ade informaci\u00f3n extra, no restringe: which."},
+  {id:"rel4-6",cat:"contraste",blank:"My sister, ___ is a doctor, lives in Barcelona. (tengo una sola hermana)",options:["who","that","which"],answer:"who",note:"No definitoria (entre comas): tengo una hermana y le a\u00f1ado informaci\u00f3n."},
+  {id:"rel4-7",cat:"contraste",blank:"My sister ___ is a doctor lives in Barcelona. (tengo m\u00e1s de una)",options:["who","that","which"],answer:"who",note:"Definitoria (sin comas): especifica cu\u00e1l de mis hermanas."},
+  {id:"rel4-8",cat:"contraste",blank:"The film ___ I saw last night was brilliant. (definitoria, objeto)",options:["\u2014","which","that"],answer:"\u2014",note:"Definitoria: se puede omitir el relativo (es objeto)."},
+  {id:"rel4-9",cat:"contraste",blank:"The film, ___ I hadn't expected much, turned out to be brilliant. (no definitoria)",options:["which","that","\u2014"],answer:"which",note:"No definitoria: no se puede omitir, y siempre which (no that)."},
+  {id:"rel4-10",cat:"error",choose:true,options:["My mother, that is 70, still works.","My mother, who is 70, still works.","My mother who is 70, still works."],answer:"My mother, who is 70, still works.",note:"Cl\u00e1usula no definitoria: who (no that) y comas obligatorias.",errorProne:true},
+  {id:"rel4-11",cat:"error",choose:true,options:["Rome, that I visited last year, is beautiful.","Rome, which I visited last year, is beautiful.","Rome which I visited last year is beautiful."],answer:"Rome, which I visited last year, is beautiful.",note:"Nombre propio \u00fanico \u2192 no definitoria \u2192 which entre comas.",errorProne:true}
+];
+const REL4_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Cl\u00e1usulas no definitorias (entre comas)</div><div class="b">A\u00f1aden informaci\u00f3n extra que no identifica al referente:<br><code>My brother, <u>who</u> lives in London, is a teacher.</code><br>\u26a0\ufe0f NUNCA that en no definitorias. SIEMPRE comas.</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Definitoria vs. no definitoria</div><div class="b">Definitoria (sin comas): identifica cu\u00e1l: <code>The woman who works here is my boss.</code><br>No definitoria (con comas): a\u00f1ade info: <code>My boss, who works here, is very kind.</code><br>Nombres propios \u2192 siempre no definitoria.</div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 who/which en no definitorias</div><div class="b">Personas \u2192 <code>who</code>. Cosas \u2192 <code>which</code>.<br>that y omisi\u00f3n NO se usan en cl\u00e1usulas no definitorias.</div></div>';
+
+/* ================= CONTENIDO: RELATIVE CLAUSES 5 (EXTRA INFORMATION 2) ================= */
+const REL5_CAT_LABEL = {which_frase:"WHICH PARA TODA LA FRASE",prep_rel:"PREPOSICI\u00d3N + RELATIVO",all_who:"ALL WHO / THOSE WHO",error:"FRASE CORRECTA"};
+const REL5_BANK = [
+  {id:"rel5-1",cat:"which_frase",blank:"She passed the exam, ___ surprised everyone.",options:["which","that","what"],answer:"which",note:"which puede referirse a toda la cl\u00e1usula anterior (= something which)."},
+  {id:"rel5-2",cat:"which_frase",blank:"He didn't come to the party, ___ disappointed me.",options:["which","that","what"],answer:"which",note:"which = the fact that he didn't come."},
+  {id:"rel5-3",cat:"which_frase",blank:"They cancelled the event, ___ was a shame.",options:["which","that","what"],answer:"which",note:"which referring to the whole situation."},
+  {id:"rel5-4",cat:"prep_rel",blank:"The hotel at ___ we stayed was excellent.",options:["which","that","who"],answer:"which",note:"Preposici\u00f3n al principio + which: at which = where. Formal."},
+  {id:"rel5-5",cat:"prep_rel",blank:"The reason for ___ she left is unknown.",options:["which","that","who"],answer:"which",note:"for which = why. Preposici\u00f3n + which (formal)."},
+  {id:"rel5-6",cat:"prep_rel",blank:"The company for ___ she works is very successful.",options:["which","that","who"],answer:"which",note:"for which (formal) = that she works for (informal)."},
+  {id:"rel5-7",cat:"all_who",blank:"___ want to come should sign up by Friday.",options:["Those who","Anyone who","All who"],answer:"Those who",note:"Those who = las personas que. Sin antecedente."},
+  {id:"rel5-8",cat:"all_who",blank:"All ___ attended the event received a certificate.",options:["who","that","which"],answer:"who",note:"All who = todos los que."},
+  {id:"rel5-9",cat:"all_who",blank:"___ doesn't work shouldn't eat.",options:["Anyone who","He who","Those who"],answer:"Anyone who",note:"Anyone who = cualquiera que."},
+  {id:"rel5-10",cat:"error",choose:true,options:["He was late, that annoyed the boss.","He was late, which annoyed the boss.","He was late, what annoyed the boss."],answer:"He was late, which annoyed the boss.",note:"which (no that ni what) para referirse a toda la frase anterior.",errorProne:true},
+  {id:"rel5-11",cat:"error",choose:true,options:["The hotel which we stayed at it was great.","The hotel which we stayed at was great.","The hotel we stayed at was great."],answer:"The hotel we stayed at was great.",note:"No se repite la preposici\u00f3n con el pronombre personal. Se puede omitir which.",errorProne:true}
+];
+const REL5_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 which para referirse a toda la frase</div><div class="b">Cuando which se refiere a toda la cl\u00e1usula anterior:<br><code>She passed the exam, which surprised everyone.</code><br><code>He didn\'t come, which disappointed me.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Preposici\u00f3n + which (formal)</div><div class="b">Informal: <code>The hotel that we stayed at.</code><br>Formal: <code>The hotel at which we stayed.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 Those who / All who / Anyone who</div><div class="b"><code>Those who want to come should sign up.</code><br><code>All who attended received a certificate.</code><br><code>Anyone who needs help can ask me.</code></div></div>';
+
+/* ================= CONTENIDO: -ING AND -ED CLAUSES ================= */
+const RELIC_CAT_LABEL = {ing_act:"-ING ACTIVO",ed_pas:"-ED PASIVO",contexto:"EN CONTEXTO",error:"FRASE CORRECTA"};
+const RELIC_BANK = [
+  {id:"relic-1",cat:"ing_act",blank:"The man ___ (stand) by the window is my boss.",options:["standing","stood","who is standing"],answer:"standing",note:"-ing en cl\u00e1usula de relativo activa: el hombre que est\u00e1 de pie."},
+  {id:"relic-2",cat:"ing_act",blank:"The woman ___ in the office was very helpful.",options:["working","worked","who worked"],answer:"working",note:"The woman working = the woman who works/is working."},
+  {id:"relic-3",cat:"ing_act",blank:"There were some people ___ (wait) outside.",options:["waiting","waited","who waited"],answer:"waiting",note:"waiting = who were waiting: activa, acci\u00f3n en curso."},
+  {id:"relic-4",cat:"ing_act",blank:"___ (not/know) what to say, I said nothing.",options:["Not knowing","Not known","Not to know"],answer:"Not knowing",note:"-ing al principio de frase: porque no sab\u00eda qu\u00e9 decir."},
+  {id:"relic-5",cat:"ing_act",blank:"He fell asleep ___ (watch) TV.",options:["watching","watched","to watch"],answer:"watching",note:"-ing para acci\u00f3n simult\u00e1nea."},
+  {id:"relic-6",cat:"ed_pas",blank:"The car ___ (park) outside is mine.",options:["parked","parking","which parked"],answer:"parked",note:"-ed en cl\u00e1usula de relativo pasiva: el coche aparcado."},
+  {id:"relic-7",cat:"ed_pas",blank:"The documents ___ (sign) by the manager are ready.",options:["signed","signing","which signed"],answer:"signed",note:"The documents signed = the documents which were signed."},
+  {id:"relic-8",cat:"ed_pas",blank:"Most of the people ___ (invite) to the party came.",options:["invited","inviting","who invited"],answer:"invited",note:"The people invited = the people who were invited."},
+  {id:"relic-9",cat:"contexto",blank:"The language ___ (speak) in Brazil is Portuguese.",options:["spoken","speaking","that speaks"],answer:"spoken",note:"spoken (= which is spoken): pasiva."},
+  {id:"relic-10",cat:"contexto",blank:"The road ___ (lead) to the city was blocked.",options:["leading","led","that led"],answer:"leading",note:"leading (= which leads/led): activa."},
+  {id:"relic-11",cat:"contexto",blank:"The train ___ (arrive) at 9 was ten minutes late.",options:["arriving","arrived","that arrived"],answer:"arriving",note:"arriving at 9 = which arrives/arrived at 9."},
+  {id:"relic-12",cat:"error",choose:true,options:["The man stood by the window is my boss.","The man standing by the window is my boss.","The man who standing by the window is my boss."],answer:"The man standing by the window is my boss.",note:"-ing para cl\u00e1usula de relativo activa (no pasado simple solo).",errorProne:true},
+  {id:"relic-13",cat:"error",choose:true,options:["The car parking outside is mine.","The car parked outside is mine.","The car that parked outside is mine."],answer:"The car parked outside is mine.",note:"-ed para cl\u00e1usula pasiva (aparcado = que est\u00e1 aparcado).",errorProne:true}
+];
+const RELIC_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 -ing para cl\u00e1usulas activas</div><div class="b">Sustituye a "who/which + verbo activo":<br><code>The man <u>standing</u> by the window</code> = the man who is standing.<br><code>The road <u>leading</u> to the city</code> = which leads.</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 -ed para cl\u00e1usulas pasivas</div><div class="b">Sustituye a "who/which + pasiva":<br><code>The car <u>parked</u> outside</code> = the car which is parked.<br><code>The people <u>invited</u></code> = who were invited.</div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 -ing al principio de frase</div><div class="b">Para explicar raz\u00f3n o circunstancia:<br><code>Not knowing what to say, I said nothing.</code><br><code>He fell asleep watching TV.</code></div></div>';
+
+/* ================= CONTENIDO: ALTHOUGH / IN SPITE OF / DESPITE ================= */
+const CAL_CAT_LABEL = {although_g:"ALTHOUGH / EVEN THOUGH",in_spite:"IN SPITE OF / DESPITE",however:"HOWEVER / NEVERTHELESS",error:"FRASE CORRECTA"};
+const CAL_BANK = [
+  {id:"cal-1",cat:"although_g",blank:"___ it was raining, we went for a walk.",options:["Although","Despite","In spite"],answer:"Although",note:"although + cl\u00e1usula (sujeto + verbo): aunque llov\u00eda."},
+  {id:"cal-2",cat:"although_g",blank:"He passed the exam, ___ he hadn't studied much.",options:["although","despite","in spite"],answer:"although",note:"although + cl\u00e1usula. Puede ir al principio o en el medio."},
+  {id:"cal-3",cat:"although_g",blank:"___ though I tried, I couldn't open it.",options:["Even","But","Despite"],answer:"Even",note:"even though = aunque (con m\u00e1s \u00e9nfasis). Even though + cl\u00e1usula."},
+  {id:"cal-4",cat:"although_g",blank:"She was tired, ___ she continued working.",options:["though","despite","in spite"],answer:"though",note:"though se puede usar al final de la frase como adverbio."},
+  {id:"cal-5",cat:"in_spite",blank:"___ the rain, we went for a walk.",options:["In spite of","Although","Even though"],answer:"In spite of",note:"in spite of + sustantivo / -ing: a pesar de la lluvia."},
+  {id:"cal-6",cat:"in_spite",blank:"___ not having studied, she passed.",options:["Despite","Although","Even though"],answer:"Despite",note:"despite + -ing o sustantivo: a pesar de no haber estudiado."},
+  {id:"cal-7",cat:"in_spite",blank:"___ the fact that he was tired, he kept working.",options:["In spite of","Despite","Although"],answer:"In spite of",note:"In spite of the fact that = aunque (forma de unir cl\u00e1usula con in spite of)."},
+  {id:"cal-8",cat:"in_spite",blank:"___ all his efforts, he failed the exam.",options:["Despite","Although","Even though"],answer:"Despite",note:"Despite + noun: a pesar de todos sus esfuerzos."},
+  {id:"cal-9",cat:"however",blank:"It was raining. ___, we went for a walk.",options:["However","Although","Despite"],answer:"However",note:"However / Nevertheless conectan dos frases separadas, no se usan dentro de una."},
+  {id:"cal-10",cat:"however",blank:"She was tired. ___, she continued.",options:["Nevertheless","Although","Despite"],answer:"Nevertheless",note:"Nevertheless = sin embargo. Conecta dos frases."},
+  {id:"cal-11",cat:"error",choose:true,options:["Despite she was tired, she kept working.","Despite being tired, she kept working.","Despite of being tired, she kept working."],answer:"Despite being tired, she kept working.",note:"Despite + -ing o noun (no 'of' y no sujeto + verbo).",errorProne:true},
+  {id:"cal-12",cat:"error",choose:true,options:["Although of the rain, we went out.","In spite of the rain, we went out.","Despite of the rain, we went out."],answer:"In spite of the rain, we went out.",note:"In spite of + noun. Despite + noun. No 'despite of'.",errorProne:true},
+  {id:"cal-13",cat:"error",choose:true,options:["He was tired. Although, he kept working.","He was tired. However, he kept working.","He was tired, although, he kept working."],answer:"He was tired. However, he kept working.",note:"Although no puede usarse solo como conector de dos frases \u2192 However/Nevertheless.",errorProne:true}
+];
+const CAL_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 although/though/even though + cl\u00e1usula</div><div class="b">Unen dos cl\u00e1usulas en una frase:<br><code>Although it was raining, we went out.</code><br><code>Even though she was tired, she kept working.</code><br>though puede ir al final como adverbio: <code>It was raining; we went out, though.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 in spite of / despite + sustantivo / -ing</div><div class="b">Van seguidos de un sustantivo o -ing (NO de sujeto + verbo):<br><code>In spite of the rain, we went out.</code><br><code>Despite being tired, she kept working.</code><br>\u26a0\ufe0f No "despite of": solo in spite of (con of).</div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 however/nevertheless (entre frases)</div><div class="b">Para contrastar dos frases separadas:<br><code>It was raining. However, we went out.</code><br>\u26a0\ufe0f although no puede usarse como however.</div></div>';
+
+/* ================= CONTENIDO: IN CASE ================= */
+const CIC_CAT_LABEL = {in_case:"IN CASE (POR SI ACASO)",if_vs_ic:"IN CASE VS IF",in_case_of:"IN CASE OF + NOUN",error:"FRASE CORRECTA"};
+const CIC_BANK = [
+  {id:"cic-1",cat:"in_case",blank:"Take an umbrella ___ it rains.",options:["in case","if","in case of"],answer:"in case",note:"in case = por si acaso. La acci\u00f3n (llevar paraguas) se toma como precauci\u00f3n."},
+  {id:"cic-2",cat:"in_case",blank:"I'll write down her number ___ I forget it.",options:["in case","if","so that"],answer:"in case",note:"in case: apunto el n\u00famero por si me olvido."},
+  {id:"cic-3",cat:"in_case",blank:"She took her medication ___ she felt ill.",options:["in case","if","in order to"],answer:"in case",note:"in case: por si acaso se sent\u00eda mal (precauci\u00f3n previa)."},
+  {id:"cic-4",cat:"in_case",blank:"I'll leave the key under the mat ___ you arrive before me.",options:["in case","if","so that"],answer:"in case",note:"in case: dejo la llave por si llegas antes."},
+  {id:"cic-5",cat:"if_vs_ic",blank:"Take a coat ___ (por si acaso hace fr\u00edo).",options:["in case it's cold","if it's cold","in case of cold"],answer:"in case it's cold",note:"in case (precauci\u00f3n previa) vs if (condici\u00f3n)."},
+  {id:"cic-6",cat:"if_vs_ic",blank:"I'll call you ___ (si necesito ayuda).",options:["if I need help","in case I need help","unless I need help"],answer:"if I need help",note:"if: condici\u00f3n (llamar\u00e9 si lo necesito). in case: lo har\u00eda como precauci\u00f3n."},
+  {id:"cic-7",cat:"in_case_of",blank:"___ fire, break the glass.",options:["In case of","In case","If"],answer:"In case of",note:"In case of + noun (sin verbo): en caso de incendio."},
+  {id:"cic-8",cat:"in_case_of",blank:"___ an emergency, call this number.",options:["In case of","In case","If"],answer:"In case of",note:"In case of + noun: instrucciones formales."},
+  {id:"cic-9",cat:"error",choose:true,options:["In case it will rain, take an umbrella.","In case it rains, take an umbrella.","In case of it rains, take an umbrella."],answer:"In case it rains, take an umbrella.",note:"in case + presente simple (no will, no of + cl\u00e1usula).",errorProne:true},
+  {id:"cic-10",cat:"error",choose:true,options:["I took an aspirin in case I got a headache.","I took an aspirin if I got a headache.","I took an aspirin in case I would get a headache."],answer:"I took an aspirin in case I got a headache.",note:"in case + pasado simple (no would) en contexto pasado.",errorProne:true}
+];
+const CIC_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 in case = por si acaso (precauci\u00f3n anticipada)</div><div class="b">Para acciones que se toman como precauci\u00f3n:<br><code>Take an umbrella in case it rains.</code><br><code>I\'ll write it down in case I forget.</code><br>in case + presente simple (no will).</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 in case vs. if</div><div class="b"><code>if</code> = condici\u00f3n: la acci\u00f3n ocurre cuando se cumple:<br><code>Call me if you need help.</code><br><code>in case</code> = precauci\u00f3n: la acci\u00f3n ya se toma aunque no sepas si la necesitar\u00e1s:<br><code>Take a coat in case it\'s cold.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 in case of + sustantivo</div><div class="b">Para instrucciones formales:<br><code>In case of fire, break the glass.</code></div></div>';
+
+/* ================= CONTENIDO: UNLESS / AS LONG AS / PROVIDED ================= */
+const CUNL_CAT_LABEL = {unless_neg:"UNLESS (A MENOS QUE)",as_long:"AS LONG AS / PROVIDED",error:"FRASE CORRECTA"};
+const CUNL_BANK = [
+  {id:"cunl-1",cat:"unless_neg",blank:"I won't go ___ you come with me.",options:["unless","if","except"],answer:"unless",note:"unless = if not. I won't go unless you come = solo ir\u00e9 si vienes."},
+  {id:"cunl-2",cat:"unless_neg",blank:"She'll be late ___ she leaves now.",options:["unless","if","except"],answer:"unless",note:"unless = a menos que."},
+  {id:"cunl-3",cat:"unless_neg",blank:"___ you study, you'll fail.",options:["Unless","If","As long as"],answer:"Unless",note:"Unless you study = If you don't study."},
+  {id:"cunl-4",cat:"unless_neg",blank:"Don't call me ___ it's urgent.",options:["unless","if not","except"],answer:"unless",note:"unless: no me llames a menos que sea urgente."},
+  {id:"cunl-5",cat:"unless_neg",blank:"I'll come to the party ___ I'm invited.",options:["only if","unless","even though"],answer:"only if",note:"only if = solo si. Unless = a menos que. Aqu\u00ed necesita condici\u00f3n positiva: solo si me invitan."},
+  {id:"cunl-6",cat:"as_long",blank:"You can borrow my car ___ you drive carefully.",options:["as long as","unless","even though"],answer:"as long as",note:"as long as = con la condici\u00f3n de que. Similar a 'if' pero enfatiza la condici\u00f3n."},
+  {id:"cunl-7",cat:"as_long",blank:"___ the weather is good, we'll eat outside.",options:["Provided (that)","Unless","Even though"],answer:"Provided (that)",note:"provided (that) = con la condici\u00f3n de que (m\u00e1s formal que as long as)."},
+  {id:"cunl-8",cat:"as_long",blank:"I'll lend you money ___ you pay me back.",options:["as long as","unless","despite"],answer:"as long as",note:"as long as: te presto dinero con la condici\u00f3n de que me lo devuelvas."},
+  {id:"cunl-9",cat:"as_long",blank:"___ the price is reasonable, I'll buy it.",options:["As long as","Unless","Even if"],answer:"As long as",note:"As long as = siempre que / con tal de que."},
+  {id:"cunl-10",cat:"error",choose:true,options:["Unless you won't study, you'll fail.","Unless you study, you'll fail.","Unless you don't study, you'll fail."],answer:"Unless you study, you'll fail.",note:"unless ya incluye la negaci\u00f3n: unless + afirmativa (no 'unless you won't/don't').",errorProne:true},
+  {id:"cunl-11",cat:"error",choose:true,options:["You can come as long as if you're on time.","You can come as long as you're on time.","You can come as long as being on time."],answer:"You can come as long as you're on time.",note:"as long as + cl\u00e1usula (sujeto + verbo). No 'as long as if'.",errorProne:true}
+];
+const CUNL_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 unless = if not</div><div class="b">unless = a menos que / si no:<br><code>I won\'t go unless you come.</code> (= I won\'t go if you don\'t come)<br>\u26a0\ufe0f unless ya contiene la negaci\u00f3n: usa afirmativa despu\u00e9s: <code>unless you study</code> (no "unless you don\'t study").</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 as long as / provided (that)</div><div class="b">Para condiciones: con la condici\u00f3n de que / siempre que:<br><code>You can borrow my car as long as you\'re careful.</code><br><code>Provided (that) the weather is good, we\'ll eat outside.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 only if</div><div class="b"><code>only if</code> = solo si (condici\u00f3n necesaria y suficiente):<br><code>I\'ll come only if you invite me.</code> \u2260 <code>I\'ll come unless you invite me.</code></div></div>';
+
+/* ================= CONTENIDO: AS (CUANDO / RAZÓN / COMPARACIÓN) ================= */
+const CAS_CAT_LABEL = {as_tiempo:"AS (TIEMPO)",as_razon:"AS (RAZ\u00d3N)",as_as:"AS... AS (COMPARACI\u00d3N)",as_modo:"AS (MODO)",error:"FRASE CORRECTA"};
+const CAS_BANK = [
+  {id:"cas-1",cat:"as_tiempo",blank:"___ I was walking home, I saw an accident.",options:["As","While","When"],answer:"As",note:"as (= at the same time as) para acciones simult\u00e1neas: mientras yo caminaba."},
+  {id:"cas-2",cat:"as_tiempo",blank:"___ she got older, she became wiser.",options:["As","While","When"],answer:"As",note:"as para cambios progresivos: a medida que envejec\u00eda."},
+  {id:"cas-3",cat:"as_tiempo",blank:"We saw him ___ he was leaving.",options:["as","while","when"],answer:"as",note:"as: en el mismo momento en que."},
+  {id:"cas-4",cat:"as_razon",blank:"___ it was late, we decided to stop.",options:["As","While","Although"],answer:"As",note:"as para raz\u00f3n (= because/since): como era tarde."},
+  {id:"cas-5",cat:"as_razon",blank:"___ she had no money, she couldn't buy it.",options:["As","While","Unless"],answer:"As",note:"as = since = because (raz\u00f3n al principio)."},
+  {id:"cas-6",cat:"as_as",blank:"He's not ___ tall as his father.",options:["as","so","such"],answer:"as",note:"as... as para igualdad: no tan alto como su padre."},
+  {id:"cas-7",cat:"as_as",blank:"This book is ___ interesting ___ that one.",options:["as / as","so / as","such / as"],answer:"as / as",note:"as + adjetivo + as: tan... como."},
+  {id:"cas-8",cat:"as_as",blank:"She works ___ hard ___ her brother.",options:["as / as","so / as","as / than"],answer:"as / as",note:"as + adverbio + as."},
+  {id:"cas-9",cat:"as_modo",blank:"Do it ___ I showed you.",options:["as","like","how"],answer:"as",note:"as (= in the way that): h\u00e1zlo como te mostr\u00e9. Con verbo \u2192 as."},
+  {id:"cas-10",cat:"as_modo",blank:"Leave things ___ you found them.",options:["as","like","so"],answer:"as",note:"as you found them: tal y como los encontraste."},
+  {id:"cas-11",cat:"error",choose:true,options:["As getting older, she became wiser.","As she got older, she became wiser.","While she got older, she became wiser."],answer:"As she got older, she became wiser.",note:"as para cambio progresivo: as + sujeto + verbo.",errorProne:true},
+  {id:"cas-12",cat:"error",choose:true,options:["This car is so expensive as that one.","This car is as expensive as that one.","This car is as expensive than that one."],answer:"This car is as expensive as that one.",note:"Comparaci\u00f3n de igualdad: as + adjetivo + as (no so...as, no as...than).",errorProne:true}
+];
+const CAS_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 as para tiempo (= al mismo tiempo)</div><div class="b">Para acciones simult\u00e1neas o cambios progresivos:<br><code>As I was walking home, I saw an accident.</code><br><code>As she got older, she became wiser.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 as para raz\u00f3n (= because/since)</div><div class="b">Normalmente al principio, para razones conocidas:<br><code>As it was late, we decided to stop.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 as + adj + as (comparaci\u00f3n de igualdad)</div><div class="b"><code>He\'s as tall as his father.</code><br><code>This isn\'t as good as I expected.</code></div></div>' +
+  '<div class="psRule"><div class="h">4 \u00b7 as (modo: del modo que)</div><div class="b">Con verbo \u2192 as: <code>Do it as I showed you.</code><br>Sin verbo \u2192 like: <code>She sings like a professional.</code></div></div>';
+
+/* ================= CONTENIDO: LIKE AND AS ================= */
+const CLAS_CAT_LABEL = {like_sim:"LIKE + SUSTANTIVO",as_rol:"AS + ROL / FUNCI\u00d3N",like_as_c:"LIKE VS AS",error:"FRASE CORRECTA"};
+const CLAS_BANK = [
+  {id:"clas-1",cat:"like_sim",blank:"She sings ___ a professional.",options:["like","as","as if"],answer:"like",note:"like + sustantivo/pronombre: como un profesional (comparaci\u00f3n)."},
+  {id:"clas-2",cat:"like_sim",blank:"He looks ___ his father.",options:["like","as","similar"],answer:"like",note:"look like = parecerse a."},
+  {id:"clas-3",cat:"like_sim",blank:"What does it taste ___?",options:["like","as","as if"],answer:"like",note:"taste/smell/sound like: sabe/huele/suena como."},
+  {id:"clas-4",cat:"like_sim",blank:"What does it look ___?",options:["like","as","as if"],answer:"like",note:"What does it look like? = \u00bfC\u00f3mo es? / \u00bfA qu\u00e9 se parece?"},
+  {id:"clas-5",cat:"as_rol",blank:"She works ___ a nurse.",options:["as","like","such as"],answer:"as",note:"as + funci\u00f3n/rol: trabaja de enfermera. Funci\u00f3n real."},
+  {id:"clas-6",cat:"as_rol",blank:"He used his shoe ___ a hammer.",options:["as","like","as if"],answer:"as",note:"as: us\u00f3 su zapato como martillo (funci\u00f3n real, no comparaci\u00f3n)."},
+  {id:"clas-7",cat:"as_rol",blank:"In 1990, ___ a young student, she came to Spain.",options:["as","like","as if"],answer:"as",note:"as: en su calidad de estudiante (estado/rol real)."},
+  {id:"clas-8",cat:"like_as_c",blank:"Animals ___ lions and tigers are endangered.",options:["like","as","such as"],answer:"like",note:"like (o such as): por ejemplo, para dar ejemplos."},
+  {id:"clas-9",cat:"like_as_c",blank:"___ I said, I'll be there at 9.",options:["As","Like","Such as"],answer:"As",note:"As I said: como dije (cl\u00e1usula con verbo \u2192 as en formal)."},
+  {id:"clas-10",cat:"like_as_c",blank:"She treated me ___ I were a child.",options:["as if","like","as"],answer:"as if",note:"as if + cl\u00e1usula: como si fuera un ni\u00f1o."},
+  {id:"clas-11",cat:"error",choose:true,options:["She works like a doctor.","She works as a doctor.","She works as if a doctor."],answer:"She works as a doctor.",note:"Funci\u00f3n real/profesi\u00f3n \u2192 as. like implica 'similar a', no la profesi\u00f3n real.",errorProne:true},
+  {id:"clas-12",cat:"error",choose:true,options:["He looks as his brother.","He looks like his brother.","He looks as if his brother."],answer:"He looks like his brother.",note:"Parecerse a alguien \u2192 look like (no look as).",errorProne:true}
+];
+const CLAS_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 like + sustantivo = comparaci\u00f3n</div><div class="b">Para comparar (es similar a):<br><code>She sings like a professional.</code><br><code>He looks like his father.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 as + funci\u00f3n/rol</div><div class="b">Para indicar una funci\u00f3n o rol real:<br><code>She works as a nurse.</code> (ES enfermera)<br>Diferencia: <code>He acted like a child</code> (comparaci\u00f3n) vs. <code>He worked as a teacher</code> (rol real).</div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 as I said / as you know (con verbo)</div><div class="b">Con verbo despu\u00e9s \u2192 as (formal) o like (informal):<br><code>As I said, it\'s too expensive.</code></div></div>';
+
+/* ================= CONTENIDO: LIKE, AS IF ================= */
+const CLASIF_CAT_LABEL = {as_if_real:"AS IF / AS THOUGH",as_if_irreal:"AS IF + IRREAL",error:"FRASE CORRECTA"};
+const CLASIF_BANK = [
+  {id:"clasif-1",cat:"as_if_real",blank:"You look ___ you've seen a ghost.",options:["as if","like","as"],answer:"as if",note:"as if + cl\u00e1usula: como si hubieras visto un fantasma. (as if es formal; like es informal)"},
+  {id:"clasif-2",cat:"as_if_real",blank:"She talks ___ she knows everything.",options:["as if","like","as though"],answer:"as if",note:"as if o as though: como si supiera todo."},
+  {id:"clasif-3",cat:"as_if_real",blank:"It looks ___ it's going to rain.",options:["as if","as","like"],answer:"as if",note:"as if + presente: puede ser algo que parece verdad."},
+  {id:"clasif-4",cat:"as_if_irreal",blank:"He behaves ___ he owned the place.",options:["as if","as","like"],answer:"as if",note:"as if + pasado simple: situaci\u00f3n irreal en presente. (no lo posee en realidad)"},
+  {id:"clasif-5",cat:"as_if_irreal",blank:"She dresses ___ it were summer.",options:["as if","as","as though"],answer:"as if",note:"as if it were: situaci\u00f3n irreal. 'Were' para todos los sujetos."},
+  {id:"clasif-6",cat:"as_if_irreal",blank:"He spends money ___ he were a millionaire.",options:["as if","as though","like"],answer:"as if",note:"as if + were (irreal): como si fuera millonario (pero no lo es)."},
+  {id:"clasif-7",cat:"as_if_irreal",blank:"She stared at me ___ I'd said something wrong.",options:["as if","as","like"],answer:"as if",note:"as if + past perfect: como si hubiera dicho algo incorrecto."},
+  {id:"clasif-8",cat:"as_if_irreal",blank:"He acts ___ he knew everything.",options:["as if","as though","like"],answer:"as if",note:"as if + past simple: situaci\u00f3n irreal."},
+  {id:"clasif-9",cat:"error",choose:true,options:["He talks as if he is a expert.","He talks as if he were an expert.","He talks like an expert."],answer:"He talks as if he were an expert.",note:"as if + situaci\u00f3n irreal \u2192 pasado simple (were).",errorProne:true},
+  {id:"clasif-10",cat:"error",choose:true,options:["You look as if you seen a ghost.","You look as if you had seen a ghost.","You look like you've seen a ghost."],answer:"You look as if you had seen a ghost.",note:"as if + past perfect para situaci\u00f3n pasada irreal o muy sugerida.",errorProne:true}
+];
+const CLASIF_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 as if / as though + cl\u00e1usula</div><div class="b">Para comparaciones con cl\u00e1usula de verbo:<br><code>You look as if you\'ve seen a ghost.</code><br><code>She talks as though she knows everything.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 as if + pasado (situaci\u00f3n irreal)</div><div class="b">Para algo que claramente NO es verdad:<br><code>He behaves as if he owned the place.</code> (no lo posee)<br><code>She dresses as if it were summer.</code><br>Se usa were para todos los sujetos (formal).</div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 like sin verbo vs. as if con verbo</div><div class="b">Sin verbo: <code>She sings like a professional.</code><br>Con verbo: <code>She sings as if she were a professional.</code></div></div>';
+
+/* ================= CONTENIDO: DURING / FOR / WHILE ================= */
+const CDW_CAT_LABEL = {during_n:"DURING + NOUN",for_dur:"FOR + DURATION",while_cl:"WHILE + CLAUSE",error:"FRASE CORRECTA"};
+const CDW_BANK = [
+  {id:"cdw-1",cat:"during_n",blank:"I fell asleep ___ the film.",options:["during","for","while"],answer:"during",note:"during + noun: durante la pel\u00edcula (nombre de per\u00edodo)."},
+  {id:"cdw-2",cat:"during_n",blank:"We didn't speak ___ the journey.",options:["during","for","while"],answer:"during",note:"during + noun: durante el viaje."},
+  {id:"cdw-3",cat:"during_n",blank:"He learnt Spanish ___ the summer.",options:["during","for","while"],answer:"during",note:"during + noun (the summer): durante el verano."},
+  {id:"cdw-4",cat:"for_dur",blank:"She stayed in hospital ___ three weeks.",options:["for","during","while"],answer:"for",note:"for + period of time: durante tres semanas (cu\u00e1nto tiempo)."},
+  {id:"cdw-5",cat:"for_dur",blank:"I worked in London ___ six months.",options:["for","during","while"],answer:"for",note:"for + period: durante seis meses."},
+  {id:"cdw-6",cat:"for_dur",blank:"I waited ___ half an hour.",options:["for","while","during"],answer:"for",note:"for + duraci\u00f3n: durante media hora (cu\u00e1nto tiempo)."},
+  {id:"cdw-7",cat:"while_cl",blank:"___ I was watching TV, I fell asleep.",options:["While","During","For"],answer:"While",note:"while + clause (subject + verb): mientras estaba viendo la tele."},
+  {id:"cdw-8",cat:"while_cl",blank:"___ the concert, somebody started singing.",options:["During","While","For"],answer:"During",note:"during + noun (the concert): durante el concierto."},
+  {id:"cdw-9",cat:"while_cl",blank:"___ she was speaking, everyone listened carefully.",options:["While","During","For"],answer:"While",note:"while + clause: mientras ella hablaba."},
+  {id:"cdw-10",cat:"while_cl",blank:"___ she was cooking, I set the table.",options:["While","For","During"],answer:"While",note:"while + clause: mientras ella cocinaba."},
+  {id:"cdw-11",cat:"error",choose:true,options:["I fell asleep while the film.","I fell asleep during the film.","I fell asleep for the film."],answer:"I fell asleep during the film.",note:"during + noun. while + clause. No 'while + noun'.",errorProne:true},
+  {id:"cdw-12",cat:"error",choose:true,options:["She worked during three hours.","She worked for three hours.","She worked while three hours."],answer:"She worked for three hours.",note:"for + duraci\u00f3n (three hours). during + noun period.",errorProne:true}
+];
+const CDW_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 during + noun (cu\u00e1ndo)</div><div class="b">Para decir cu\u00e1ndo ocurre algo dentro de un per\u00edodo:<br><code>I fell asleep during the film.</code><br><code>He learned Spanish during the summer.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 for + period (cu\u00e1nto tiempo)</div><div class="b">Para expresar la duraci\u00f3n:<br><code>She stayed for three weeks.</code><br><code>I worked there for six months.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 while + clause (simultaneidad)</div><div class="b">while + sujeto + verbo: para acciones simult\u00e1neas:<br><code>While I was watching TV, I fell asleep.</code><br>\u26a0\ufe0f while + noun \u274c \u2192 during + noun \u2705</div></div>';
+
+/* ================= CONTENIDO: BY AND UNTIL / BY THE TIME ================= */
+const CBU_CAT_LABEL = {by_lim:"BY (L\u00cdMITE)",until_dur:"UNTIL (HASTA)",by_time:"BY THE TIME",error:"FRASE CORRECTA"};
+const CBU_BANK = [
+  {id:"cbu-1",cat:"by_lim",blank:"Please finish the report ___ Friday.",options:["by","until","till"],answer:"by",note:"by = antes de / para (l\u00edmite): para el viernes."},
+  {id:"cbu-2",cat:"by_lim",blank:"The guests should arrive ___ 8 o'clock.",options:["by","until","when"],answer:"by",note:"by 8: habr\u00e1n llegado para las 8 (l\u00edmite)."},
+  {id:"cbu-3",cat:"by_lim",blank:"They will have finished ___ the end of the week.",options:["by","until","for"],answer:"by",note:"by the end of: para finales de la semana (l\u00edmite)."},
+  {id:"cbu-4",cat:"until_dur",blank:"I worked ___ midnight.",options:["until","by","for"],answer:"until",note:"until = hasta. Acci\u00f3n que contin\u00faa hasta ese punto."},
+  {id:"cbu-5",cat:"until_dur",blank:"She stayed in bed ___ noon.",options:["until","by","to"],answer:"until",note:"until noon: hasta el mediod\u00eda."},
+  {id:"cbu-6",cat:"until_dur",blank:"Wait here ___ I get back.",options:["until","by","when"],answer:"until",note:"until = espera hasta que yo vuelva."},
+  {id:"cbu-7",cat:"until_dur",blank:"I didn't know until ___ you told me.",options:["\u2014","by","for"],answer:"\u2014",note:"until + clause: no lo supe hasta que me lo dijiste."},
+  {id:"cbu-8",cat:"by_time",blank:"___ you read this, I'll be gone.",options:["By the time","Until","When"],answer:"By the time",note:"By the time + present simple = para cuando (en el futuro)."},
+  {id:"cbu-9",cat:"by_time",blank:"___ she arrived, everyone had left.",options:["By the time","Until","When"],answer:"By the time",note:"By the time + past simple = para cuando (en el pasado) \u2192 past perfect en la otra cl\u00e1usula."},
+  {id:"cbu-10",cat:"by_time",blank:"___ we get there, the film will have started.",options:["By the time","Until","When"],answer:"By the time",note:"By the time we get there \u2192 future perfect en la otra cl\u00e1usula."},
+  {id:"cbu-11",cat:"error",choose:true,options:["I'll wait until you'll come back.","I'll wait until you come back.","I'll wait by you come back."],answer:"I'll wait until you come back.",note:"until + presente simple (no will) en cl\u00e1usulas de tiempo.",errorProne:true},
+  {id:"cbu-12",cat:"error",choose:true,options:["Please finish it until Friday.","Please finish it by Friday.","Please finish it till Friday."],answer:"Please finish it by Friday.",note:"by = l\u00edmite/para. until = hasta (implica que algo dura hasta ese punto).",errorProne:true},
+  {id:"cbu-13",cat:"error",choose:true,options:["By the time she arrived, everyone left.","By the time she arrived, everyone had left.","Until she arrived, everyone had left."],answer:"By the time she arrived, everyone had left.",note:"By the time + past \u2192 past perfect en la consecuencia.",errorProne:true}
+];
+const CBU_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 by = para / antes de (l\u00edmite)</div><div class="b">Indica el momento l\u00edmite antes del cual algo debe ocurrir:<br><code>Please finish the report by Friday.</code><br><code>They should arrive by 8.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 until = hasta (continuidad)</div><div class="b">La acci\u00f3n contin\u00faa hasta ese punto:<br><code>I worked until midnight.</code><br>\u26a0\ufe0f until + presente simple (no will): <code>until I come back</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 by the time</div><div class="b">Para cuando / en el momento en que:<br><code>By the time you read this, I\'ll be gone.</code> (futuro perfecto)<br><code>By the time she arrived, everyone had left.</code> (past perfect)</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -3794,6 +4087,90 @@ const GU_UNITS = {
     color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
     subtitle:"Afirmación → tag negativa. Negación → tag afirmativa. Casos especiales: aren't I?, nobody did, let's/don't.",
     learnHtml: QTG_LEARN_HTML, catLabel: QTG_CAT_LABEL, bank: QTG_BANK
+  },
+  "rel-1": {
+    id:"rel-1", name:"Relative clauses 1: who/that/which", icon:"🔗",
+    color:"#9333ea", pillBg:"#f3e8ff", pillColor:"#3b0764",
+    subtitle:"who para personas, which para cosas, that para ambos. Acuerdo verbal. Usos obligatorios de that.",
+    learnHtml: REL1_LEARN_HTML, catLabel: REL1_CAT_LABEL, bank: REL1_BANK
+  },
+  "rel-2": {
+    id:"rel-2", name:"Relative clauses 2: with and without who/that/which", icon:"✂️",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Cuándo se puede omitir el pronombre relativo (objeto) y cuándo no (sujeto).",
+    learnHtml: REL2_LEARN_HTML, catLabel: REL2_CAT_LABEL, bank: REL2_BANK
+  },
+  "rel-3": {
+    id:"rel-3", name:"Relative clauses 3: whose/whom/where", icon:"📍",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"whose (posesivo). where/when/why para lugar/tiempo/razón. whom en inglés formal.",
+    learnHtml: REL3_LEARN_HTML, catLabel: REL3_CAT_LABEL, bank: REL3_BANK
+  },
+  "rel-4": {
+    id:"rel-4", name:"Relative clauses 4: extra information (1)", icon:"📝",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"Cláusulas no definitorias (entre comas): who/which, nunca that. Definitoria vs. no definitoria.",
+    learnHtml: REL4_LEARN_HTML, catLabel: REL4_CAT_LABEL, bank: REL4_BANK
+  },
+  "rel-5": {
+    id:"rel-5", name:"Relative clauses 5: extra information (2)", icon:"🧵",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"which para referirse a toda la frase. Preposición + which (formal). Those who / All who.",
+    learnHtml: REL5_LEARN_HTML, catLabel: REL5_CAT_LABEL, bank: REL5_BANK
+  },
+  "ing-ed-clauses": {
+    id:"ing-ed-clauses", name:"-ing and -ed clauses", icon:"🔄",
+    color:"#b91c1c", pillBg:"#fee2e2", pillColor:"#450a0a",
+    subtitle:"-ing para cláusulas activas (= who/which + verbo activo). -ed para pasivas (= which was/were + participio).",
+    learnHtml: RELIC_LEARN_HTML, catLabel: RELIC_CAT_LABEL, bank: RELIC_BANK
+  },
+  "although": {
+    id:"although", name:"although, though, even though, in spite of, despite", icon:"🌧️",
+    color:"#64748b", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"although/though/even though + cláusula. in spite of/despite + noun/-ing. however/nevertheless entre frases.",
+    learnHtml: CAL_LEARN_HTML, catLabel: CAL_CAT_LABEL, bank: CAL_BANK
+  },
+  "in-case": {
+    id:"in-case", name:"in case", icon:"🎒",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#134e4a",
+    subtitle:"in case = por si acaso (precaución anticipada). in case vs. if. In case of + noun.",
+    learnHtml: CIC_LEARN_HTML, catLabel: CIC_CAT_LABEL, bank: CIC_BANK
+  },
+  "unless": {
+    id:"unless", name:"unless, as long as, provided", icon:"🚦",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#7f1d1d",
+    subtitle:"unless = if not (no doblar la negación). as long as / provided = con la condición de que.",
+    learnHtml: CUNL_LEARN_HTML, catLabel: CUNL_CAT_LABEL, bank: CUNL_BANK
+  },
+  "as-time": {
+    id:"as-time", name:"as (as I walked… / as I was…)", icon:"⏱️",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"as para tiempo (simultáneo/progresivo), razón (= because), comparación (as…as) y modo (= del modo que).",
+    learnHtml: CAS_LEARN_HTML, catLabel: CAS_CAT_LABEL, bank: CAS_BANK
+  },
+  "like-as": {
+    id:"like-as", name:"like and as", icon:"🪞",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"like + noun (comparación). as + rol/función real. like/as con ejemplos. as I said con cláusula.",
+    learnHtml: CLAS_LEARN_HTML, catLabel: CLAS_CAT_LABEL, bank: CLAS_BANK
+  },
+  "like-as-if": {
+    id:"like-as-if", name:"like, as if", icon:"🎭",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"as if/as though + cláusula real o irreal. Pasado irreal (were). like sin verbo vs. as if con verbo.",
+    learnHtml: CLASIF_LEARN_HTML, catLabel: CLASIF_CAT_LABEL, bank: CLASIF_BANK
+  },
+  "during-while": {
+    id:"during-while", name:"during, for, while", icon:"⌛",
+    color:"#059669", pillBg:"#d1fae5", pillColor:"#064e3b",
+    subtitle:"during + noun (cuándo). for + duration (cuánto tiempo). while + clause (simultaneidad).",
+    learnHtml: CDW_LEARN_HTML, catLabel: CDW_CAT_LABEL, bank: CDW_BANK
+  },
+  "by-until": {
+    id:"by-until", name:"by and until, by the time…", icon:"📅",
+    color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
+    subtitle:"by = límite/para. until = hasta. By the time + future perfect / past perfect.",
+    learnHtml: CBU_LEARN_HTML, catLabel: CBU_CAT_LABEL, bank: CBU_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
