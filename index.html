@@ -3774,6 +3774,221 @@ const CBU_LEARN_HTML =
   '<div class="psRule"><div class="h">2 \u00b7 until = hasta (continuidad)</div><div class="b">La acci\u00f3n contin\u00faa hasta ese punto:<br><code>I worked until midnight.</code><br>\u26a0\ufe0f until + presente simple (no will): <code>until I come back</code></div></div>' +
   '<div class="psRule"><div class="h">3 \u00b7 by the time</div><div class="b">Para cuando / en el momento en que:<br><code>By the time you read this, I\'ll be gone.</code> (futuro perfecto)<br><code>By the time she arrived, everyone had left.</code> (past perfect)</div></div>';
 
+/* ================= CONTENIDO: MYSELF/YOURSELF/THEMSELVES ETC. ================= */
+const PRON1_CAT_LABEL = {forma:"FORMAS",reflexivo:"USO REFLEXIVO",enfasis:"ÉNFASIS",each_other:"EACH OTHER",error:"FRASE CORRECTA"};
+const PRON1_BANK = [
+  {id:"pron1-1",cat:"forma",blank:"She burned ___ on the stove.",options:["herself","itself","himself"],answer:"herself",note:"she → herself. La acción recae sobre el mismo sujeto."},
+  {id:"pron1-2",cat:"forma",blank:"Be careful — don't hurt ___!",options:["yourself","himself","yourselves"],answer:"yourself",note:"you (singular) → yourself."},
+  {id:"pron1-3",cat:"forma",blank:"They organized the event ___.",options:["themselves","theirselves","each other"],answer:"themselves",note:"they → themselves (no 'theirselves')."},
+  {id:"pron1-4",cat:"reflexivo",blank:"He taught ___ to play guitar.",options:["himself","him","itself"],answer:"himself",note:"Se enseñó a sí mismo: reflexivo."},
+  {id:"pron1-5",cat:"reflexivo",blank:"I'm really proud of ___.",options:["myself","me","itself"],answer:"myself",note:"proud of myself: orgulloso de mí mismo."},
+  {id:"pron1-6",cat:"reflexivo",blank:"She looked at ___ in the mirror.",options:["herself","her","itself"],answer:"herself",note:"Mirar en el espejo: reflexivo."},
+  {id:"pron1-7",cat:"enfasis",blank:"I made this cake ___.",options:["myself","by myself","on my own"],answer:"myself",note:"myself para énfasis: lo hice yo mismo."},
+  {id:"pron1-8",cat:"enfasis",blank:"The president ___ came to the meeting.",options:["himself","by himself","itself"],answer:"himself",note:"Énfasis: el propio presidente."},
+  {id:"pron1-9",cat:"each_other",blank:"They looked at ___.",options:["each other","themselves","one another"],answer:"each other",note:"each other = el uno al otro (acción recíproca entre dos)."},
+  {id:"pron1-10",cat:"each_other",blank:"Tom and Mary write to ___ every week.",options:["each other","themselves","one another"],answer:"each other",note:"Se escriben el uno al otro: each other."},
+  {id:"pron1-11",cat:"each_other",blank:"They blamed ___ for the accident.",options:["each other","themselves","one another"],answer:"each other",note:"Se culparon el uno al otro."},
+  {id:"pron1-12",cat:"error",choose:true,options:["They enjoyed theirselves at the party.","They enjoyed themselves at the party.","They enjoyed each other at the party."],answer:"They enjoyed themselves at the party.",note:"themselves (no 'theirselves'). enjoy oneself = pasarlo bien.",errorProne:true},
+  {id:"pron1-13",cat:"error",choose:true,options:["She washed her and went to bed.","She washed herself and went to bed.","She washed by herself and went to bed."],answer:"She washed herself and went to bed.",note:"La acción recae sobre el mismo sujeto: reflexivo.",errorProne:true}
+];
+const PRON1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · Formas reflexivas</div><div class="b">I→myself, you→yourself/yourselves, he→himself, she→herself, it→itself, we→ourselves, they→themselves.<br>⚠️ theirselves no existe.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Uso reflexivo</div><div class="b">Cuando el sujeto y el objeto son la misma persona:<br><code>She burned herself.</code> / <code>He taught himself guitar.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Énfasis y each other</div><div class="b">Énfasis (yo mismo): <code>I made this myself.</code> / <code>The president himself came.</code><br>Acción recíproca (el uno al otro): <code>They looked at each other.</code></div></div>';
+
+/* ================= CONTENIDO: A FRIEND OF MINE / MY OWN / BY MYSELF ================= */
+const PRON2_CAT_LABEL = {of_mine:"OF MINE/YOURS/HIS...",my_own:"MY OWN / ON MY OWN",by_myself:"BY MYSELF",error:"FRASE CORRECTA"};
+const PRON2_BANK = [
+  {id:"pron2-1",cat:"of_mine",blank:"She's a friend ___ from university.",options:["of mine","of me","of my"],answer:"of mine",note:"a friend of mine = un amigo mío. of + pronombre posesivo tónico."},
+  {id:"pron2-2",cat:"of_mine",blank:"Is he a colleague ___?",options:["of yours","of you","of your"],answer:"of yours",note:"of yours = tuyo. Pronombre posesivo tónico."},
+  {id:"pron2-3",cat:"of_mine",blank:"It was an idea ___ that saved the project.",options:["of his","of him","of he"],answer:"of his",note:"of his = suya. Pronombre posesivo tónico."},
+  {id:"pron2-4",cat:"of_mine",blank:"They're friends ___.",options:["of theirs","of them","of their"],answer:"of theirs",note:"of theirs = suyos (de ellos)."},
+  {id:"pron2-5",cat:"my_own",blank:"I want to have ___ house one day.",options:["my own","mine own","my own's"],answer:"my own",note:"my own = propio mío. my/your/his/her/its/our/their + own."},
+  {id:"pron2-6",cat:"my_own",blank:"She made her ___ dress for the wedding.",options:["own","owned","self"],answer:"own",note:"her own dress: ella misma lo hizo."},
+  {id:"pron2-7",cat:"my_own",blank:"I need to have a room of ___ own.",options:["my","mine","myself"],answer:"my",note:"a room of my own = mi propio cuarto."},
+  {id:"pron2-8",cat:"by_myself",blank:"I prefer to work ___ myself.",options:["by","on","for"],answer:"by",note:"by myself = solo, sin ayuda. by + reflexive pronoun."},
+  {id:"pron2-9",cat:"by_myself",blank:"She finished the whole book by ___.",options:["herself","her","she"],answer:"herself",note:"by herself = sola / sin ayuda."},
+  {id:"pron2-10",cat:"by_myself",blank:"He solved the problem ___ himself.",options:["by","on","for"],answer:"by",note:"by himself = él solo."},
+  {id:"pron2-11",cat:"error",choose:true,options:["She's a friend of her.","She's a friend of hers.","She's her friend."],answer:"She's a friend of hers.",note:"of + pronombre posesivo tónico: of hers (no 'of her').",errorProne:true},
+  {id:"pron2-12",cat:"error",choose:true,options:["He lives alone by him.","He lives alone by himself.","He lives alone for himself."],answer:"He lives alone by himself.",note:"by himself = solo. by + reflexive pronoun.",errorProne:true}
+];
+const PRON2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · a friend of mine/yours/his/hers...</div><div class="b">a/an + noun + of + pronombre posesivo tónico:<br><code>a friend of mine</code> / <code>a colleague of yours</code> / <code>an idea of his</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · my own / your own (propio)</div><div class="b">Para enfatizar propiedad o acción personal:<br><code>I want my own house.</code> / <code>She made her own dress.</code><br><code>a room of my own</code> = mi propio cuarto</div></div>' +
+  '<div class="psRule"><div class="h">3 · by myself/yourself... (solo / sin ayuda)</div><div class="b"><code>He solved it by himself.</code> / <code>She finished it by herself.</code></div></div>';
+
+/* ================= CONTENIDO: THERE AND IT ================= */
+const PRON3_CAT_LABEL = {there_be:"THERE + BE",it_clima:"IT (TIEMPO/HORA/DISTANCIA)",it_formal:"IT (SUJETO FORMAL)",error:"FRASE CORRECTA"};
+const PRON3_BANK = [
+  {id:"pron3-1",cat:"there_be",blank:"___ is a bank near here.",options:["There","It","This"],answer:"There",note:"there is/are: para indicar existencia o presencia."},
+  {id:"pron3-2",cat:"there_be",blank:"___ were a lot of people at the party.",options:["There","It","They"],answer:"There",note:"there were: plural → were."},
+  {id:"pron3-3",cat:"there_be",blank:"___ isn't any milk in the fridge.",options:["There","It","This"],answer:"There",note:"there isn't: negativa de there is."},
+  {id:"pron3-4",cat:"there_be",blank:"___ must be a solution.",options:["There","It","That"],answer:"There",note:"There must be: modal + be."},
+  {id:"pron3-5",cat:"there_be",blank:"___ used to be a cinema here.",options:["There","It","This"],answer:"There",note:"There used to be: existencia en el pasado."},
+  {id:"pron3-6",cat:"it_clima",blank:"___ is raining heavily.",options:["It","There","This"],answer:"It",note:"it para tiempo atmosférico."},
+  {id:"pron3-7",cat:"it_clima",blank:"___ is 9 o'clock.",options:["It","There","Is"],answer:"It",note:"it para la hora."},
+  {id:"pron3-8",cat:"it_clima",blank:"___ is five kilometres from here to the city.",options:["It","There","Is"],answer:"It",note:"it para distancias."},
+  {id:"pron3-9",cat:"it_clima",blank:"___ was a beautiful day.",options:["It","There","This"],answer:"It",note:"it para condiciones meteorológicas."},
+  {id:"pron3-10",cat:"it_formal",blank:"___ is nice to see you again.",options:["It","This","There"],answer:"It",note:"it sujeto formal: It is + adj + to + infinitivo."},
+  {id:"pron3-11",cat:"it_formal",blank:"___ seems that everyone agrees.",options:["It","There","This"],answer:"It",note:"It seems/appears that...: sujeto impersonal."},
+  {id:"pron3-12",cat:"it_formal",blank:"___ took us two hours to get there.",options:["It","There","That"],answer:"It",note:"It takes + time + to + infinitivo."},
+  {id:"pron3-13",cat:"error",choose:true,options:["There is raining.","It is raining.","Is raining."],answer:"It is raining.",note:"El tiempo atmosférico usa it, no there.",errorProne:true},
+  {id:"pron3-14",cat:"error",choose:true,options:["It is a bank near here.","There is a bank near here.","Is a bank near here."],answer:"There is a bank near here.",note:"Para indicar existencia o presencia → there is/are.",errorProne:true}
+];
+const PRON3_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · there + be (existencia)</div><div class="b">Para decir que algo existe o que hay algo:<br><code>There is a bank near here.</code><br>Singular → there is. Plural → there are.</div></div>' +
+  '<div class="psRule"><div class="h">2 · it para tiempo, hora y distancia</div><div class="b"><code>It is raining.</code> / <code>It is 9 o\'clock.</code><br><code>It is 5 kilometres from here.</code><br>⚠️ Nunca there para tiempo atmosférico.</div></div>' +
+  '<div class="psRule"><div class="h">3 · it como sujeto formal</div><div class="b"><code>It is nice to see you.</code><br><code>It seems that everyone agrees.</code><br><code>It takes two hours to get there.</code></div></div>';
+
+/* ================= CONTENIDO: SOME AND ANY ================= */
+const PRON4_CAT_LABEL = {some_afirm:"SOME (AFIRMATIVO)",any_neg:"ANY (NEGATIVO/PREGUNTA)",some_oferta:"SOME EN OFERTAS",compounds:"COMPUESTOS",error:"FRASE CORRECTA"};
+const PRON4_BANK = [
+  {id:"pron4-1",cat:"some_afirm",blank:"There is ___ milk in the fridge.",options:["some","any","no"],answer:"some",note:"some en frases afirmativas: hay algo de leche."},
+  {id:"pron4-2",cat:"some_afirm",blank:"I bought ___ books at the market.",options:["some","any","no"],answer:"some",note:"some en afirmativas: compré unos libros."},
+  {id:"pron4-3",cat:"any_neg",blank:"There isn't ___ milk in the fridge.",options:["any","some","no"],answer:"any",note:"any en negativas: no hay nada de leche."},
+  {id:"pron4-4",cat:"any_neg",blank:"Did you buy ___ books?",options:["any","some","no"],answer:"any",note:"any en preguntas: ¿compraste algún libro?"},
+  {id:"pron4-5",cat:"any_neg",blank:"I didn't meet ___ interesting people.",options:["any","some","no"],answer:"any",note:"any con negación."},
+  {id:"pron4-6",cat:"any_neg",blank:"___ seat will do — I'm not fussy.",options:["Any","Some","No"],answer:"Any",note:"Any = cualquiera (no importa cuál). Afirmativa."},
+  {id:"pron4-7",cat:"some_oferta",blank:"Would you like ___ tea?",options:["some","any","no"],answer:"some",note:"some en ofertas (se espera 'sí'): ¿quieres té?"},
+  {id:"pron4-8",cat:"some_oferta",blank:"Can I have ___ water, please?",options:["some","any","a"],answer:"some",note:"some en peticiones educadas."},
+  {id:"pron4-9",cat:"compounds",blank:"Has ___ seen my keys?",options:["anyone","someone","no one"],answer:"anyone",note:"anyone en preguntas = ¿ha visto alguien?"},
+  {id:"pron4-10",cat:"compounds",blank:"I can't find my keys ___.",options:["anywhere","somewhere","nowhere"],answer:"anywhere",note:"anywhere en negativas = en ninguna parte."},
+  {id:"pron4-11",cat:"compounds",blank:"___ told me a secret yesterday.",options:["Someone","Anyone","No one"],answer:"Someone",note:"someone en afirmativas = alguien (específico pero sin decir quién)."},
+  {id:"pron4-12",cat:"error",choose:true,options:["I have any problems — can you help me?","I have some problems — can you help me?","I have no problems — can you help me?"],answer:"I have some problems — can you help me?",note:"Afirmación → some.",errorProne:true},
+  {id:"pron4-13",cat:"error",choose:true,options:["Would you like any coffee?","Would you like some coffee?","Would you like no coffee?"],answer:"Would you like some coffee?",note:"Oferta donde se espera 'sí' → some.",errorProne:true}
+];
+const PRON4_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · some (afirmativas)</div><div class="b"><code>some</code> en frases afirmativas: <code>There is some milk.</code> / <code>I bought some books.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · any (negativas y preguntas)</div><div class="b"><code>any</code> en negativas: <code>There isn\'t any milk.</code><br><code>any</code> en preguntas: <code>Did you buy any books?</code><br><code>any</code> = cualquiera (afirmativa): <code>Any seat will do.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · some en ofertas y peticiones</div><div class="b">Cuando se espera una respuesta positiva:<br><code>Would you like some tea?</code><br><code>Can I have some water, please?</code></div></div>';
+
+/* ================= CONTENIDO: NO/NONE/ANY, NOTHING/NOBODY ================= */
+const PRON5_CAT_LABEL = {no_adj:"NO + NOUN",none:"NONE",nothing_nobody:"NOTHING / NOBODY / NOWHERE",error:"FRASE CORRECTA"};
+const PRON5_BANK = [
+  {id:"pron5-1",cat:"no_adj",blank:"There is ___ time left.",options:["no","none","not any"],answer:"no",note:"no + noun: no queda tiempo. Va antes del sustantivo."},
+  {id:"pron5-2",cat:"no_adj",blank:"She had ___ money.",options:["no","none","not"],answer:"no",note:"no + noun: no tenía dinero."},
+  {id:"pron5-3",cat:"none",blank:"'How many tickets are left?' '___, they're all sold.'",options:["None","No","Nothing"],answer:"None",note:"none = ninguno (pronombre, sin sustantivo después). Respuesta sola."},
+  {id:"pron5-4",cat:"none",blank:"___ of the students passed.",options:["None","No","Neither"],answer:"None",note:"None of + plural noun: ninguno de los estudiantes."},
+  {id:"pron5-5",cat:"none",blank:"'Did anyone call?' 'No, ___.'",options:["no one","none","nothing"],answer:"no one",note:"no one = nobody: nadie llamó."},
+  {id:"pron5-6",cat:"nothing_nobody",blank:"There's ___ in the fridge.",options:["nothing","none","no"],answer:"nothing",note:"nothing = nada (pronombre). No hay nada."},
+  {id:"pron5-7",cat:"nothing_nobody",blank:"___ knows the answer.",options:["Nobody","None","Nothing"],answer:"Nobody",note:"nobody = no one = nadie (sujeto)."},
+  {id:"pron5-8",cat:"nothing_nobody",blank:"I have ___ to wear.",options:["nothing","none","no"],answer:"nothing",note:"nothing to + infinitivo: nada que ponerse."},
+  {id:"pron5-9",cat:"nothing_nobody",blank:"She went ___ interesting at the weekend.",options:["nowhere","nothing","no one"],answer:"nowhere",note:"nowhere = a ningún sitio."},
+  {id:"pron5-10",cat:"nothing_nobody",blank:"There was ___ to eat — the fridge was empty.",options:["nothing","none","no"],answer:"nothing",note:"nothing to eat: nada que comer."},
+  {id:"pron5-11",cat:"error",choose:true,options:["I don't have no money.","I have no money.","I don't have any money."],answer:"I have no money.",note:"No doble negativo: 'no money' o 'don't have any money' (no las dos).",errorProne:true},
+  {id:"pron5-12",cat:"error",choose:true,options:["No of the students passed.","None of the students passed.","None students passed."],answer:"None of the students passed.",note:"none of + noun (con of). no + noun (sin of).",errorProne:true}
+];
+const PRON5_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · no + noun</div><div class="b">no va antes de un sustantivo:<br><code>There is no time.</code> / <code>She had no money.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · none (pronombre)</div><div class="b">none va solo o con of:<br><code>None of the students passed.</code><br><code>\'How many are left?\' \'None.\'</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · nothing/nobody/nowhere</div><div class="b"><code>nothing</code> = nada: <code>There\'s nothing in the fridge.</code><br><code>nobody/no one</code> = nadie: <code>Nobody knows.</code><br>⚠️ Con verbo negativo → any-: <code>I don\'t know anything.</code></div></div>';
+
+/* ================= CONTENIDO: MUCH/MANY/LITTLE/FEW/A LOT ================= */
+const PRON6_CAT_LABEL = {much_many:"MUCH / MANY",little_few:"LITTLE / FEW",a_lot:"A LOT / PLENTY OF",error:"FRASE CORRECTA"};
+const PRON6_BANK = [
+  {id:"pron6-1",cat:"much_many",blank:"There isn't ___ time left.",options:["much","many","a lot of"],answer:"much",note:"much + incontable: no queda mucho tiempo."},
+  {id:"pron6-2",cat:"much_many",blank:"There aren't ___ people here.",options:["many","much","a lot of"],answer:"many",note:"many + contable plural: no hay mucha gente."},
+  {id:"pron6-3",cat:"much_many",blank:"___ students failed the exam.",options:["Many","Much","A lot of"],answer:"Many",note:"Many + contable plural en afirmativas formales."},
+  {id:"pron6-4",cat:"much_many",blank:"How ___ money do you need?",options:["much","many","few"],answer:"much",note:"How much + incontable."},
+  {id:"pron6-5",cat:"much_many",blank:"How ___ people came?",options:["many","much","few"],answer:"many",note:"How many + contable plural."},
+  {id:"pron6-6",cat:"little_few",blank:"There is ___ hope of finding them.",options:["little","few","a little"],answer:"little",note:"little (sin a) = muy poco, casi ninguno. + incontable."},
+  {id:"pron6-7",cat:"little_few",blank:"There are ___ students in the class today.",options:["few","little","a few"],answer:"few",note:"few (sin a) = muy pocos, casi ninguno. + contable plural."},
+  {id:"pron6-8",cat:"little_few",blank:"I have ___ money — enough for a coffee.",options:["a little","little","few"],answer:"a little",note:"a little = algo de (positivo): tengo algo de dinero."},
+  {id:"pron6-9",cat:"little_few",blank:"I know ___ people who speak Mandarin.",options:["a few","few","a little"],answer:"a few",note:"a few = algunos, unos pocos (positivo). + contable."},
+  {id:"pron6-10",cat:"a_lot",blank:"There are ___ books on the shelf.",options:["a lot of","much","plenty of"],answer:"a lot of",note:"a lot of = many/much. Funciona con contables e incontables."},
+  {id:"pron6-11",cat:"a_lot",blank:"We have ___ time — there's no rush.",options:["plenty of","a lot","much"],answer:"plenty of",note:"plenty of = más que suficiente. + noun."},
+  {id:"pron6-12",cat:"error",choose:true,options:["There is many water in the bottle.","There is much water in the bottle.","There is a lot of water in the bottle."],answer:"There is a lot of water in the bottle.",note:"water es incontable: much (formal) o a lot of (habitual). many solo con contables.",errorProne:true},
+  {id:"pron6-13",cat:"error",choose:true,options:["There are much people here.","There are many people here.","There are a lot people here."],answer:"There are many people here.",note:"people (contable plural) → many. much solo con incontables.",errorProne:true}
+];
+const PRON6_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · much / many</div><div class="b"><code>much</code> + incontable: <code>much time, much money</code>.<br><code>many</code> + contable plural: <code>many people, many books</code>.<br>En afirmativas informales → <code>a lot of</code> es más natural.</div></div>' +
+  '<div class="psRule"><div class="h">2 · little / few vs. a little / a few</div><div class="b">Sin "a" → muy poco/pocos (negativo):<br><code>There is little hope.</code> / <code>Few people came.</code><br>Con "a" → algo, unos pocos (positivo):<br><code>I have a little money.</code> / <code>A few friends came.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · a lot of / plenty of</div><div class="b"><code>a lot of</code> = mucho/muchos (incontable o contable).<br><code>plenty of</code> = más que suficiente.</div></div>';
+
+/* ================= CONTENIDO: ALL/ALL OF, MOST/MOST OF, NO/NONE OF ================= */
+const PRON7_CAT_LABEL = {generalizar:"ALL/MOST/SOME + NOUN",especifico:"ALL OF/MOST OF + THE/PRONOUN",error:"FRASE CORRECTA"};
+const PRON7_BANK = [
+  {id:"pron7-1",cat:"generalizar",blank:"___ children need love and security.",options:["All","All of","Most"],answer:"All",note:"All + noun (sin of, sin the): generalización sobre todos."},
+  {id:"pron7-2",cat:"especifico",blank:"___ the children in my class passed.",options:["All of","All","Most"],answer:"All of",note:"All of + the + noun: todos los niños (grupo específico). All the... también es correcto."},
+  {id:"pron7-3",cat:"generalizar",blank:"___ people like chocolate.",options:["Most","Most of","All"],answer:"Most",note:"Most + noun (sin of): la mayoría de la gente en general."},
+  {id:"pron7-4",cat:"especifico",blank:"___ the students in my class liked the film.",options:["Most of","Most","Some of"],answer:"Most of",note:"Most of + the + noun: la mayoría de los estudiantes (grupo específico)."},
+  {id:"pron7-5",cat:"especifico",blank:"___ my friends live abroad.",options:["Most of","Most","All"],answer:"Most of",note:"Most of + pronombre posesivo + noun: la mayoría de mis amigos."},
+  {id:"pron7-6",cat:"especifico",blank:"___ them came to the party.",options:["Most of","Most","Some of"],answer:"Most of",note:"Most of + pronombre: la mayoría de ellos."},
+  {id:"pron7-7",cat:"especifico",blank:"___ us enjoyed the trip.",options:["All of","All","Most"],answer:"All of",note:"All of + pronombre (us): todos nosotros."},
+  {id:"pron7-8",cat:"generalizar",blank:"___ students find grammar difficult.",options:["Some","Some of","All"],answer:"Some",note:"Some + noun sin artículo: algunos estudiantes en general."},
+  {id:"pron7-9",cat:"especifico",blank:"___ the money was stolen.",options:["All of","All","None"],answer:"All of",note:"All of + the + incontable: todo el dinero."},
+  {id:"pron7-10",cat:"especifico",blank:"___ the students failed. None passed.",options:["None of","No","All of"],answer:"None of",note:"None of + the + noun: ninguno de los estudiantes."},
+  {id:"pron7-11",cat:"error",choose:true,options:["Most of people like music.","Most people like music.","Most of the people like music."],answer:"Most people like music.",note:"Most + noun sin artículo para generalizar. Most of + the/my/these... para grupos específicos.",errorProne:true},
+  {id:"pron7-12",cat:"error",choose:true,options:["All of students passed.","All the students passed.","All of the students passed."],answer:"All the students passed.",note:"All + the + noun o All of + the + noun. No 'All of students' sin artículo.",errorProne:true}
+];
+const PRON7_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · All/Most/Some/No + noun (generalizar)</div><div class="b">Para generalizar (sin artículo):<br><code>All children need love.</code><br><code>Most people like music.</code><br><code>No students failed.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · All of/Most of/Some of/None of + the/my/us...</div><div class="b">Para grupos específicos o con pronombres:<br><code>Most of the students passed.</code><br><code>All of my friends live abroad.</code><br><code>None of them came.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · Truco: con pronombres → of obligatorio</div><div class="b"><code>All the students</code> ✅ o <code>All of the students</code> ✅<br>Con pronombres: <code>All of us</code> ✅ (no "All us")</div></div>';
+
+/* ================= CONTENIDO: BOTH/BOTH OF, NEITHER/NEITHER OF, EITHER/EITHER OF ================= */
+const PRON8_CAT_LABEL = {both:"BOTH",neither:"NEITHER",either:"EITHER",of_noun:"+ OF + NOUN",error:"FRASE CORRECTA"};
+const PRON8_BANK = [
+  {id:"pron8-1",cat:"both",blank:"___ films were interesting.",options:["Both","Neither","Either"],answer:"Both",note:"both = los dos / ambos."},
+  {id:"pron8-2",cat:"both",blank:"She speaks ___ English and French.",options:["both","neither","either"],answer:"both",note:"both... and = tanto... como."},
+  {id:"pron8-3",cat:"neither",blank:"___ of the films was interesting.",options:["Neither","Both","Either"],answer:"Neither",note:"neither = ninguno de los dos (negativo)."},
+  {id:"pron8-4",cat:"neither",blank:"___ Tom nor Mary came.",options:["Neither","Either","Both"],answer:"Neither",note:"neither... nor = ni... ni."},
+  {id:"pron8-5",cat:"either",blank:"You can take ___ road — they both lead to the city.",options:["either","neither","both"],answer:"either",note:"either = cualquiera de los dos. (da igual cuál)."},
+  {id:"pron8-6",cat:"either",blank:"I don't like ___ of them.",options:["either","neither","both"],answer:"either",note:"don't like either = no me gusta ninguno de los dos (con negación → either)."},
+  {id:"pron8-7",cat:"of_noun",blank:"___ of the answers is correct.",options:["Neither","Both","Either"],answer:"Neither",note:"Neither of + noun: ninguna de las respuestas es correcta."},
+  {id:"pron8-8",cat:"of_noun",blank:"___ of the answers are correct.",options:["Both","Neither","Either"],answer:"Both",note:"Both of + noun (verbo plural): las dos respuestas son correctas."},
+  {id:"pron8-9",cat:"of_noun",blank:"You can use ___ of the computers.",options:["either","neither","both"],answer:"either",note:"Either of + noun: cualquiera de los dos ordenadores."},
+  {id:"pron8-10",cat:"neither",blank:"'I can't swim.' '___ can I.'",options:["Neither","Either","Both"],answer:"Neither",note:"Neither can I = yo tampoco (concordar con negativa)."},
+  {id:"pron8-11",cat:"error",choose:true,options:["I don't like neither of them.","I don't like either of them.","I like neither of them."],answer:"I don't like either of them.",note:"Con negación → either. Sin negación → neither. No doble negativo.",errorProne:true},
+  {id:"pron8-12",cat:"error",choose:true,options:["Neither of them were happy.","Neither of them was happy.","Both of them weren't happy."],answer:"Neither of them was happy.",note:"Neither + singular verb (formal).",errorProne:true}
+];
+const PRON8_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · both = los dos / ambos</div><div class="b"><code>Both films were good.</code> / <code>both... and: Both Tom and Mary came.</code><br>Both of + noun/pronoun: <code>Both of them came.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · neither = ninguno de los dos</div><div class="b"><code>Neither film was interesting.</code><br><code>neither... nor: Neither Tom nor Mary came.</code><br>⚠️ Con negación → either: <code>I don\'t like either of them.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · either = cualquiera de los dos</div><div class="b"><code>You can take either road.</code> (da igual cuál)<br><code>I don\'t like either of them.</code> (con negación = ninguno)</div></div>';
+
+/* ================= CONTENIDO: ALL/EVERY/WHOLE ================= */
+const PRON9_CAT_LABEL = {all_every:"ALL VS EVERY",whole:"WHOLE",every_all_c:"EVERY DAY VS ALL DAY",error:"FRASE CORRECTA"};
+const PRON9_BANK = [
+  {id:"pron9-1",cat:"all_every",blank:"___ student in the class passed.",options:["Every","All","Each"],answer:"Every",note:"every + singular noun: cada (todos individualmente)."},
+  {id:"pron9-2",cat:"all_every",blank:"___ the students in the class passed.",options:["All","Every","Each"],answer:"All",note:"all + the + plural noun: todos los estudiantes."},
+  {id:"pron9-3",cat:"all_every",blank:"___ country has its own laws.",options:["Every","All","Each"],answer:"Every",note:"every + singular: cada país."},
+  {id:"pron9-4",cat:"all_every",blank:"___ countries are represented at the summit.",options:["All","Every","Each"],answer:"All",note:"all + plural noun: todos los países."},
+  {id:"pron9-5",cat:"whole",blank:"She ate the ___ cake.",options:["whole","all","every"],answer:"whole",note:"the whole + singular noun: el pastel entero."},
+  {id:"pron9-6",cat:"whole",blank:"I spent ___ my life here.",options:["all","whole","every"],answer:"all",note:"all + my/his/her + noun: toda mi vida. (whole va con the)."},
+  {id:"pron9-7",cat:"whole",blank:"___ my life = my ___ life",options:["All / whole","Every / whole","All / every"],answer:"All / whole",note:"all my life = my whole life (ambos correctos)."},
+  {id:"pron9-8",cat:"every_all_c",blank:"She goes to the gym ___ day.",options:["every","all","whole"],answer:"every",note:"every day = cada día (frecuencia)."},
+  {id:"pron9-9",cat:"every_all_c",blank:"She worked ___ day without a break.",options:["all","every","whole"],answer:"all",note:"all day = durante todo el día (duración)."},
+  {id:"pron9-10",cat:"every_all_c",blank:"I waited ___ morning.",options:["all","every","whole"],answer:"all",note:"all morning = toda la mañana (duración)."},
+  {id:"pron9-11",cat:"error",choose:true,options:["Every students passed.","Every student passed.","All student passed."],answer:"Every student passed.",note:"every + singular noun. all + plural noun.",errorProne:true},
+  {id:"pron9-12",cat:"error",choose:true,options:["I spent the whole my life here.","I spent all my life here.","I spent whole my life here."],answer:"I spent all my life here.",note:"all my life (sin the). O: my whole life (con the, sin all).",errorProne:true}
+];
+const PRON9_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · every + singular / all + plural</div><div class="b"><code>every</code> + singular: <code>Every student passed.</code><br><code>all</code> + plural: <code>All students passed.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 · whole (entero)</div><div class="b">the whole + singular: <code>the whole cake, the whole day</code><br>= all + the + noun: <code>all the cake, all day</code><br>all my... = my whole...: <code>all my life = my whole life</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · every day vs. all day</div><div class="b"><code>every day</code> = cada día (frecuencia).<br><code>all day</code> = todo el día (duración).</div></div>';
+
+/* ================= CONTENIDO: EACH AND EVERY ================= */
+const PRON10_CAT_LABEL = {each_every:"EACH VS EVERY",each_uso:"EACH (USOS ESPECIALES)",error:"FRASE CORRECTA"};
+const PRON10_BANK = [
+  {id:"pron10-1",cat:"each_every",blank:"___ student has their own locker.",options:["Each","Every","All"],answer:"Each",note:"each = cada uno (individualmente, uno a uno)."},
+  {id:"pron10-2",cat:"each_every",blank:"___ day is different.",options:["Every","Each","All"],answer:"Every",note:"every = cada (colectivo, idea de totalidad). Más habitual para rutinas."},
+  {id:"pron10-3",cat:"each_every",blank:"She gave ___ child a sweet.",options:["each","every","all"],answer:"each",note:"each + singular: le dio a cada niño un caramelo (de uno en uno)."},
+  {id:"pron10-4",cat:"each_every",blank:"I visit my parents ___ weekend.",options:["every","each","all"],answer:"every",note:"every weekend: cadencia regular → every más natural."},
+  {id:"pron10-5",cat:"each_every",blank:"There are 30 students and ___ one of them passed.",options:["every","each","all"],answer:"every",note:"every one of them: cada uno de ellos (todos sin excepción)."},
+  {id:"pron10-6",cat:"each_uso",blank:"___ of the students received a certificate.",options:["Each","Every","All"],answer:"Each",note:"Each of + plural noun (con of). Every no puede ir con of directamente."},
+  {id:"pron10-7",cat:"each_uso",blank:"The players were ___ given a medal.",options:["each","every","all"],answer:"each",note:"each en posición media: cada uno recibió una medalla."},
+  {id:"pron10-8",cat:"each_uso",blank:"They ___ received a gift.",options:["each","every","all"],answer:"each",note:"each como pronombre en posición media: they each received."},
+  {id:"pron10-9",cat:"each_uso",blank:"The books cost £10 ___.",options:["each","every","apiece"],answer:"each",note:"each al final: cuestan 10 libras cada uno."},
+  {id:"pron10-10",cat:"each_every",blank:"Not ___ student passed — some failed.",options:["every","each","all"],answer:"every",note:"not every = no todos. Not every + singular."},
+  {id:"pron10-11",cat:"error",choose:true,options:["Every of the students passed.","Each of the students passed.","Each the students passed."],answer:"Each of the students passed.",note:"each of + noun (con of). every no puede ir con of directamente.",errorProne:true},
+  {id:"pron10-12",cat:"error",choose:true,options:["Each students got a book.","Each student got a book.","Every student got a books."],answer:"Each student got a book.",note:"each/every + singular noun. El sustantivo va en singular.",errorProne:true}
+];
+const PRON10_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 · each vs. every</div><div class="b"><code>each</code>: énfasis en individuos uno a uno: <code>She gave each child a sweet.</code><br><code>every</code>: la totalidad del grupo: <code>Every student passed.</code><br>En muchos contextos son intercambiables.</div></div>' +
+  '<div class="psRule"><div class="h">2 · Usos especiales de each</div><div class="b"><code>each of</code> + noun: <code>Each of the students received a certificate.</code><br>Posición media: <code>They each received a gift.</code><br>Al final: <code>The books cost £10 each.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 · not every / not each</div><div class="b"><code>Not every student passed.</code> = no todos pasaron.<br>Siempre con singular noun: <code>every student</code> (no "every students").</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -4171,6 +4386,66 @@ const GU_UNITS = {
     color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
     subtitle:"by = límite/para. until = hasta. By the time + future perfect / past perfect.",
     learnHtml: CBU_LEARN_HTML, catLabel: CBU_CAT_LABEL, bank: CBU_BANK
+  },
+  "reflexive": {
+    id:"reflexive", name:"myself/yourself/themselves etc.", icon:"🪞",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Formas reflexivas. Uso reflexivo (acción sobre uno mismo). Énfasis. Each other (acción recíproca).",
+    learnHtml: PRON1_LEARN_HTML, catLabel: PRON1_CAT_LABEL, bank: PRON1_BANK
+  },
+  "friend-of-mine": {
+    id:"friend-of-mine", name:"a friend of mine, my own house, by myself", icon:"🤝",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"a friend of mine/yours/his. my own (propio). by myself/yourself (solo, sin ayuda).",
+    learnHtml: PRON2_LEARN_HTML, catLabel: PRON2_CAT_LABEL, bank: PRON2_BANK
+  },
+  "there-it": {
+    id:"there-it", name:"there… and it…", icon:"📍",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"there is/are para existencia. it para tiempo/hora/distancia y como sujeto formal.",
+    learnHtml: PRON3_LEARN_HTML, catLabel: PRON3_CAT_LABEL, bank: PRON3_BANK
+  },
+  "some-any": {
+    id:"some-any", name:"some and any", icon:"🔢",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"some en afirmativas y ofertas. any en negativas/preguntas y como 'cualquiera'. Compuestos (someone/anyone...).",
+    learnHtml: PRON4_LEARN_HTML, catLabel: PRON4_CAT_LABEL, bank: PRON4_BANK
+  },
+  "no-none": {
+    id:"no-none", name:"no/none/any, nothing/nobody", icon:"🚫",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#7f1d1d",
+    subtitle:"no + noun. none (pronombre solo o con of). nothing/nobody/nowhere. Sin doble negativo.",
+    learnHtml: PRON5_LEARN_HTML, catLabel: PRON5_CAT_LABEL, bank: PRON5_BANK
+  },
+  "much-many": {
+    id:"much-many", name:"much, many, little, few, a lot, plenty", icon:"⚖️",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"much + incontable, many + contable. little/few (negativo) vs. a little/a few (positivo). a lot of / plenty of.",
+    learnHtml: PRON6_LEARN_HTML, catLabel: PRON6_CAT_LABEL, bank: PRON6_BANK
+  },
+  "all-most": {
+    id:"all-most", name:"all/all of, most/most of, no/none of", icon:"📊",
+    color:"#9333ea", pillBg:"#f3e8ff", pillColor:"#3b0764",
+    subtitle:"All/Most/Some + noun (generalizar). All of/Most of/None of + the/pronoun (específico).",
+    learnHtml: PRON7_LEARN_HTML, catLabel: PRON7_CAT_LABEL, bank: PRON7_BANK
+  },
+  "both-neither": {
+    id:"both-neither", name:"both/both of, neither/neither of, either/either of", icon:"⚡",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#134e4a",
+    subtitle:"both (los dos). neither (ninguno de los dos). either (cualquiera de los dos). both...and / neither...nor.",
+    learnHtml: PRON8_LEARN_HTML, catLabel: PRON8_CAT_LABEL, bank: PRON8_BANK
+  },
+  "all-every": {
+    id:"all-every", name:"all, every, whole", icon:"🌍",
+    color:"#b91c1c", pillBg:"#fee2e2", pillColor:"#450a0a",
+    subtitle:"all + plural vs. every + singular. whole = entero. every day (frecuencia) vs. all day (duración).",
+    learnHtml: PRON9_LEARN_HTML, catLabel: PRON9_CAT_LABEL, bank: PRON9_BANK
+  },
+  "each-every": {
+    id:"each-every", name:"each and every", icon:"🎯",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"each (individualidad uno a uno) vs. every (totalidad). each of. each en posición media y al final.",
+    learnHtml: PRON10_LEARN_HTML, catLabel: PRON10_CAT_LABEL, bank: PRON10_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
