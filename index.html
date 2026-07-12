@@ -4689,6 +4689,258 @@ const INGC_LEARN_HTML =
   '<div class="guRule"><div class="h">Al principio de la frase</div><div class="b">Da la razón o explica cómo pasó algo: <code>Feeling tired, she went to bed</code> = porque se sentía cansada.</div></div>' +
   '<div class="guRule"><div class="h">Negativa</div><div class="b"><code>not</code> va antes del -ing: <code>Not knowing what to say...</code></div></div>';
 
+/* ================= CONTENIDO: PREPOSITIONS ================= */
+const PREP_CAT_LABEL = {uso:"USO", error:"FRASE CORRECTA"};
+
+const PT_BANK = [
+  {id:"pt-1",cat:"uso",blank:"I'll see you ___ 5 o'clock.",options:["at","on","in"],answer:"at",note:"horas concretas → at."},
+  {id:"pt-2",cat:"uso",blank:"The meeting is ___ Monday.",options:["on","at","in"],answer:"on",note:"días → on."},
+  {id:"pt-3",cat:"uso",blank:"She was born ___ 1995.",options:["in","on","at"],answer:"in",note:"años → in."},
+  {id:"pt-4",cat:"uso",blank:"We always visit family ___ Christmas.",options:["at","on","in"],answer:"at",note:"at Christmas (periodo festivo, inglés británico)."},
+  {id:"pt-5",cat:"uso",blank:"I usually go for a run ___ the morning.",options:["in","on","at"],answer:"in",note:"partes del día → in."},
+  {id:"pt-6",cat:"uso",blank:"The train leaves ___ 9:15.",options:["at","on","in"],answer:"at",note:"horas concretas → at."},
+  {id:"pt-7",cat:"uso",blank:"My birthday is ___ July 5th.",options:["on","in","at"],answer:"on",note:"fechas → on."},
+  {id:"pt-8",cat:"uso",blank:"They got married ___ 2020.",options:["in","on","at"],answer:"in",note:"años → in."},
+  {id:"pt-9",cat:"uso",blank:"I'll be back ___ ten minutes.",options:["in","on","at"],answer:"in",note:"in = dentro de (futuro)."},
+  {id:"pt-10",cat:"uso",blank:"We stay home ___ night.",options:["at","on","in"],answer:"at",note:"at night."},
+  {id:"pt-11",cat:"error",choose:true,options:["I'll see you on 5 o'clock.","I'll see you at 5 o'clock.","I'll see you in 5 o'clock."],answer:"I'll see you at 5 o'clock.",note:"horas → at.",errorProne:true}
+];
+const PT_LEARN_HTML =
+  '<div class="guRule"><div class="h">AT = puntos exactos</div><div class="b">Horas: <code>at 5 o\'clock</code>. Momentos fijos: <code>at night, at Christmas, at the weekend</code> (inglés británico).</div></div>' +
+  '<div class="guRule"><div class="h">ON = días y fechas</div><div class="b"><code>on Monday, on July 5th, on my birthday</code>.</div></div>' +
+  '<div class="guRule"><div class="h">IN = periodos más largos</div><div class="b"><code>in June, in 2024, in the morning, in summer</code>. También "dentro de" en el futuro: <code>in ten minutes</code>.</div></div>';
+
+const OIT_BANK = [
+  {id:"oit-1",cat:"uso",blank:"The train arrived ___ ; not a minute early or late.",options:["on time","in time"],answer:"on time",note:"on time = puntual, según lo previsto."},
+  {id:"oit-2",cat:"uso",blank:"We got to the station just ___ to catch the train.",options:["in time","on time"],answer:"in time",note:"in time (for) = con tiempo de sobra, antes de que sea tarde."},
+  {id:"oit-3",cat:"uso",blank:"___ the film, everyone applauded.",options:["At the end of","In the end of"],answer:"At the end of",note:"at the end of = en el punto final de algo concreto."},
+  {id:"oit-4",cat:"uso",blank:"We couldn't decide where to go, but ___ we chose Italy.",options:["in the end","at the end"],answer:"in the end",note:"in the end = finalmente, tras un proceso (= eventually)."},
+  {id:"oit-5",cat:"uso",blank:"The meeting always starts ___ .",options:["on time","in time"],answer:"on time",note:"on time = puntual."},
+  {id:"oit-6",cat:"uso",blank:"Hurry up, or we won't be ___ for the show.",options:["in time","on time"],answer:"in time",note:"in time (for) = con margen suficiente."},
+  {id:"oit-7",cat:"uso",blank:"___ the book, the mystery is finally solved.",options:["At the end of","In the end of"],answer:"At the end of",note:"at the end of + sustantivo concreto."},
+  {id:"oit-8",cat:"uso",blank:"It was a difficult decision, but ___ it worked out well.",options:["in the end","at the end"],answer:"in the end",note:"in the end = finalmente."},
+  {id:"oit-9",cat:"error",choose:true,options:["The bus was in time today.","The bus was on time today.","The bus was at time today."],answer:"The bus was on time today.",note:"on time = puntual.",errorProne:true}
+];
+const OIT_LEARN_HTML =
+  '<div class="guRule"><div class="h">on time vs. in time</div><div class="b"><code>on time</code> = puntual, según lo previsto. <code>in time (for)</code> = con tiempo de sobra, antes de que sea demasiado tarde.</div></div>' +
+  '<div class="guRule"><div class="h">at the end vs. in the end</div><div class="b"><code>at the end (of)</code> = en el punto final de algo concreto (un libro, una película). <code>in the end</code> = finalmente, tras dudar o pasar por un proceso.</div></div>';
+
+const POS1_BANK = [
+  {id:"pos1-1",cat:"uso",blank:"The keys are ___ the table.",options:["on","in","at"],answer:"on",note:"superficies → on."},
+  {id:"pos1-2",cat:"uso",blank:"She's waiting ___ the bus stop.",options:["at","on","in"],answer:"at",note:"puntos concretos → at."},
+  {id:"pos1-3",cat:"uso",blank:"There's a fly ___ the soup!",options:["in","on","at"],answer:"in",note:"espacios/contenedores → in."},
+  {id:"pos1-4",cat:"uso",blank:"He's sitting ___ his desk.",options:["at","on","in"],answer:"at",note:"puntos concretos → at."},
+  {id:"pos1-5",cat:"uso",blank:"There's a picture ___ the wall.",options:["on","in","at"],answer:"on",note:"superficies → on."},
+  {id:"pos1-6",cat:"uso",blank:"They live ___ a small village.",options:["in","at","on"],answer:"in",note:"espacios/lugares → in."},
+  {id:"pos1-7",cat:"uso",blank:"Turn left ___ the corner.",options:["at","on","in"],answer:"at",note:"puntos concretos → at."},
+  {id:"pos1-8",cat:"uso",blank:"My glasses are ___ my bag.",options:["in","on","at"],answer:"in",note:"contenedores → in."},
+  {id:"pos1-9",cat:"error",choose:true,options:["The book is in the table.","The book is on the table.","The book is at the table."],answer:"The book is on the table.",note:"superficies → on.",errorProne:true}
+];
+const POS1_LEARN_HTML =
+  '<div class="guRule"><div class="h">IN = espacios cerrados / contenedores</div><div class="b"><code>in the room, in the box, in London</code>.</div></div>' +
+  '<div class="guRule"><div class="h">AT = puntos concretos</div><div class="b"><code>at the door, at the bus stop, at the corner</code>.</div></div>' +
+  '<div class="guRule"><div class="h">ON = superficies</div><div class="b"><code>on the table, on the wall, on the floor</code>.</div></div>';
+
+const POS2_BANK = [
+  {id:"pos2-1",cat:"uso",blank:"I live ___ Madrid.",options:["in","at","on"],answer:"in",note:"ciudades → in."},
+  {id:"pos2-2",cat:"uso",blank:"She was ___ the party last night.",options:["at","in","on"],answer:"at",note:"eventos → at."},
+  {id:"pos2-3",cat:"uso",blank:"We were ___ the bus for two hours.",options:["on","in","at"],answer:"on",note:"transporte público → on."},
+  {id:"pos2-4",cat:"uso",blank:"Get ___ my car, I'll drive you home.",options:["in","on","at"],answer:"in",note:"coches → get in/into."},
+  {id:"pos2-5",cat:"uso",blank:"His office is ___ the third floor.",options:["on","in","at"],answer:"on",note:"plantas de un edificio → on."},
+  {id:"pos2-6",cat:"uso",blank:"They live ___ a small island.",options:["on","in","at"],answer:"on",note:"islas → on."},
+  {id:"pos2-7",cat:"uso",blank:"I met her ___ 25 Main Street.",options:["at","in","on"],answer:"at",note:"direcciones exactas → at."},
+  {id:"pos2-8",cat:"uso",blank:"We arrived ___ the airport an hour early.",options:["at","in","on"],answer:"at",note:"lugares como puntos → at."},
+  {id:"pos2-9",cat:"error",choose:true,options:["She was on the party.","She was at the party.","She was in the party."],answer:"She was at the party.",note:"eventos → at.",errorProne:true}
+];
+const POS2_LEARN_HTML =
+  '<div class="guRule"><div class="h">Ciudades y países → IN</div><div class="b"><code>in Madrid, in Spain</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Transporte público, plantas, islas → ON</div><div class="b"><code>on the bus, on the third floor, on an island</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Direcciones exactas y eventos → AT</div><div class="b"><code>at 25 Main Street, at the party, at the airport</code>.</div></div>';
+
+const POS3_BANK = [
+  {id:"pos3-1",cat:"uso",blank:"He was standing ___ the front of the queue.",options:["at","in","on"],answer:"at",note:"at the front/back of (posición dentro de una fila)."},
+  {id:"pos3-2",cat:"uso",blank:"She sat ___ the back of the car.",options:["in","at","on"],answer:"in",note:"in the back/front of a car."},
+  {id:"pos3-3",cat:"uso",blank:"There's a shop ___ the corner of the street.",options:["on","at","in"],answer:"on",note:"on the corner = esquina de una calle, visible desde fuera."},
+  {id:"pos3-4",cat:"uso",blank:"He was sitting ___ the corner of the room, reading.",options:["in","at","on"],answer:"in",note:"in the corner = dentro de una habitación."},
+  {id:"pos3-5",cat:"uso",blank:"The sun was shining ___ the sky.",options:["in","at","on"],answer:"in",note:"in the sky."},
+  {id:"pos3-6",cat:"uso",blank:"They live ___ the top of the hill.",options:["at","in","on"],answer:"at",note:"at the top/bottom of."},
+  {id:"pos3-7",cat:"uso",blank:"Write your name ___ the bottom of the page.",options:["at","in","on"],answer:"at",note:"at the bottom of."},
+  {id:"pos3-8",cat:"error",choose:true,options:["There's a shop in the corner of the street.","There's a shop on the corner of the street.","There's a shop at the corner of the street."],answer:"There's a shop on the corner of the street.",note:"esquina de una calle (exterior) → on the corner.",errorProne:true}
+];
+const POS3_LEARN_HTML =
+  '<div class="guRule"><div class="h">on the corner vs. in the corner</div><div class="b"><code>on the corner</code> = esquina de una calle (exterior). <code>in the corner</code> = rincón dentro de una habitación.</div></div>' +
+  '<div class="guRule"><div class="h">at the front/back/top/bottom</div><div class="b"><code>at the front of the queue, at the top of the hill, at the bottom of the page</code>. Pero dentro de un vehículo: <code>in the front/back of the car</code>.</div></div>';
+
+const TI_BANK = [
+  {id:"ti-1",cat:"uso",blank:"We're going ___ the cinema tonight.",options:["to","at","in"],answer:"to",note:"movimiento hacia un lugar → go to."},
+  {id:"ti-2",cat:"uso",blank:"They arrived ___ London yesterday.",options:["in","at","to"],answer:"in",note:"arrive IN + ciudad/país."},
+  {id:"ti-3",cat:"uso",blank:"We arrived ___ the airport at 6pm.",options:["at","in","to"],answer:"at",note:"arrive AT + lugar concreto/pequeño."},
+  {id:"ti-4",cat:"uso",blank:"She walked ___ the room and sat down.",options:["into","to","at"],answer:"into",note:"movimiento hacia DENTRO → into."},
+  {id:"ti-5",cat:"uso",blank:"He jumped ___ the pool.",options:["into","in","to"],answer:"into",note:"movimiento hacia dentro → into."},
+  {id:"ti-6",cat:"uso",blank:"I'm going ___ the party at Sarah's house.",options:["to","at","in"],answer:"to",note:"movimiento hacia un lugar → to."},
+  {id:"ti-7",cat:"uso",blank:"Pour the milk ___ the glass.",options:["into","in","to"],answer:"into",note:"movimiento hacia dentro de un recipiente → into."},
+  {id:"ti-8",cat:"error",choose:true,options:["She walked to the room.","She walked into the room.","She walked at the room."],answer:"She walked into the room.",note:"movimiento hacia dentro → into.",errorProne:true}
+];
+const TI_LEARN_HTML =
+  '<div class="guRule"><div class="h">TO = movimiento hacia un lugar</div><div class="b"><code>go to the cinema, walk to school</code>.</div></div>' +
+  '<div class="guRule"><div class="h">arrive AT / IN</div><div class="b"><code>arrive at</code> + lugar pequeño/concreto (aeropuerto, estación, evento). <code>arrive in</code> + ciudad/país.</div></div>' +
+  '<div class="guRule"><div class="h">INTO = movimiento hacia DENTRO de algo</div><div class="b"><code>walk into the room, jump into the pool, pour into the glass</code>.</div></div>';
+
+const OU_BANK = [
+  {id:"ou-1",cat:"uso",blank:"I read about it ___ the newspaper.",options:["in","on","at"],answer:"in",note:"in the newspaper."},
+  {id:"ou-2",cat:"uso",blank:"I saw the interview ___ TV.",options:["on","in","at"],answer:"on",note:"on TV, on the radio."},
+  {id:"ou-3",cat:"uso",blank:"She's ___ the phone right now.",options:["on","in","at"],answer:"on",note:"on the phone."},
+  {id:"ou-4",cat:"uso",blank:"You look great ___ this photo.",options:["in","on","at"],answer:"in",note:"in a photo/picture."},
+  {id:"ou-5",cat:"uso",blank:"There's a good article ___ page 12.",options:["on","in","at"],answer:"on",note:"on page (número de página)."},
+  {id:"ou-6",cat:"uso",blank:"He's ___ a diet at the moment.",options:["on","in","at"],answer:"on",note:"on a diet."},
+  {id:"ou-7",cat:"uso",blank:"We had to wait ___ a long queue.",options:["in","on","at"],answer:"in",note:"in a queue."},
+  {id:"ou-8",cat:"error",choose:true,options:["I heard it in the radio.","I heard it on the radio.","I heard it at the radio."],answer:"I heard it on the radio.",note:"medios (radio, TV) → on.",errorProne:true}
+];
+const OU_LEARN_HTML =
+  '<div class="guRule"><div class="h">Medios y pantallas → ON</div><div class="b"><code>on TV, on the radio, on the phone, on page 12</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Imágenes y textos → IN</div><div class="b"><code>in a photo, in the newspaper, in a book/film</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Otras expresiones fijas</div><div class="b"><code>on a diet, in a queue, at war</code>.</div></div>';
+
+const BY_BANK = [
+  {id:"by-1",cat:"uso",blank:"The book was written ___ Orwell.",options:["by","from","of"],answer:"by",note:"agente en pasiva → by."},
+  {id:"by-2",cat:"uso",blank:"We travelled ___ train.",options:["by","in","on"],answer:"by",note:"medio de transporte genérico (sin artículo) → by."},
+  {id:"by-3",cat:"uso",blank:"Please finish the report ___ Friday.",options:["by","until","in"],answer:"by",note:"fecha límite: 'a más tardar' → by."},
+  {id:"by-4",cat:"uso",blank:"Prices increased ___ 10%.",options:["by","in","with"],answer:"by",note:"cantidad de un cambio → by."},
+  {id:"by-5",cat:"uso",blank:"She paid ___ credit card.",options:["by","with","in"],answer:"by",note:"método de pago → by."},
+  {id:"by-6",cat:"uso",blank:"I usually go to work ___ car.",options:["by","in","on"],answer:"by",note:"medio de transporte → by."},
+  {id:"by-7",cat:"uso",blank:"The building was destroyed ___ the fire.",options:["by","from","with"],answer:"by",note:"agente/causa → by."},
+  {id:"by-8",cat:"uso",blank:"We must arrive ___ six o'clock at the latest.",options:["by","until","at"],answer:"by",note:"'by' = como muy tarde a las seis."},
+  {id:"by-9",cat:"error",choose:true,options:["I go to work in car.","I go to work by car.","I go to work on car."],answer:"I go to work by car.",note:"medio de transporte genérico (sin artículo) → by car.",errorProne:true}
+];
+const BY_LEARN_HTML =
+  '<div class="guRule"><div class="h">Agente y causa</div><div class="b">En la pasiva: <code>written by, destroyed by</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Medio de transporte y pago</div><div class="b"><code>by car/train/bus/plane</code> (sin artículo). <code>by credit card, by cheque</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Fecha límite y cantidad de cambio</div><div class="b"><code>by Friday</code> = como muy tarde el viernes. <code>increased by 10%</code> = la cantidad del cambio.</div></div>';
+
+const NPR_BANK = [
+  {id:"npr-1",cat:"uso",blank:"What was the reason ___ his decision?",options:["for","of","to"],answer:"for",note:"reason FOR."},
+  {id:"npr-2",cat:"uso",blank:"They still don't know the cause ___ the fire.",options:["of","for","to"],answer:"of",note:"cause OF."},
+  {id:"npr-3",cat:"uso",blank:"I don't know the answer ___ that question.",options:["to","of","for"],answer:"to",note:"answer TO."},
+  {id:"npr-4",cat:"uso",blank:"There's no easy solution ___ this problem.",options:["to","of","for"],answer:"to",note:"solution TO."},
+  {id:"npr-5",cat:"uso",blank:"The storm caused serious damage ___ the roof.",options:["to","of","for"],answer:"to",note:"damage TO."},
+  {id:"npr-6",cat:"uso",blank:"There's been an increase ___ crime this year.",options:["in","of","to"],answer:"in",note:"increase/decrease IN."},
+  {id:"npr-7",cat:"uso",blank:"Her reaction ___ the news was surprising.",options:["to","of","for"],answer:"to",note:"reaction TO."},
+  {id:"npr-8",cat:"uso",blank:"There's no need ___ concern.",options:["for","to","of"],answer:"for",note:"need FOR + sustantivo."},
+  {id:"npr-9",cat:"uso",blank:"What's your attitude ___ climate change?",options:["to","of","for"],answer:"to",note:"attitude TO/towards."},
+  {id:"npr-10",cat:"error",choose:true,options:["What's the reason of his absence?","What's the reason for his absence?","What's the reason to his absence?"],answer:"What's the reason for his absence?",note:"reason FOR.",errorProne:true}
+];
+const NPR_LEARN_HTML =
+  '<div class="guRule"><div class="h">Sustantivo + preposición fija</div><div class="b"><code>reason for, cause of, answer to, solution to, damage to, increase/decrease in, reaction to, need for, attitude to</code> — cada sustantivo tiene "su" preposición, hay que memorizarlas.</div></div>';
+
+const AP1_BANK = [
+  {id:"ap1-1",cat:"uso",blank:"She's afraid ___ spiders.",options:["of","from","for"],answer:"of",note:"afraid OF."},
+  {id:"ap1-2",cat:"uso",blank:"I'm tired ___ waiting.",options:["of","from","for"],answer:"of",note:"tired OF."},
+  {id:"ap1-3",cat:"uso",blank:"The bottle is full ___ water.",options:["of","with","from"],answer:"of",note:"full OF."},
+  {id:"ap1-4",cat:"uso",blank:"He's very fond ___ his grandchildren.",options:["of","with","for"],answer:"of",note:"fond OF."},
+  {id:"ap1-5",cat:"uso",blank:"Are you aware ___ the risks?",options:["of","about","for"],answer:"of",note:"aware OF."},
+  {id:"ap1-6",cat:"uso",blank:"She's capable ___ doing much better.",options:["of","for","to"],answer:"of",note:"capable OF."},
+  {id:"ap1-7",cat:"uso",blank:"I'm interested ___ history.",options:["in","of","for"],answer:"in",note:"interested IN."},
+  {id:"ap1-8",cat:"uso",blank:"He's very good ___ chess.",options:["at","in","for"],answer:"at",note:"good/bad AT."},
+  {id:"ap1-9",cat:"uso",blank:"This is very different ___ what I expected.",options:["from","of","to"],answer:"from",note:"different FROM (también válido 'to')."},
+  {id:"ap1-10",cat:"error",choose:true,options:["She's married with him.","She's married to him.","She's married of him."],answer:"She's married to him.",note:"married TO.",errorProne:true}
+];
+const AP1_LEARN_HTML =
+  '<div class="guRule"><div class="h">Adjetivo + OF</div><div class="b"><code>afraid of, tired of, full of, fond of, aware of, capable of</code>.</div></div>' +
+  '<div class="guRule"><div class="h">Otras preposiciones fijas</div><div class="b"><code>interested in, good/bad at, married to, different from</code>.</div></div>';
+
+const AP2_BANK = [
+  {id:"ap2-1",cat:"uso",blank:"I'm angry ___ you ___ what you said.",options:["with / about","about / with","for / of"],answer:"with / about",note:"angry WITH una persona, ABOUT el motivo."},
+  {id:"ap2-2",cat:"uso",blank:"We're very pleased ___ the results.",options:["with","for","of"],answer:"with",note:"pleased WITH."},
+  {id:"ap2-3",cat:"uso",blank:"I was surprised ___ the news.",options:["at","for","of"],answer:"at",note:"surprised AT/BY."},
+  {id:"ap2-4",cat:"uso",blank:"She's worried ___ her exams.",options:["about","of","for"],answer:"about",note:"worried ABOUT."},
+  {id:"ap2-5",cat:"uso",blank:"The kids are excited ___ the trip.",options:["about","for","of"],answer:"about",note:"excited ABOUT."},
+  {id:"ap2-6",cat:"uso",blank:"This town is famous ___ its cheese.",options:["for","of","with"],answer:"for",note:"famous FOR."},
+  {id:"ap2-7",cat:"uso",blank:"Who is responsible ___ this mess?",options:["for","of","with"],answer:"for",note:"responsible FOR."},
+  {id:"ap2-8",cat:"uso",blank:"I'm sorry ___ your loss.",options:["for","of","with"],answer:"for",note:"sorry FOR."},
+  {id:"ap2-9",cat:"uso",blank:"He's very proud ___ his daughter.",options:["of","for","with"],answer:"of",note:"proud OF."},
+  {id:"ap2-10",cat:"error",choose:true,options:["I'm worried for my exams.","I'm worried about my exams.","I'm worried of my exams."],answer:"I'm worried about my exams.",note:"worried ABOUT.",errorProne:true}
+];
+const AP2_LEARN_HTML =
+  '<div class="guRule"><div class="h">Emociones + preposición</div><div class="b"><code>angry with (somebody) about (something), pleased/satisfied with, worried/excited about, surprised at, sorry for, proud of</code>.</div></div>' +
+  '<div class="guRule"><div class="h">responsible / famous</div><div class="b"><code>responsible for, famous for</code>.</div></div>';
+
+const VP1_BANK = [
+  {id:"vp1-1",cat:"uso",blank:"Listen ___ me carefully.",options:["to","at","for"],answer:"to",note:"listen TO."},
+  {id:"vp1-2",cat:"uso",blank:"Can I talk ___ you for a moment?",options:["to","at","for"],answer:"to",note:"talk/speak TO."},
+  {id:"vp1-3",cat:"uso",blank:"She smiled ___ me from across the room.",options:["at","to","with"],answer:"at",note:"smile AT."},
+  {id:"vp1-4",cat:"uso",blank:"Don't laugh ___ him; it's not funny.",options:["at","to","with"],answer:"at",note:"laugh AT."},
+  {id:"vp1-5",cat:"uso",blank:"He shouted ___ the children to be quiet.",options:["at","to","for"],answer:"at",note:"shout AT (con enfado)."},
+  {id:"vp1-6",cat:"uso",blank:"Look ___ that beautiful sunset!",options:["at","to","for"],answer:"at",note:"look AT."},
+  {id:"vp1-7",cat:"uso",blank:"She's writing ___ her pen pal in Japan.",options:["to","at","for"],answer:"to",note:"write TO."},
+  {id:"vp1-8",cat:"uso",blank:"He pointed ___ the map to show us the way.",options:["at","to","for"],answer:"at",note:"point AT."},
+  {id:"vp1-9",cat:"error",choose:true,options:["Listen at me.","Listen to me.","Listen for me."],answer:"Listen to me.",note:"listen TO.",errorProne:true}
+];
+const VP1_LEARN_HTML =
+  '<div class="guRule"><div class="h">Verbos + TO</div><div class="b"><code>listen to, talk to, speak to, write to</code> (comunicación dirigida a alguien).</div></div>' +
+  '<div class="guRule"><div class="h">Verbos + AT</div><div class="b"><code>look at, smile at, laugh at, shout at, point at</code> (dirigir la mirada, gesto o voz hacia algo/alguien).</div></div>';
+
+const VP2_BANK = [
+  {id:"vp2-1",cat:"uso",blank:"Don't worry ___ me; I'll be fine.",options:["about","for","of"],answer:"about",note:"worry ABOUT."},
+  {id:"vp2-2",cat:"uso",blank:"I dreamed ___ you last night.",options:["about","for","after"],answer:"about",note:"dream ABOUT."},
+  {id:"vp2-3",cat:"uso",blank:"He complained ___ the noise.",options:["about","for","of"],answer:"about",note:"complain ABOUT."},
+  {id:"vp2-4",cat:"uso",blank:"She applied ___ the job last week.",options:["for","about","of"],answer:"for",note:"apply FOR."},
+  {id:"vp2-5",cat:"uso",blank:"We're waiting ___ the bus.",options:["for","about","after"],answer:"for",note:"wait FOR."},
+  {id:"vp2-6",cat:"uso",blank:"Who's going to look ___ the children?",options:["after","for","of"],answer:"after",note:"look AFTER = cuidar."},
+  {id:"vp2-7",cat:"uso",blank:"This soup smells ___ garlic.",options:["of","for","about"],answer:"of",note:"smell OF."},
+  {id:"vp2-8",cat:"uso",blank:"His hobby reminds me ___ my childhood.",options:["of","for","about"],answer:"of",note:"remind somebody OF."},
+  {id:"vp2-9",cat:"uso",blank:"The team consists ___ eight players.",options:["of","from","for"],answer:"of",note:"consist OF."},
+  {id:"vp2-10",cat:"error",choose:true,options:["I'm looking after a new job.","I'm looking for a new job.","I'm looking of a new job."],answer:"I'm looking for a new job.",note:"look FOR (buscar) es distinto de look AFTER (cuidar).",errorProne:true}
+];
+const VP2_LEARN_HTML =
+  '<div class="guRule"><div class="h">Verbos + ABOUT / FOR</div><div class="b"><code>worry about, dream about, complain about</code> · <code>apply for, wait for, look for</code> (buscar).</div></div>' +
+  '<div class="guRule"><div class="h">look AFTER ≠ look FOR</div><div class="b"><code>look after</code> = cuidar. <code>look for</code> = buscar. No confundirlos.</div></div>';
+
+const VP3_BANK = [
+  {id:"vp3-1",cat:"uso",blank:"I've never heard ___ that band before.",options:["of","about"],answer:"of",note:"hear OF = conocer la existencia de algo/alguien."},
+  {id:"vp3-2",cat:"uso",blank:"Have you heard ___ the accident on the news?",options:["about","of"],answer:"about",note:"hear ABOUT = enterarse de los detalles de un suceso."},
+  {id:"vp3-3",cat:"uso",blank:"Her parents don't approve ___ her new boyfriend.",options:["of","about"],answer:"of",note:"approve OF."},
+  {id:"vp3-4",cat:"uso",blank:"He died ___ a heart attack.",options:["of","from"],answer:"of",note:"die OF (una enfermedad, lo más frecuente)."},
+  {id:"vp3-5",cat:"uso",blank:"They often talk ___ their travels.",options:["about","of"],answer:"about",note:"talk ABOUT."},
+  {id:"vp3-6",cat:"uso",blank:"I often dream ___ living by the sea.",options:["about","of"],answer:"about",note:"dream ABOUT (deseo/fantasía)."},
+  {id:"vp3-7",cat:"error",choose:true,options:["I've never heard about that word.","I've never heard of that word.","I've never heard for that word."],answer:"I've never heard of that word.",note:"'heard OF' = conocer la existencia de algo.",errorProne:true}
+];
+const VP3_LEARN_HTML =
+  '<div class="guRule"><div class="h">hear OF vs. hear ABOUT</div><div class="b"><code>hear of</code> = saber que algo/alguien existe. <code>hear about</code> = enterarse de detalles concretos de un suceso.</div></div>' +
+  '<div class="guRule"><div class="h">approve of, die of, talk/dream about</div><div class="b">Preposiciones fijas que hay que memorizar caso por caso.</div></div>';
+
+const VP4_BANK = [
+  {id:"vp4-1",cat:"uso",blank:"This cake is made ___ flour, eggs and sugar.",options:["of","from"],answer:"of",note:"made OF cuando se ve el material original."},
+  {id:"vp4-2",cat:"uso",blank:"Paper is made ___ wood.",options:["from","of"],answer:"from",note:"made FROM cuando el material se transforma y ya no se reconoce."},
+  {id:"vp4-3",cat:"uso",blank:"She's suffering ___ a bad cold.",options:["from","of"],answer:"from",note:"suffer FROM."},
+  {id:"vp4-4",cat:"uso",blank:"He's still recovering ___ the surgery.",options:["from","of"],answer:"from",note:"recover FROM."},
+  {id:"vp4-5",cat:"uso",blank:"This cream protects your skin ___ the sun.",options:["from","of"],answer:"from",note:"protect FROM."},
+  {id:"vp4-6",cat:"uso",blank:"It all depends ___ the weather.",options:["on","of"],answer:"on",note:"depend ON."},
+  {id:"vp4-7",cat:"uso",blank:"You can always rely ___ her.",options:["on","of"],answer:"on",note:"rely ON."},
+  {id:"vp4-8",cat:"uso",blank:"I congratulated her ___ her new job.",options:["on","for"],answer:"on",note:"congratulate ON."},
+  {id:"vp4-9",cat:"uso",blank:"They blamed him ___ the accident.",options:["for","of"],answer:"for",note:"blame somebody FOR."},
+  {id:"vp4-10",cat:"error",choose:true,options:["This table is made from wood, you can still see the grain.","This table is made of wood, you can still see the grain.","This table is made with wood, you can still see the grain."],answer:"This table is made of wood, you can still see the grain.",note:"made OF cuando el material sigue siendo reconocible.",errorProne:true}
+];
+const VP4_LEARN_HTML =
+  '<div class="guRule"><div class="h">made OF vs. made FROM</div><div class="b"><code>made of</code> = el material original todavía se reconoce. <code>made from</code> = el material se ha transformado por completo.</div></div>' +
+  '<div class="guRule"><div class="h">Verbos + FROM / ON / FOR</div><div class="b"><code>suffer from, recover from, protect from</code> · <code>depend on, rely on, congratulate on</code> · <code>blame somebody for</code>.</div></div>';
+
+const VP5_BANK = [
+  {id:"vp5-1",cat:"uso",blank:"I really believe ___ you.",options:["in","on","with"],answer:"in",note:"believe IN."},
+  {id:"vp5-2",cat:"uso",blank:"The book has been translated ___ ten languages.",options:["into","to","in"],answer:"into",note:"translate INTO."},
+  {id:"vp5-3",cat:"uso",blank:"Let's divide the class ___ two groups.",options:["into","in","to"],answer:"into",note:"divide INTO."},
+  {id:"vp5-4",cat:"uso",blank:"The hotel provides guests ___ free breakfast.",options:["with","of","for"],answer:"with",note:"provide somebody WITH."},
+  {id:"vp5-5",cat:"uso",blank:"I don't agree ___ you on this.",options:["with","to","on"],answer:"with",note:"agree WITH."},
+  {id:"vp5-6",cat:"uso",blank:"How do you deal ___ stress?",options:["with","of","in"],answer:"with",note:"deal WITH."},
+  {id:"vp5-7",cat:"uso",blank:"You can't compare this book ___ the film.",options:["to","of","for"],answer:"to",note:"compare A TO/WITH B."},
+  {id:"vp5-8",cat:"uso",blank:"I need to concentrate ___ my work.",options:["on","in","at"],answer:"on",note:"concentrate ON."},
+  {id:"vp5-9",cat:"uso",blank:"She spends a lot of money ___ clothes.",options:["on","in","for"],answer:"on",note:"spend money/time ON."},
+  {id:"vp5-10",cat:"error",choose:true,options:["The book was translated to five languages.","The book was translated into five languages.","The book was translated in five languages."],answer:"The book was translated into five languages.",note:"translate INTO.",errorProne:true}
+];
+const VP5_LEARN_HTML =
+  '<div class="guRule"><div class="h">INTO = transformación</div><div class="b"><code>translate into, divide into</code> — de una forma a otra.</div></div>' +
+  '<div class="guRule"><div class="h">WITH = compañía o suministro</div><div class="b"><code>provide with, agree with, deal with</code>.</div></div>' +
+  '<div class="guRule"><div class="h">ON = enfoque o gasto</div><div class="b"><code>concentrate on, spend money/time on</code>.</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -5374,6 +5626,102 @@ const GU_UNITS = {
     color:"#059669", pillBg:"#d1fae5", pillColor:"#065f46",
     subtitle:"Dos acciones del mismo sujeto a la vez: He hurt his knee playing football.",
     learnHtml: INGC_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: INGC_BANK
+  },
+  "prep-time": {
+    id:"prep-time", name:"at/on/in (time)", icon:"🕐",
+    color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
+    subtitle:"AT para horas y momentos fijos, ON para días y fechas, IN para periodos más largos.",
+    learnHtml: PT_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: PT_BANK
+  },
+  "on-in-time": {
+    id:"on-in-time", name:"on time and in time, at the end and in the end", icon:"⏱️",
+    color:"#ea580c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"on time = puntual. in time = con margen. at the end = punto final concreto. in the end = finalmente.",
+    learnHtml: OIT_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: OIT_BANK
+  },
+  "position-1": {
+    id:"position-1", name:"in/at/on (position) 1", icon:"📍",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"IN espacios cerrados, AT puntos concretos, ON superficies.",
+    learnHtml: POS1_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: POS1_BANK
+  },
+  "position-2": {
+    id:"position-2", name:"in/at/on (position) 2", icon:"🏙️",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"Ciudades (in), transporte/plantas/islas (on), direcciones y eventos (at).",
+    learnHtml: POS2_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: POS2_BANK
+  },
+  "position-3": {
+    id:"position-3", name:"in/at/on (position) 3", icon:"🧭",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"on the corner vs. in the corner, y at the front/top/bottom.",
+    learnHtml: POS3_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: POS3_BANK
+  },
+  "to-into": {
+    id:"to-into", name:"to, at, in and into", icon:"➡️",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"Movimiento hacia un lugar (to), llegar a (at/in), y movimiento hacia dentro (into).",
+    learnHtml: TI_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: TI_BANK
+  },
+  "other-uses": {
+    id:"other-uses", name:"in/on/at (other uses)", icon:"📺",
+    color:"#db2777", pillBg:"#fce7f3", pillColor:"#9d174d",
+    subtitle:"Medios (on TV/radio/phone), imágenes y textos (in a photo/book), y expresiones fijas.",
+    learnHtml: OU_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: OU_BANK
+  },
+  "by": {
+    id:"by", name:"by", icon:"🚗",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"Agente, medio de transporte/pago, fecha límite, y cantidad de cambio.",
+    learnHtml: BY_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: BY_BANK
+  },
+  "noun-prep": {
+    id:"noun-prep", name:"Noun + preposition", icon:"🔤",
+    color:"#475569", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"reason for, cause of, answer to, solution to... cada sustantivo con su preposición fija.",
+    learnHtml: NPR_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: NPR_BANK
+  },
+  "adj-prep-1": {
+    id:"adj-prep-1", name:"Adjective + preposition 1", icon:"😌",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#115e59",
+    subtitle:"afraid of, tired of, full of, interested in, good at, married to...",
+    learnHtml: AP1_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: AP1_BANK
+  },
+  "adj-prep-2": {
+    id:"adj-prep-2", name:"Adjective + preposition 2", icon:"😟",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#991b1b",
+    subtitle:"angry with/about, worried about, famous for, responsible for, proud of...",
+    learnHtml: AP2_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: AP2_BANK
+  },
+  "verb-prep-1": {
+    id:"verb-prep-1", name:"Verb + preposition 1 (to and at)", icon:"👂",
+    color:"#059669", pillBg:"#d1fae5", pillColor:"#065f46",
+    subtitle:"listen to, talk to, write to (comunicación) vs. look at, smile at, laugh at (gesto/mirada).",
+    learnHtml: VP1_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: VP1_BANK
+  },
+  "verb-prep-2": {
+    id:"verb-prep-2", name:"Verb + preposition 2 (about/for/of/after)", icon:"🙏",
+    color:"#65a30d", pillBg:"#ecfccb", pillColor:"#365314",
+    subtitle:"worry about, apply for, wait for, look after (cuidar) vs. look for (buscar).",
+    learnHtml: VP2_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: VP2_BANK
+  },
+  "verb-prep-3": {
+    id:"verb-prep-3", name:"Verb + preposition 3 (about and of)", icon:"💭",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"hear of (conocer la existencia) vs. hear about (enterarse de detalles).",
+    learnHtml: VP3_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: VP3_BANK
+  },
+  "verb-prep-4": {
+    id:"verb-prep-4", name:"Verb + preposition 4 (of/for/from/on)", icon:"🛡️",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"made of/from, suffer from, depend on, rely on, blame for.",
+    learnHtml: VP4_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: VP4_BANK
+  },
+  "verb-prep-5": {
+    id:"verb-prep-5", name:"Verb + preposition 5 (in/into/with/to/on)", icon:"🤝",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"believe in, translate into, provide with, agree with, concentrate on.",
+    learnHtml: VP5_LEARN_HTML, catLabel: PREP_CAT_LABEL, bank: VP5_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
