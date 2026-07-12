@@ -3989,6 +3989,269 @@ const PRON10_LEARN_HTML =
   '<div class="psRule"><div class="h">2 · Usos especiales de each</div><div class="b"><code>each of</code> + noun: <code>Each of the students received a certificate.</code><br>Posición media: <code>They each received a gift.</code><br>Al final: <code>The books cost £10 each.</code></div></div>' +
   '<div class="psRule"><div class="h">3 · not every / not each</div><div class="b"><code>Not every student passed.</code> = no todos pasaron.<br>Siempre con singular noun: <code>every student</code> (no "every students").</div></div>';
 
+/* ================= CONTENIDO: COUNTABLE AND UNCOUNTABLE 1 ================= */
+const ANC1_CAT_LABEL = {contable:"CONTABLES",incontable:"INCONTABLES",a_an:"A/AN",error:"FRASE CORRECTA"};
+const ANC1_BANK = [
+  {id:"anc1-1",cat:"contable",blank:"I need ___ chair.",options:["a","some","—"],answer:"a",note:"chair es contable: a chair (singular)."},
+  {id:"anc1-2",cat:"contable",blank:"There are ___ chairs in the room.",options:["some","a","an"],answer:"some",note:"chairs es contable plural: some chairs."},
+  {id:"anc1-3",cat:"incontable",blank:"I need ___ water.",options:["some","a","an"],answer:"some",note:"water es incontable: some water (no 'a water')."},
+  {id:"anc1-4",cat:"incontable",blank:"She gave me ___ advice.",options:["some","a","an"],answer:"some",note:"advice es incontable: some advice (no 'an advice')."},
+  {id:"anc1-5",cat:"incontable",blank:"There's ___ furniture in the room.",options:["some","a","no article"],answer:"some",note:"furniture es incontable: some furniture."},
+  {id:"anc1-6",cat:"incontable",blank:"I need some ___ about the course.",options:["information","informations","an information"],answer:"information",note:"information es incontable: no plural, no a/an."},
+  {id:"anc1-7",cat:"a_an",blank:"I'd like ___ egg.",options:["an","a","some"],answer:"an",note:"an antes de vocal: an egg."},
+  {id:"anc1-8",cat:"a_an",blank:"She has ___ umbrella.",options:["an","a","some"],answer:"an",note:"umbrella empieza con vocal \u2192 an."},
+  {id:"anc1-9",cat:"a_an",blank:"He is ___ honest man.",options:["an","a","—"],answer:"an",note:"honest: la 'h' es muda \u2192 suena /\u0252n\u026ast/ \u2192 an."},
+  {id:"anc1-10",cat:"a_an",blank:"It was ___ useful tip.",options:["a","an","some"],answer:"a",note:"useful: suena /ju\u02d0s/ \u2192 empieza con consonante \u2192 a."},
+  {id:"anc1-11",cat:"error",choose:true,options:["She gave me an advice.","She gave me a piece of advice.","She gave me some advices."],answer:"She gave me a piece of advice.",note:"advice es incontable: some advice o a piece of advice (no 'an advice').",errorProne:true},
+  {id:"anc1-12",cat:"error",choose:true,options:["I need some informations.","I need some information.","I need an information."],answer:"I need some information.",note:"information es incontable: no tiene plural.",errorProne:true},
+  {id:"anc1-13",cat:"error",choose:true,options:["She has a lot of luggages.","She has a lot of luggage.","She has many luggages."],answer:"She has a lot of luggage.",note:"luggage es incontable: no tiene plural.",errorProne:true}
+];
+const ANC1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Contables vs incontables</div><div class="b">Contables: pueden ser singulares o plurales, llevan a/an: <code>a cat, two cats</code>.<br>Incontables: no tienen plural, no llevan a/an: <code>water, information, advice, furniture, luggage</code>.</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Incontables comunes que sorprenden</div><div class="b"><code>advice, information, news, furniture, luggage, equipment, money, work, travel, progress, research, knowledge, weather, traffic</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 a/an: vocal vs consonante (SONIDO, no letra)</div><div class="b"><code>an egg, an apple, an hour, an honest man</code> (vocal o h muda)<br><code>a university, a useful tip, a European</code> (consonante /j/ o /ju\u02d0/)</div></div>';
+
+/* ================= CONTENIDO: COUNTABLE AND UNCOUNTABLE 2 ================= */
+const ANC2_CAT_LABEL = {doble:"DOBLE USO",porciones:"PORCIONES / UNIDADES",error:"FRASE CORRECTA"};
+const ANC2_BANK = [
+  {id:"anc2-1",cat:"doble",blank:"I'd like ___ coffee, please. (una taza)",options:["a","some","—"],answer:"a",note:"a coffee = una taza de caf\u00e9 (contable). some coffee = algo de caf\u00e9 (incontable)."},
+  {id:"anc2-2",cat:"doble",blank:"I need to buy ___ paper for the printer.",options:["some","a","two"],answer:"some",note:"paper (incontable) = material. a paper = un peri\u00f3dico (contable)."},
+  {id:"anc2-3",cat:"doble",blank:"She's got long ___.",options:["hair","hairs","a hair"],answer:"hair",note:"hair (incontable) = cabello. a hair = un pelo individual (contable)."},
+  {id:"anc2-4",cat:"doble",blank:"It was ___ experience.",options:["an","some","experience"],answer:"an",note:"an experience = una experiencia concreta (contable). experience (incontable) = experiencia en general."},
+  {id:"anc2-5",cat:"doble",blank:"Can I have two ___? (caf\u00e9s)",options:["coffees","coffee","a coffee"],answer:"coffees",note:"two coffees = dos tazas de caf\u00e9 (uso contable)."},
+  {id:"anc2-6",cat:"porciones",blank:"Can I have ___ of toast?",options:["a slice","a piece","both are correct"],answer:"both are correct",note:"a slice of toast / a piece of toast: las unidades de incontables."},
+  {id:"anc2-7",cat:"porciones",blank:"She gave me ___ of advice.",options:["a piece","a bit","both are correct"],answer:"both are correct",note:"a piece of advice / a bit of advice: unidad de incontable."},
+  {id:"anc2-8",cat:"porciones",blank:"I'd like ___ of water.",options:["a glass","a bottle","both are correct"],answer:"both are correct",note:"a glass/bottle of water: recipiente que hace contable el agua."},
+  {id:"anc2-9",cat:"porciones",blank:"There was ___ of news on TV.",options:["a piece","an item","both are correct"],answer:"both are correct",note:"a piece of news / an item of news: news es incontable."},
+  {id:"anc2-10",cat:"error",choose:true,options:["She gave me two advices.","She gave me two pieces of advice.","She gave me two advice."],answer:"She gave me two pieces of advice.",note:"Para contar incontables \u2192 a piece of, a bit of: two pieces of advice.",errorProne:true},
+  {id:"anc2-11",cat:"error",choose:true,options:["I need some informations about the flight.","I need some information about the flight.","I need an information about the flight."],answer:"I need some information about the flight.",note:"information es incontable: some information (no plural ni a/an).",errorProne:true}
+];
+const ANC2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Nouns con doble uso</div><div class="b">Algunos sustantivos cambian de significado seg\u00fan el uso:<br><code>a coffee</code> (una taza) / <code>some coffee</code> (algo de caf\u00e9)<br><code>a paper</code> (un peri\u00f3dico) / <code>some paper</code> (papel en general)<br><code>an experience</code> (una experiencia) / <code>experience</code> (experiencia en general)</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Porciones para incontables</div><div class="b">Para contar incontables se usa un \u201ccontador\u201d:<br><code>a piece of advice / information / news / toast / furniture</code><br><code>a glass of water, a cup of tea, a bit of luck, an item of news</code></div></div>';
+
+/* ================= CONTENIDO: COUNTABLE NOUNS WITH A/AN AND SOME ================= */
+const ANAS_CAT_LABEL = {a_an:"A/AN (SINGULAR)",some_pl:"SOME (PLURAL)",any_neg:"ANY (NEG/PREGUNTA)",error:"FRASE CORRECTA"};
+const ANAS_BANK = [
+  {id:"anas-1",cat:"a_an",blank:"I want to be ___ engineer.",options:["an","a","—"],answer:"an",note:"an + vocal: an engineer."},
+  {id:"anas-2",cat:"a_an",blank:"She ate ___ apple.",options:["an","a","some"],answer:"an",note:"an apple: vocal."},
+  {id:"anas-3",cat:"a_an",blank:"He has ___ dog.",options:["a","an","some"],answer:"a",note:"a dog: consonante."},
+  {id:"anas-4",cat:"a_an",blank:"It's ___ one-hour journey.",options:["a","an","—"],answer:"a",note:"one-hour empieza con /w/ \u2192 a one-hour."},
+  {id:"anas-5",cat:"a_an",blank:"She's reading ___ interesting book.",options:["an","a","some"],answer:"an",note:"interesting empieza con vocal \u2192 an."},
+  {id:"anas-6",cat:"a_an",blank:"He's ___ European politician.",options:["a","an","—"],answer:"a",note:"European = /j\u028ar\u0259p\u026a\u0259n/ \u2192 consonante /j/ \u2192 a."},
+  {id:"anas-7",cat:"some_pl",blank:"I bought ___ oranges.",options:["some","a","an"],answer:"some",note:"some + contable plural: unos/unas naranjas."},
+  {id:"anas-8",cat:"some_pl",blank:"There are ___ books on the table.",options:["some","a","an"],answer:"some",note:"some books: algunos libros."},
+  {id:"anas-9",cat:"any_neg",blank:"I didn't buy ___ oranges.",options:["any","some","a"],answer:"any",note:"any con negativa."},
+  {id:"anas-10",cat:"any_neg",blank:"Are there ___ messages for me?",options:["any","some","a"],answer:"any",note:"any en pregunta."},
+  {id:"anas-11",cat:"error",choose:true,options:["She is a engineer.","She is an engineer.","She is engineer."],answer:"She is an engineer.",note:"an antes de vocal: an engineer.",errorProne:true},
+  {id:"anas-12",cat:"error",choose:true,options:["I saw a hour-long film.","I saw an hour-long film.","I saw a hour long film."],answer:"I saw an hour-long film.",note:"hour empieza con 'h' muda \u2192 an hour.",errorProne:true}
+];
+const ANAS_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 a/an con singular contable</div><div class="b">Depende del SONIDO inicial: <code>an egg, an apple, an hour, an honest man</code> (vocal/h muda)<br><code>a university, a useful tip, a one-hour journey</code> (consonante).</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 some/any con plural contable</div><div class="b"><code>some</code> en afirmativas: <code>some books, some oranges</code>.<br><code>any</code> en negativas y preguntas: <code>I didn\'t buy any. / Are there any?</code></div></div>';
+
+/* ================= CONTENIDO: A/AN AND THE ================= */
+const ANAT_CAT_LABEL = {primera_vez:"PRIMERA MENCI\u00d3N (A/AN)",segunda_vez:"SEGUNDA MENCI\u00d3N (THE)",conocido:"THE: CONOCIDO / \u00danico",error:"FRASE CORRECTA"};
+const ANAT_BANK = [
+  {id:"anat-1",cat:"primera_vez",blank:"I saw ___ dog in the park.",options:["a","the","—"],answer:"a",note:"Primera menci\u00f3n: no sabemos qu\u00e9 perro \u2192 a (indeterminado)."},
+  {id:"anat-2",cat:"segunda_vez",blank:"___ dog was barking loudly.",options:["The","A","—"],answer:"The",note:"Segunda menci\u00f3n: ya sabemos qu\u00e9 perro (el que mencion\u00e9 antes) \u2192 the."},
+  {id:"anat-3",cat:"primera_vez",blank:"She bought ___ car and ___ bike.",options:["a / a","the / the","a / the"],answer:"a / a",note:"Primera menci\u00f3n de ambos: a car, a bike."},
+  {id:"anat-4",cat:"segunda_vez",blank:"___ car is red and ___ bike is blue.",options:["The / the","A / a","The / a"],answer:"The / the",note:"Segunda menci\u00f3n: the car, the bike (ya los conocemos)."},
+  {id:"anat-5",cat:"conocido",blank:"Can you close ___ door, please?",options:["the","a","—"],answer:"the",note:"the door: sabemos cu\u00e1l puerta (la que est\u00e1 ah\u00ed)."},
+  {id:"anat-6",cat:"conocido",blank:"___ sun rises in the east.",options:["The","A","—"],answer:"The",note:"the sun: \u00fanico en su categor\u00eda."},
+  {id:"anat-7",cat:"conocido",blank:"___ president has resigned.",options:["The","A","—"],answer:"The",note:"the president: \u00fanico en su contexto."},
+  {id:"anat-8",cat:"conocido",blank:"We went to ___ cinema last night.",options:["the","a","—"],answer:"the",note:"the cinema: lugar conocido por el contexto cotidiano."},
+  {id:"anat-9",cat:"primera_vez",blank:"I'm looking for ___ job.",options:["a","the","—"],answer:"a",note:"a job: cualquier trabajo (primera vez, indeterminado)."},
+  {id:"anat-10",cat:"segunda_vez",blank:"Did you get ___ job?",options:["the","a","—"],answer:"the",note:"the job: el trabajo del que hablamos antes."},
+  {id:"anat-11",cat:"error",choose:true,options:["I went to a cinema last night.","I went to the cinema last night.","I went to cinema last night."],answer:"I went to the cinema last night.",note:"the cinema / the theatre / the bank: lugares habituales de la vida cotidiana.",errorProne:true},
+  {id:"anat-12",cat:"error",choose:true,options:["I saw a film. A film was great.","I saw a film. The film was great.","I saw the film. The film was great."],answer:"I saw a film. The film was great.",note:"Primera menci\u00f3n: a film. Segunda menci\u00f3n: the film.",errorProne:true}
+];
+const ANAT_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Primera menci\u00f3n \u2192 a/an</div><div class="b">Cuando el oyente no sabe a qu\u00e9 nos referimos:<br><code>I saw a dog in the park.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Segunda menci\u00f3n \u2192 the</div><div class="b">Cuando ya sabemos de qu\u00e9 hablamos:<br><code>The dog was barking.</code> / <code>Did you get the job?</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 the con lo \u00fanico / conocido</div><div class="b">Cuando hay uno solo (the sun, the moon, the president) o el contexto deja claro cu\u00e1l es:<br><code>Close the door.</code> / <code>We went to the cinema.</code></div></div>';
+
+/* ================= CONTENIDO: THE 1 ================= */
+const ANT1_CAT_LABEL = {unico:"THE PARA LO \u00danico",lugar_comun:"LUGARES HABITUALES",superlativo:"SUPERLATIVO + THE",error:"FRASE CORRECTA"};
+const ANT1_BANK = [
+  {id:"ant1-1",cat:"unico",blank:"___ Earth is the third planet from ___ Sun.",options:["The / the","A / the","— / the"],answer:"The / the",note:"the Earth, the Sun: \u00fanicos en su categor\u00eda."},
+  {id:"ant1-2",cat:"unico",blank:"___ sky was clear.",options:["The","A","—"],answer:"The",note:"the sky: solo hay uno."},
+  {id:"ant1-3",cat:"lugar_comun",blank:"I need to go to ___ bank.",options:["the","a","—"],answer:"the",note:"the bank: el banco habitual (lugar de la vida cotidiana)."},
+  {id:"ant1-4",cat:"lugar_comun",blank:"She went to ___ doctor.",options:["the","a","—"],answer:"the",note:"the doctor: ir al m\u00e9dico (instituci\u00f3n)."},
+  {id:"ant1-5",cat:"lugar_comun",blank:"I'm going to ___ supermarket. Do you need anything?",options:["the","a","—"],answer:"the",note:"the supermarket: el de siempre, conocido por el contexto."},
+  {id:"ant1-6",cat:"superlativo",blank:"She's ___ best student in the class.",options:["the","a","—"],answer:"the",note:"the best: superlativo siempre lleva the."},
+  {id:"ant1-7",cat:"superlativo",blank:"It was ___ most interesting lecture I've ever attended.",options:["the","a","—"],answer:"the",note:"the most + adj: superlativo."},
+  {id:"ant1-8",cat:"unico",blank:"___ Internet has changed the world.",options:["The","A","—"],answer:"The",note:"the Internet: recurso \u00fanico y compartido."},
+  {id:"ant1-9",cat:"lugar_comun",blank:"Have you been to ___ post office?",options:["the","a","—"],answer:"the",note:"the post office: lugar cotidiano conocido."},
+  {id:"ant1-10",cat:"error",choose:true,options:["She is best student in the class.","She is a best student in the class.","She is the best student in the class."],answer:"She is the best student in the class.",note:"Superlativo \u2192 the best.",errorProne:true},
+  {id:"ant1-11",cat:"error",choose:true,options:["I need to go to a bank.","I need to go to the bank.","I need to go to bank."],answer:"I need to go to the bank.",note:"the bank: en el contexto cotidiano, el banco habitual \u2192 the.",errorProne:true}
+];
+const ANT1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 the con lo \u00fanico</div><div class="b">Con cosas de las que solo hay una:<br><code>the sun, the moon, the Earth, the sky, the Internet</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 the con lugares habituales</div><div class="b">Con lugares que forman parte de la vida cotidiana:<br><code>go to the bank, go to the doctor, go to the supermarket, go to the cinema</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 the con superlativos</div><div class="b">Los superlativos van siempre con the:<br><code>the best, the most interesting, the tallest</code></div></div>';
+
+/* ================= CONTENIDO: THE 2 (SCHOOL / THE SCHOOL) ================= */
+const ANT2_CAT_LABEL = {inst_sin:"INSTITUCI\u00d3N SIN THE (FUNCI\u00d3N)",inst_con:"INSTITUCI\u00d3N CON THE (EDIFICIO)",error:"FRASE CORRECTA"};
+const ANT2_BANK = [
+  {id:"ant2-1",cat:"inst_sin",blank:"She's at ___ school.",options:["—","the","a"],answer:"—",note:"at school = en el colegio (como estudiante, funci\u00f3n). Sin art\u00edculo."},
+  {id:"ant2-2",cat:"inst_sin",blank:"He went to ___ university.",options:["—","the","a"],answer:"—",note:"go to university (brit.) = estudiar. Sin art\u00edculo."},
+  {id:"ant2-3",cat:"inst_sin",blank:"She's in ___ hospital.",options:["—","the","a"],answer:"—",note:"in hospital (brit.) = ingresada (como paciente). Sin art\u00edculo."},
+  {id:"ant2-4",cat:"inst_sin",blank:"He went to ___ prison for ten years.",options:["—","the","a"],answer:"—",note:"go to prison = ser encarcelado. Sin art\u00edculo."},
+  {id:"ant2-5",cat:"inst_sin",blank:"She goes to ___ church every Sunday.",options:["—","the","a"],answer:"—",note:"go to church = asistir como creyente. Sin art\u00edculo."},
+  {id:"ant2-6",cat:"inst_con",blank:"I went to ___ school to pick up my daughter.",options:["the","—","a"],answer:"the",note:"the school = el edificio del colegio (no para estudiar)."},
+  {id:"ant2-7",cat:"inst_con",blank:"He's gone to ___ hospital to visit a friend.",options:["the","—","a"],answer:"the",note:"the hospital = el edificio (visita, no como paciente)."},
+  {id:"ant2-8",cat:"inst_con",blank:"___ prison was built in 1890.",options:["The","—","A"],answer:"The",note:"The prison = el edificio (habla del edificio en s\u00ed)."},
+  {id:"ant2-9",cat:"inst_con",blank:"She visited ___ church built by Gaud\u00ed.",options:["the","—","a"],answer:"the",note:"the church = el edificio (no para rezar)."},
+  {id:"ant2-10",cat:"error",choose:true,options:["She's in the hospital (as a patient).","She's in hospital (as a patient).","She is at the hospital (as a patient)."],answer:"She's in hospital (as a patient).",note:"in hospital (brit.) = ingresada. the hospital = el edificio (para visitar).",errorProne:true},
+  {id:"ant2-11",cat:"error",choose:true,options:["He went to the university to study medicine.","He went to university to study medicine.","He went to a university to study medicine."],answer:"He went to university to study medicine.",note:"go to university (sin art\u00edculo) = ir a estudiar. go to the university = ir al edificio.",errorProne:true}
+];
+const ANT2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Sin art\u00edculo \u2192 funci\u00f3n / actividad</div><div class="b">Cuando la persona usa la instituci\u00f3n para su funci\u00f3n principal:<br><code>go to school</code> (como estudiante) / <code>go to university</code> / <code>in hospital</code> (como paciente) / <code>go to prison</code> / <code>go to church</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Con the \u2192 el edificio f\u00edsico</div><div class="b">Cuando hablamos del edificio (no de la funci\u00f3n):<br><code>go to the school</code> (a recoger a alguien) / <code>go to the hospital</code> (de visita)</div></div>';
+
+/* ================= CONTENIDO: THE 3 (CHILDREN / THE CHILDREN) ================= */
+const ANT3_CAT_LABEL = {generalizar:"GENERALIZACI\u00d3N SIN THE",especifico:"ESPEC\u00cdFICO CON THE",error:"FRASE CORRECTA"};
+const ANT3_BANK = [
+  {id:"ant3-1",cat:"generalizar",blank:"___ children need love and security.",options:["—","The","Some"],answer:"—",note:"Generalizaci\u00f3n sobre todos los ni\u00f1os: sin art\u00edculo (en plural)."},
+  {id:"ant3-2",cat:"generalizar",blank:"___ life is short.",options:["—","The","A"],answer:"—",note:"life en general: sin art\u00edculo."},
+  {id:"ant3-3",cat:"generalizar",blank:"I love ___ music.",options:["—","the","a"],answer:"—",note:"Generalizaci\u00f3n: la m\u00fasica en general \u2192 sin art\u00edculo."},
+  {id:"ant3-4",cat:"generalizar",blank:"___ elephants are the largest land animals.",options:["—","The","Some"],answer:"—",note:"Plural sin art\u00edculo para generalizaciones."},
+  {id:"ant3-5",cat:"especifico",blank:"___ children in my class are very smart.",options:["The","—","Some"],answer:"The",note:"the children in my class: grupo espec\u00edfico (no todos los ni\u00f1os)."},
+  {id:"ant3-6",cat:"especifico",blank:"___ music we heard at the concert was amazing.",options:["The","—","Some"],answer:"The",note:"The music: la m\u00fasica espec\u00edfica que escuchamos (no la m\u00fasica en general)."},
+  {id:"ant3-7",cat:"especifico",blank:"___ elephants in the zoo were fed at 3pm.",options:["The","—","Some"],answer:"The",note:"The elephants in the zoo: elefantes espec\u00edficos."},
+  {id:"ant3-8",cat:"generalizar",blank:"I don't like ___ dogs.",options:["—","the","a"],answer:"—",note:"Generalizaci\u00f3n: no me gustan los perros (en general) \u2192 sin art\u00edculo."},
+  {id:"ant3-9",cat:"especifico",blank:"___ dogs next door keep barking.",options:["The","—","A"],answer:"The",note:"The dogs next door: perros espec\u00edficos (los de al lado)."},
+  {id:"ant3-10",cat:"error",choose:true,options:["The life is short.","Life is short.","A life is short."],answer:"Life is short.",note:"Generalizaci\u00f3n abstracta \u2192 sin art\u00edculo.",errorProne:true},
+  {id:"ant3-11",cat:"error",choose:true,options:["I love the music.","I love music.","I love a music."],answer:"I love music.",note:"Generalizaci\u00f3n: la m\u00fasica en general \u2192 sin art\u00edculo.",errorProne:true},
+  {id:"ant3-12",cat:"error",choose:true,options:["I love music at this party.","I love the music at this party.","I love a music at this party."],answer:"I love the music at this party.",note:"M\u00fasica espec\u00edfica (la de esta fiesta) \u2192 the music.",errorProne:true}
+];
+const ANT3_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Generalizaci\u00f3n \u2192 sin art\u00edculo (plural o incontable)</div><div class="b">Para hablar de la categor\u00eda o concepto en general:<br><code>Children need love.</code> (todos los ni\u00f1os)<br><code>Life is short.</code> / <code>I love music.</code></div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Espec\u00edfico \u2192 the</div><div class="b">Para grupos o conceptos espec\u00edficos (sabemos cu\u00e1les):<br><code>The children in my class are smart.</code><br><code>The music at the party was great.</code></div></div>';
+
+/* ================= CONTENIDO: THE 4 (THE GIRAFFE / THE OLD) ================= */
+const ANT4_CAT_LABEL = {the_sp:"THE + SINGULAR = ESPECIE",the_adj:"THE + ADJ = GRUPO SOCIAL",the_nat:"THE + NACIONALIDAD",error:"FRASE CORRECTA"};
+const ANT4_BANK = [
+  {id:"ant4-1",cat:"the_sp",blank:"___ giraffe is the tallest animal.",options:["The","A","—"],answer:"The",note:"The giraffe (singular) = las jirafas como especie. Tambi\u00e9n: A giraffe / Giraffes."},
+  {id:"ant4-2",cat:"the_sp",blank:"___ piano was invented in Italy.",options:["The","A","—"],answer:"The",note:"The piano (inventos): representa la categor\u00eda."},
+  {id:"ant4-3",cat:"the_sp",blank:"___ telephone changed communication forever.",options:["The","A","—"],answer:"The",note:"The telephone: el invento en general."},
+  {id:"ant4-4",cat:"the_adj",blank:"The government should help ___ poor.",options:["the","—","a"],answer:"the",note:"the poor = los pobres (como grupo). The + adj describe un grupo social."},
+  {id:"ant4-5",cat:"the_adj",blank:"A care home for ___ elderly.",options:["the","—","an"],answer:"the",note:"the elderly = los ancianos. the + adj (sin noun)."},
+  {id:"ant4-6",cat:"the_adj",blank:"___ unemployed face many challenges.",options:["The","—","A"],answer:"The",note:"The unemployed = los desempleados."},
+  {id:"ant4-7",cat:"the_nat",blank:"___ British are famous for their tea.",options:["The","—","A"],answer:"The",note:"The British = los brit\u00e1nicos (el pueblo). Verbo en plural."},
+  {id:"ant4-8",cat:"the_nat",blank:"___ Japanese have a rich culture.",options:["The","—","A"],answer:"The",note:"The Japanese = los japoneses."},
+  {id:"ant4-9",cat:"the_nat",blank:"___ Spanish love football.",options:["The","—","A"],answer:"The",note:"The Spanish = los espa\u00f1oles."},
+  {id:"ant4-10",cat:"error",choose:true,options:["The poor needs more support.","The poor need more support.","The poors need more support."],answer:"The poor need more support.",note:"the + adj = grupo plural \u2192 verbo en plural. No se a\u00f1ade -s.",errorProne:true},
+  {id:"ant4-11",cat:"error",choose:true,options:["The British is very polite.","The British are very polite.","Britishes are very polite."],answer:"The British are very polite.",note:"The + nationality \u2192 plural (verb in plural). No se a\u00f1ade -s.",errorProne:true}
+];
+const ANT4_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 The + singular = especie/invento</div><div class="b">Para referirse a una categor\u00eda entera:<br><code>The giraffe is the tallest animal.</code><br>(Tambi\u00e9n: A giraffe is... / Giraffes are...)</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 The + adjetivo = grupo social</div><div class="b"><code>the poor, the rich, the elderly, the unemployed, the young</code><br>Llevan verbo en plural: <code>The poor need more support.</code></div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 The + nationality (como colectivo)</div><div class="b"><code>the British, the French, the Japanese, the Spanish</code><br>Verbo en plural. Sin -s.</div></div>';
+
+/* ================= CONTENIDO: NAMES WITH AND WITHOUT THE 1 ================= */
+const ANN1_CAT_LABEL = {sin_the:"NOMBRES SIN THE",con_the:"NOMBRES CON THE",error:"FRASE CORRECTA"};
+const ANN1_BANK = [
+  {id:"ann1-1",cat:"sin_the",blank:"___ Paris is the capital of France.",options:["—","The","A"],answer:"—",note:"Ciudades sin art\u00edculo: Paris, London, Madrid."},
+  {id:"ann1-2",cat:"sin_the",blank:"She lives in ___ Spain.",options:["—","the","a"],answer:"—",note:"Pa\u00edses sin art\u00edculo: Spain, France, China."},
+  {id:"ann1-3",cat:"sin_the",blank:"I'd like to visit ___ Asia.",options:["—","the","a"],answer:"—",note:"Continentes sin art\u00edculo: Asia, Europe, Africa."},
+  {id:"ann1-4",cat:"sin_the",blank:"___ Mount Everest is the highest mountain.",options:["—","The","A"],answer:"—",note:"Monta\u00f1as individuales sin art\u00edculo: Mount Everest."},
+  {id:"ann1-5",cat:"sin_the",blank:"She studies at ___ Oxford University.",options:["—","the","a"],answer:"—",note:"Universidades sin art\u00edculo (cuando incluyen el nombre propio)."},
+  {id:"ann1-6",cat:"con_the",blank:"___ United States has 50 states.",options:["The","—","A"],answer:"The",note:"The United States: nombres de pa\u00edses en plural o con Republic/Kingdom."},
+  {id:"ann1-7",cat:"con_the",blank:"___ United Kingdom is made up of four nations.",options:["The","—","A"],answer:"The",note:"The United Kingdom."},
+  {id:"ann1-8",cat:"con_the",blank:"___ Amazon is the world's largest river.",options:["The","—","A"],answer:"The",note:"R\u00edos con art\u00edculo: the Amazon, the Nile, the Thames."},
+  {id:"ann1-9",cat:"con_the",blank:"___ Alps are in central Europe.",options:["The","—","A"],answer:"The",note:"Cadenas monta\u00f1osas en plural con art\u00edculo: the Alps, the Andes."},
+  {id:"ann1-10",cat:"con_the",blank:"He crossed ___ Atlantic.",options:["the","—","a"],answer:"the",note:"Oc\u00e9anos y mares con art\u00edculo: the Atlantic, the Pacific, the Mediterranean."},
+  {id:"ann1-11",cat:"error",choose:true,options:["She lives in the France.","She lives in France.","She lives in a France."],answer:"She lives in France.",note:"Pa\u00edses \u2192 sin art\u00edculo (excepciones: the US, the UK...).",errorProne:true},
+  {id:"ann1-12",cat:"error",choose:true,options:["The Everest is the highest mountain.","Mount Everest is the highest mountain.","Everest is the highest mountain."],answer:"Mount Everest is the highest mountain.",note:"Monta\u00f1a individual \u2192 sin art\u00edculo, con Mount si lleva ese nombre.",errorProne:true}
+];
+const ANN1_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Nombres SIN art\u00edculo</div><div class="b">Ciudades: <code>Paris, London, Madrid</code>.<br>Pa\u00edses (la mayor\u00eda): <code>Spain, France, China, Japan</code>.<br>Continentes: <code>Europe, Asia, Africa</code>.<br>Monta\u00f1as individuales: <code>Mount Everest, Mont Blanc</code>.</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Nombres CON the</div><div class="b">Pa\u00edses con Republic/Kingdom/States: <code>the US, the UK, the Netherlands</code>.<br>R\u00edos: <code>the Amazon, the Nile</code>.<br>Cadenas monta\u00f1osas: <code>the Alps, the Andes, the Pyrenees</code>.<br>Oc\u00e9anos: <code>the Atlantic, the Pacific, the Mediterranean</code>.</div></div>';
+
+/* ================= CONTENIDO: NAMES WITH AND WITHOUT THE 2 ================= */
+const ANN2_CAT_LABEL = {edificios_sin:"LUGARES SIN THE",edificios_con:"LUGARES CON THE",error:"FRASE CORRECTA"};
+const ANN2_BANK = [
+  {id:"ann2-1",cat:"edificios_sin",blank:"She arrived at ___ Heathrow Airport.",options:["—","the","a"],answer:"—",note:"Aeropuertos sin art\u00edculo: Heathrow Airport, JFK Airport."},
+  {id:"ann2-2",cat:"edificios_con",blank:"We stayed at ___ Hilton.",options:["the","—","a"],answer:"the",note:"Hoteles con art\u00edculo: the Hilton, the Marriott."},
+  {id:"ann2-3",cat:"edificios_sin",blank:"She works at ___ Google.",options:["—","the","a"],answer:"—",note:"Empresas sin art\u00edculo: Google, Apple, Amazon."},
+  {id:"ann2-4",cat:"edificios_con",blank:"I read ___ Guardian every day.",options:["the","—","a"],answer:"the",note:"Peri\u00f3dicos con art\u00edculo: the Guardian, the Times, the Sun."},
+  {id:"ann2-5",cat:"edificios_con",blank:"He works for ___ BBC.",options:["the","—","a"],answer:"the",note:"Cadenas de radio/TV con art\u00edculo: the BBC, the CNN."},
+  {id:"ann2-6",cat:"edificios_con",blank:"We went to ___ Louvre.",options:["the","—","a"],answer:"the",note:"Museos con art\u00edculo: the Louvre, the Prado."},
+  {id:"ann2-7",cat:"edificios_sin",blank:"___ Buckingham Palace is in London.",options:["—","The","A"],answer:"—",note:"Palacios y castillos sin art\u00edculo: Buckingham Palace."},
+  {id:"ann2-8",cat:"edificios_con",blank:"They climbed ___ Eiffel Tower.",options:["the","—","a"],answer:"the",note:"Torres y monumentos con art\u00edculo: the Eiffel Tower, the Statue of Liberty."},
+  {id:"ann2-9",cat:"edificios_sin",blank:"She was born near ___ Lake Victoria.",options:["—","the","a"],answer:"—",note:"Lagos individuales sin art\u00edculo: Lake Victoria, Lake Geneva."},
+  {id:"ann2-10",cat:"edificios_con",blank:"They crossed ___ Sahara Desert.",options:["the","—","a"],answer:"the",note:"Desiertos con art\u00edculo: the Sahara, the Gobi."},
+  {id:"ann2-11",cat:"error",choose:true,options:["I read Guardian every day.","I read the Guardian every day.","I read a Guardian every day."],answer:"I read the Guardian every day.",note:"Peri\u00f3dicos \u2192 the Guardian, the Times.",errorProne:true},
+  {id:"ann2-12",cat:"error",choose:true,options:["She works for the Google.","She works for Google.","She works for a Google."],answer:"She works for Google.",note:"Empresas \u2192 sin art\u00edculo: Google, Apple, Microsoft.",errorProne:true}
+];
+const ANN2_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Lugares y edificios SIN the</div><div class="b">Aeropuertos: <code>Heathrow Airport</code>. Empresas: <code>Google, Apple</code>.<br>Palacios: <code>Buckingham Palace</code>. Lagos individuales: <code>Lake Victoria</code>.</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Lugares y edificios CON the</div><div class="b">Hoteles: <code>the Hilton</code>. Peri\u00f3dicos: <code>the Guardian</code>.<br>Cadenas de TV: <code>the BBC</code>. Museos: <code>the Louvre</code>.<br>Torres/monumentos: <code>the Eiffel Tower</code>. Desiertos: <code>the Sahara</code>.</div></div>';
+
+/* ================= CONTENIDO: SINGULAR AND PLURAL ================= */
+const ANSP_CAT_LABEL = {irregulares:"PLURALES IRREGULARES",invariables:"INVARIABLES / SIEMPRE PLURAL",concordancia:"CONCORDANCIA",error:"FRASE CORRECTA"};
+const ANSP_BANK = [
+  {id:"ansp-1",cat:"irregulares",blank:"There were three ___ in the garden.",options:["mice","mouses","mices"],answer:"mice",note:"mouse \u2192 mice (irregular)."},
+  {id:"ansp-2",cat:"irregulares",blank:"I have two ___.",options:["feet","foots","feets"],answer:"feet",note:"foot \u2192 feet (irregular)."},
+  {id:"ansp-3",cat:"irregulares",blank:"There are many ___ in this country.",options:["sheep","sheeps","sheepies"],answer:"sheep",note:"sheep \u2192 sheep (invariable: singular = plural)."},
+  {id:"ansp-4",cat:"irregulares",blank:"The ___ have arrived.",options:["children","childs","childrens"],answer:"children",note:"child \u2192 children."},
+  {id:"ansp-5",cat:"invariables",blank:"___ is in the news again.",options:["The news","News","A news"],answer:"The news",note:"news es incontable (singular): the news is..."},
+  {id:"ansp-6",cat:"invariables",blank:"My ___ are on the table.",options:["glasses","glass","glasse"],answer:"glasses",note:"glasses (gafas) \u2192 siempre plural: my glasses are..."},
+  {id:"ansp-7",cat:"invariables",blank:"___ have been cancelled.",options:["The trousers","The trouser","A trousers"],answer:"The trousers",note:"trousers \u2192 siempre plural."},
+  {id:"ansp-8",cat:"concordancia",blank:"The police ___ investigating the crime.",options:["are","is","was"],answer:"are",note:"police \u2192 siempre plural en ingl\u00e9s: the police are..."},
+  {id:"ansp-9",cat:"concordancia",blank:"Three hours ___ a long time to wait.",options:["is","are","were"],answer:"is",note:"Cantidades/per\u00edodos de tiempo como sujeto \u2192 singular."},
+  {id:"ansp-10",cat:"concordancia",blank:"Economics ___ my favourite subject.",options:["is","are","are a"],answer:"is",note:"Disciplinas acad\u00e9micas (-ics) \u2192 singular: economics is, physics is."},
+  {id:"ansp-11",cat:"error",choose:true,options:["She has two childs.","She has two children.","She has two childrens."],answer:"She has two children.",note:"child \u2192 children (irregular, no -s).",errorProne:true},
+  {id:"ansp-12",cat:"error",choose:true,options:["The news are bad.","The news is bad.","News are bad."],answer:"The news is bad.",note:"news \u2192 incontable, singular: the news is.",errorProne:true}
+];
+const ANSP_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Plurales irregulares</div><div class="b"><code>man\u2192men, woman\u2192women, child\u2192children, tooth\u2192teeth, foot\u2192feet, mouse\u2192mice, person\u2192people</code><br>Invariables: <code>sheep, fish, deer</code> (mismo en singular y plural).</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 Siempre plural</div><div class="b"><code>trousers, jeans, glasses, scissors, pyjamas</code> \u2192 verbo en plural.<br>Para singularizar: <code>a pair of trousers, a pair of glasses</code>.</div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 Concordancia especial</div><div class="b"><code>the police are</code> (siempre plural).<br><code>news is, economics is, physics is</code> (incontables/disciplinas \u2192 singular).<br>Cantidades: <code>Three hours is a long time.</code></div></div>';
+
+/* ================= CONTENIDO: NOUN + NOUN (A BUS DRIVER) ================= */
+const ANNN_CAT_LABEL = {noun_noun:"NOUN + NOUN",of_rel:"OF PARA RELACIONES",contraste:"CONTRASTE",error:"FRASE CORRECTA"};
+const ANNN_BANK = [
+  {id:"annn-1",cat:"noun_noun",blank:"She is a ___ driver.",options:["bus","buses","of bus"],answer:"bus",note:"bus driver = conductor de autob\u00fas. El primer noun (bus) describe al segundo (driver)."},
+  {id:"annn-2",cat:"noun_noun",blank:"Do you have a ___ card?",options:["credit","credits","for credit"],answer:"credit",note:"credit card = tarjeta de cr\u00e9dito."},
+  {id:"annn-3",cat:"noun_noun",blank:"There's a ___ station near here.",options:["police","polices","of police"],answer:"police",note:"police station = comisar\u00eda."},
+  {id:"annn-4",cat:"noun_noun",blank:"He has a ___ problem.",options:["heart","hearts","of heart"],answer:"heart",note:"heart problem = problema card\u00edaco. El primer sustantivo siempre en singular."},
+  {id:"annn-5",cat:"noun_noun",blank:"She works in a ___ factory.",options:["shoe","shoes","of shoe"],answer:"shoe",note:"shoe factory: el primer noun en singular aunque el significado sea plural."},
+  {id:"annn-6",cat:"noun_noun",blank:"She bought a ___ bag.",options:["leather","of leather","leathers"],answer:"leather",note:"leather bag = bolso de cuero. El primer noun act\u00faa como adjetivo."},
+  {id:"annn-7",cat:"of_rel",blank:"The beginning ___ the film was slow.",options:["of","of the","'s"],answer:"of",note:"the beginning of the film: of para partes de cosas (no personas)."},
+  {id:"annn-8",cat:"of_rel",blank:"The name ___ the company is Acme.",options:["of","of the","'s"],answer:"of",note:"the name of the company: of para relaciones abstractas con cosas."},
+  {id:"annn-9",cat:"contraste",blank:"A ___ course is three years long.",options:["law","of law"],answer:"law",note:"Noun + noun: a law course (un curso de derecho)."},
+  {id:"annn-10",cat:"noun_noun",blank:"There are ___ bottles of wine for the party.",options:["wine","of wine","wines"],answer:"wine",note:"wine bottles (noun + noun) = botellas de vino. O: bottles of wine."},
+  {id:"annn-11",cat:"error",choose:true,options:["She is a buses driver.","She is a bus driver.","She is a driver of bus."],answer:"She is a bus driver.",note:"Noun + noun: el primer sustantivo va en singular.",errorProne:true},
+  {id:"annn-12",cat:"error",choose:true,options:["A shoes shop is opening nearby.","A shoe shop is opening nearby.","A shop of shoes is opening nearby."],answer:"A shoe shop is opening nearby.",note:"Noun + noun: primer sustantivo en singular (shoe shop).",errorProne:true}
+];
+const ANNN_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 Noun + noun</div><div class="b">Cuando dos sustantivos se combinan, el primero describe al segundo:<br><code>a bus driver, a credit card, a police station, a leather bag</code><br>\u26a0\ufe0f El primer sustantivo SIEMPRE en singular: <code>a shoe shop</code> (no "a shoes shop")</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 of para relaciones parte-todo</div><div class="b">Para partes de algo o relaciones con cosas:<br><code>the leg of the table, the top of the page, the name of the company</code></div></div>';
+
+/* ================= CONTENIDO: 'S AND OF ================= */
+const ANAP_CAT_LABEL = {apostrophe_s:"'S (POSESIVO)",of_rel:"OF (RELACIONES)",especiales:"'S USOS ESPECIALES",error:"FRASE CORRECTA"};
+const ANAP_BANK = [
+  {id:"anap-1",cat:"apostrophe_s",blank:"This is ___ book.",options:["Tom's","Tom is","Toms'"],answer:"Tom's",note:"Tom's book = el libro de Tom. 's para personas."},
+  {id:"anap-2",cat:"apostrophe_s",blank:"___ cat is very fluffy.",options:["My sister's","My sisters","The sister's"],answer:"My sister's",note:"my sister's cat = el gato de mi hermana."},
+  {id:"anap-3",cat:"apostrophe_s",blank:"___ office is on the first floor.",options:["The manager's","The managers","Manager's"],answer:"The manager's",note:"the manager's office = la oficina del gerente."},
+  {id:"anap-4",cat:"apostrophe_s",blank:"___ car is parked outside.",options:["The children's","The childrens'","The childs'"],answer:"The children's",note:"children's car: plural irregular \u2192 apostrophe + s."},
+  {id:"anap-5",cat:"apostrophe_s",blank:"___ books are expensive.",options:["The students'","The student's","The students"],answer:"The students'",note:"Plural regular: students \u2192 students' (apostrophe despu\u00e9s de la s)."},
+  {id:"anap-6",cat:"of_rel",blank:"The beginning ___ the film was slow.",options:["of","of the","'s"],answer:"of",note:"the beginning of the film: of para partes de cosas (no personas)."},
+  {id:"anap-7",cat:"of_rel",blank:"The name ___ the company is Acme.",options:["of","of the","'s"],answer:"of",note:"the name of the company: of para relaciones abstractas con cosas."},
+  {id:"anap-8",cat:"especiales",blank:"I went to the ___ to buy bread.",options:["baker's","baker","bakers"],answer:"baker's",note:"baker's = la panader\u00eda (the baker's shop). 's para tiendas."},
+  {id:"anap-9",cat:"especiales",blank:"I'm going to ___ for dinner.",options:["Tom's","Tom","Toms"],answer:"Tom's",note:"I'm going to Tom's (= Tom's house). 's para la casa de alguien."},
+  {id:"anap-10",cat:"especiales",blank:"___ meeting was cancelled.",options:["Yesterday's","Yesterdays","Yesterday"],answer:"Yesterday's",note:"Yesterday's meeting: 's con expresiones de tiempo."},
+  {id:"anap-11",cat:"error",choose:true,options:["The car of my father is red.","My father's car is red.","My fathers car is red."],answer:"My father's car is red.",note:"Para personas \u2192 's: my father's car.",errorProne:true},
+  {id:"anap-12",cat:"error",choose:true,options:["The books of the students are here.","The students' books are here.","The student's books are here."],answer:"The students' books are here.",note:"Plural regular: students \u2192 students' (apostrophe despu\u00e9s de la s del plural).",errorProne:true}
+];
+const ANAP_LEARN_HTML =
+  '<div class="psRule"><div class="h">1 \u00b7 \'s para personas y animales</div><div class="b">Singular \u2192 <code>\'s</code>: <code>Tom\'s book, the manager\'s office</code>.<br>Plural regular \u2192 <code>\'</code>: <code>the students\' books, my parents\' house</code>.<br>Plural irregular \u2192 <code>\'s</code>: <code>the children\'s room, the women\'s team</code>.</div></div>' +
+  '<div class="psRule"><div class="h">2 \u00b7 of para cosas y conceptos</div><div class="b">Para partes, cantidades y relaciones con cosas:<br><code>the beginning of the film, the name of the company</code>.</div></div>' +
+  '<div class="psRule"><div class="h">3 \u00b7 \'s usos especiales</div><div class="b">Tiendas: <code>at the baker\'s, at the chemist\'s</code>.<br>La casa de alguien: <code>I\'m going to Tom\'s.</code><br>Tiempo: <code>yesterday\'s news, today\'s meeting</code>.</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -4446,6 +4709,84 @@ const GU_UNITS = {
     color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
     subtitle:"each (individualidad uno a uno) vs. every (totalidad). each of. each en posición media y al final.",
     learnHtml: PRON10_LEARN_HTML, catLabel: PRON10_CAT_LABEL, bank: PRON10_BANK
+  },
+  "count-1": {
+    id:"count-1", name:"Countable and uncountable 1", icon:"📊",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"Contables (a/an, plural) vs. incontables (no plural, no a/an). Incontables comunes. a/an según el sonido.",
+    learnHtml: ANC1_LEARN_HTML, catLabel: ANC1_CAT_LABEL, bank: ANC1_BANK
+  },
+  "count-2": {
+    id:"count-2", name:"Countable and uncountable 2", icon:"☕",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Nouns con doble uso (a coffee / some coffee). Porciones para incontables: a piece of advice.",
+    learnHtml: ANC2_LEARN_HTML, catLabel: ANC2_CAT_LABEL, bank: ANC2_BANK
+  },
+  "a-some": {
+    id:"a-some", name:"Countable nouns with a/an and some", icon:"🔢",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"a/an con singular contable (según el sonido). some con plural. any en negativas y preguntas.",
+    learnHtml: ANAS_LEARN_HTML, catLabel: ANAS_CAT_LABEL, bank: ANAS_BANK
+  },
+  "a-the": {
+    id:"a-the", name:"a/an and the", icon:"🏷️",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"Primera mención: a/an. Segunda mención: the. The para lo único y los lugares cotidianos.",
+    learnHtml: ANAT_LEARN_HTML, catLabel: ANAT_CAT_LABEL, bank: ANAT_BANK
+  },
+  "the-1": {
+    id:"the-1", name:"the 1", icon:"⭐",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"The con lo único (the sun, the Internet). Lugares habituales (the bank). Superlativos.",
+    learnHtml: ANT1_LEARN_HTML, catLabel: ANT1_CAT_LABEL, bank: ANT1_BANK
+  },
+  "the-2": {
+    id:"the-2", name:"the 2 (school / the school)", icon:"🏫",
+    color:"#b91c1c", pillBg:"#fee2e2", pillColor:"#450a0a",
+    subtitle:"Sin artículo para institución/función (go to school/prison/hospital). Con the para el edificio.",
+    learnHtml: ANT2_LEARN_HTML, catLabel: ANT2_CAT_LABEL, bank: ANT2_BANK
+  },
+  "the-3": {
+    id:"the-3", name:"the 3 (children / the children)", icon:"🌏",
+    color:"#9333ea", pillBg:"#f3e8ff", pillColor:"#3b0764",
+    subtitle:"Sin artículo para generalizaciones (children, life, music). The para grupos específicos.",
+    learnHtml: ANT3_LEARN_HTML, catLabel: ANT3_CAT_LABEL, bank: ANT3_BANK
+  },
+  "the-4": {
+    id:"the-4", name:"the 4 (the giraffe / the old)", icon:"🦒",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#134e4a",
+    subtitle:"The + singular para espécies/inventos. The + adj para grupos sociales. The + nationality.",
+    learnHtml: ANT4_LEARN_HTML, catLabel: ANT4_CAT_LABEL, bank: ANT4_BANK
+  },
+  "names-1": {
+    id:"names-1", name:"Names with and without the 1", icon:"🗺️",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#7f1d1d",
+    subtitle:"Ciudades/países/continentes sin the. The US, The UK. Ríos, cadenas montañosas, océanos con the.",
+    learnHtml: ANN1_LEARN_HTML, catLabel: ANN1_CAT_LABEL, bank: ANN1_BANK
+  },
+  "names-2": {
+    id:"names-2", name:"Names with and without the 2", icon:"🏙️",
+    color:"#c2410c", pillBg:"#ffedd5", pillColor:"#7c2d12",
+    subtitle:"Aeropuertos/empresas sin the. Hoteles/periódicos/museos/torres con the. Palacios/lagos sin the.",
+    learnHtml: ANN2_LEARN_HTML, catLabel: ANN2_CAT_LABEL, bank: ANN2_BANK
+  },
+  "singular-plural": {
+    id:"singular-plural", name:"Singular and plural", icon:"🔣",
+    color:"#4338ca", pillBg:"#e0e7ff", pillColor:"#1e1b4b",
+    subtitle:"Plurales irregulares. Invariables (sheep/fish). Siempre plural (trousers/glasses). Concordancia (police/news).",
+    learnHtml: ANSP_LEARN_HTML, catLabel: ANSP_CAT_LABEL, bank: ANSP_BANK
+  },
+  "noun-noun": {
+    id:"noun-noun", name:"Noun + noun (a bus driver)", icon:"🔗",
+    color:"#64748b", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"Noun + noun: el primer sustantivo describe al segundo y va en singular. Of para relaciones parte-todo.",
+    learnHtml: ANNN_LEARN_HTML, catLabel: ANNN_CAT_LABEL, bank: ANNN_BANK
+  },
+  "apostrophe-s": {
+    id:"apostrophe-s", name:"'s and of\u2026", icon:"🔑",
+    color:"#be123c", pillBg:"#ffe4e6", pillColor:"#881337",
+    subtitle:"'s para personas (singular/plural). Of para cosas y conceptos. 's en tiendas, casas y expresiones de tiempo.",
+    learnHtml: ANAP_LEARN_HTML, catLabel: ANAP_CAT_LABEL, bank: ANAP_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
