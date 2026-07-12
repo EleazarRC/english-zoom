@@ -1699,7 +1699,10 @@ const MODULES = [
     status:"ready", mastery: () => rdMasteryStats(), enter: () => enterRD() },
   { id:"grammar-test", name:"Grammar & Vocab Test", icon:"📝", color:"#4338ca", bg:"#eef2ff",
     desc:"Test de 50 preguntas de gramática y vocabulario, con explicación.",
-    status:"ready", mastery: () => gtMasteryStats(), enter: () => enterGT() }
+    status:"ready", mastery: () => gtMasteryStats(), enter: () => enterGT() },
+  { id:"word-formation", name:"Word Formation", icon:"🧬", color:"#7c3aed", bg:"#ede9fe",
+    desc:"Familias de palabras (decide/decision/decisive) y prefijos negativos — clásico del Aptis.",
+    status:"ready", mastery: () => guMasteryStats(GU_UNITS["word-formation"]), enter: () => enterGU("word-formation") }
 ]);
 function enterCategory(catId){
   const cat = CATEGORY_TREE.find(c => c.id===catId);
@@ -5393,6 +5396,60 @@ const APA_LEARN_HTML =
   '<div class="guRule"><div class="h">Ortografía distinta</div><div class="b">BrE <code>-our</code> → AmE <code>-or</code> (<code>colour/color</code>). BrE <code>-re</code> → AmE <code>-er</code> (<code>centre/center</code>). AmE no dobla la "l" final (<code>travelled/traveled</code>).</div></div>' +
   '<div class="guRule"><div class="h">Esta app usa inglés británico</div><div class="b">Como convención principal, con las variantes americanas señaladas cuando son relevantes.</div></div>';
 
+/* ================= CONTENIDO: WORD FORMATION ================= */
+const WF_CAT_LABEL = {sustantivo:"SUSTANTIVO", adjetivo:"ADJETIVO", adverbio:"ADVERBIO", verbo:"VERBO", negativo:"PREFIJO NEGATIVO", error:"FRASE CORRECTA"};
+const WF_BANK = [
+  {id:"wf-1",cat:"sustantivo",blank:"He made the right ___ .",options:["decision","decisive","decide","decisively"],answer:"decision",note:"decide (v) → decision (n)."},
+  {id:"wf-2",cat:"sustantivo",blank:"Her ___ made everyone smile.",options:["happiness","happy","happily","unhappy"],answer:"happiness",note:"happy (adj) → happiness (n)."},
+  {id:"wf-3",cat:"sustantivo",blank:"The company's ___ surprised everyone.",options:["success","successful","succeed","successfully"],answer:"success",note:"succeed (v) → success (n)."},
+  {id:"wf-4",cat:"sustantivo",blank:"There's a big ___ between the two plans.",options:["difference","different","differently","differ"],answer:"difference",note:"differ (v) → difference (n)."},
+  {id:"wf-5",cat:"sustantivo",blank:"The teacher praised her ___ .",options:["creativity","creative","create","creatively"],answer:"creativity",note:"create (v) → creativity (n)."},
+  {id:"wf-6",cat:"sustantivo",blank:"___ is important in a healthy diet.",options:["Variety","Various","Vary","Variable"],answer:"Variety",note:"vary (v) → variety (n)."},
+  {id:"wf-7",cat:"sustantivo",blank:"The doctor gave a clear ___ of the illness.",options:["description","descriptive","describe","described"],answer:"description",note:"describe (v) → description (n)."},
+  {id:"wf-8",cat:"sustantivo",blank:"His ___ was obvious to everyone.",options:["confusion","confused","confusing","confuse"],answer:"confusion",note:"confuse (v) → confusion (n)."},
+  {id:"wf-9",cat:"sustantivo",blank:"We need your ___ on this matter.",options:["suggestion","suggestive","suggest","suggested"],answer:"suggestion",note:"suggest (v) → suggestion (n)."},
+  {id:"wf-10",cat:"sustantivo",blank:"He's looking for ___ .",options:["employment","employed","employ","employable"],answer:"employment",note:"employ (v) → employment (n)."},
+  {id:"wf-11",cat:"adjetivo",blank:"That was a very ___ decision.",options:["decisive","decision","decide","decisively"],answer:"decisive",note:"decide (v) → decisive (adj)."},
+  {id:"wf-12",cat:"adjetivo",blank:"She's an extremely ___ person.",options:["creative","creativity","create","creatively"],answer:"creative",note:"create (v) → creative (adj)."},
+  {id:"wf-13",cat:"adjetivo",blank:"The results were very ___ .",options:["satisfying","satisfaction","satisfy","satisfyingly"],answer:"satisfying",note:"satisfy (v) → satisfying (adj)."},
+  {id:"wf-14",cat:"adjetivo",blank:"He gave a very ___ speech.",options:["impressive","impression","impress","impressively"],answer:"impressive",note:"impress (v) → impressive (adj)."},
+  {id:"wf-15",cat:"adjetivo",blank:"This job is quite ___ .",options:["stressful","stress","stressed","stressfully"],answer:"stressful",note:"stress (n) → stressful (adj)."},
+  {id:"wf-16",cat:"adjetivo",blank:"That's a very ___ argument.",options:["convincing","convince","conviction","convincingly"],answer:"convincing",note:"convince (v) → convincing (adj)."},
+  {id:"wf-17",cat:"adjetivo",blank:"She felt ___ about the exam.",options:["confident","confidence","confide","confidently"],answer:"confident",note:"confidence (n) → confident (adj)."},
+  {id:"wf-18",cat:"adjetivo",blank:"He's a very ___ worker.",options:["reliable","reliance","rely","reliably"],answer:"reliable",note:"rely (v) → reliable (adj)."},
+  {id:"wf-19",cat:"adjetivo",blank:"The instructions were very ___ .",options:["confusing","confusion","confuse","confused"],answer:"confusing",note:"confusing describe lo que causa el efecto (como -ing/-ed adjectives)."},
+  {id:"wf-20",cat:"adjetivo",blank:"I felt ___ after the meeting.",options:["confused","confusing","confusion","confuse"],answer:"confused",note:"confused describe cómo se siente la persona."},
+  {id:"wf-21",cat:"adverbio",blank:"She answered ___ .",options:["confidently","confident","confidence","confide"],answer:"confidently",note:"confident (adj) → confidently (adv)."},
+  {id:"wf-22",cat:"adverbio",blank:"He ___ finished the race first.",options:["surprisingly","surprising","surprise","surprised"],answer:"surprisingly",note:"surprising (adj) → surprisingly (adv)."},
+  {id:"wf-23",cat:"adverbio",blank:"She spoke very ___ about the topic.",options:["passionately","passionate","passion","passions"],answer:"passionately",note:"passionate (adj) → passionately (adv)."},
+  {id:"wf-24",cat:"adverbio",blank:"He ___ agreed to help.",options:["immediately","immediate","immediacy"],answer:"immediately",note:"immediate (adj) → immediately (adv)."},
+  {id:"wf-25",cat:"adverbio",blank:"The team performed ___ this season.",options:["impressively","impressive","impression","impress"],answer:"impressively",note:"impressive (adj) → impressively (adv)."},
+  {id:"wf-26",cat:"adverbio",blank:"She ___ solved the problem.",options:["easily","easy","ease","easier"],answer:"easily",note:"easy (adj) → easily (adv)."},
+  {id:"wf-27",cat:"adverbio",blank:"He ___ refused the offer.",options:["politely","polite","politeness"],answer:"politely",note:"polite (adj) → politely (adv)."},
+  {id:"wf-28",cat:"verbo",blank:"We need to ___ this problem quickly.",options:["solve","solution","solvable","solving"],answer:"solve",note:"solution (n) → solve (v)."},
+  {id:"wf-29",cat:"verbo",blank:"They plan to ___ the old building.",options:["destroy","destruction","destructive","destroyed"],answer:"destroy",note:"destruction (n) → destroy (v)."},
+  {id:"wf-30",cat:"verbo",blank:"I ___ that you're right.",options:["agree","agreement","agreeable","agreeably"],answer:"agree",note:"agreement (n) → agree (v)."},
+  {id:"wf-31",cat:"verbo",blank:"The company will ___ new products next year.",options:["produce","production","productive","product"],answer:"produce",note:"production (n) → produce (v)."},
+  {id:"wf-32",cat:"verbo",blank:"Please ___ your answer with examples.",options:["explain","explanation","explanatory","explained"],answer:"explain",note:"explanation (n) → explain (v)."},
+  {id:"wf-33",cat:"verbo",blank:"We ___ to finish by Friday.",options:["expect","expectation","expected","unexpected"],answer:"expect",note:"expectation (n) → expect (v)."},
+  {id:"wf-34",cat:"negativo",blank:"His behaviour was completely ___ .",options:["irresponsible","unresponsible","disresponsible","non-responsible"],answer:"irresponsible",note:"responsible → irresponsible (prefijo ir- ante r)."},
+  {id:"wf-35",cat:"negativo",blank:"The results were ___ .",options:["unsatisfactory","insatisfactory","disatisfactory","non-satisfactory"],answer:"unsatisfactory",note:"satisfactory → unsatisfactory."},
+  {id:"wf-36",cat:"negativo",blank:"It's ___ to finish this today.",options:["impossible","unpossible","dispossible","non-possible"],answer:"impossible",note:"possible → impossible (prefijo im- ante p)."},
+  {id:"wf-37",cat:"negativo",blank:"She felt ___ about the decision.",options:["unhappy","dishappy","inhappy","non-happy"],answer:"unhappy",note:"happy → unhappy."},
+  {id:"wf-38",cat:"negativo",blank:"He was ___ with the service.",options:["dissatisfied","unsatisfied","insatisfied","non-satisfied"],answer:"dissatisfied",note:"satisfied → dissatisfied (más natural que 'unsatisfied')."},
+  {id:"wf-39",cat:"negativo",blank:"The plan seems ___ to me.",options:["illogical","unlogical","dislogical","nonlogical"],answer:"illogical",note:"logical → illogical (prefijo il- ante l)."},
+  {id:"wf-40",cat:"negativo",blank:"That was a very ___ comment.",options:["inappropriate","unappropriate","disappropriate","nonappropriate"],answer:"inappropriate",note:"appropriate → inappropriate."},
+  {id:"wf-41",cat:"negativo",blank:"The results were completely ___ .",options:["irrelevant","unrelevant","disrelevant","nonrelevant"],answer:"irrelevant",note:"relevant → irrelevant (prefijo ir- ante r)."},
+  {id:"wf-42",cat:"negativo",blank:"I think that's ___ .",options:["incorrect","uncorrect","discorrect","noncorrect"],answer:"incorrect",note:"correct → incorrect."},
+  {id:"wf-43",cat:"error",choose:true,options:["She is very success in her job.","She is very successful in her job.","She is very succeed in her job."],answer:"She is very successful in her job.",note:"tras 'be', se necesita el adjetivo (successful), no el sustantivo.",errorProne:true},
+  {id:"wf-44",cat:"error",choose:true,options:["He made a wrong decide.","He made a wrong decision.","He made a wrong decisive."],answer:"He made a wrong decision.",note:"tras 'a wrong', se necesita un sustantivo (decision).",errorProne:true},
+  {id:"wf-45",cat:"error",choose:true,options:["This is a very interesting information.","This is very interesting information.","This is a very interested information."],answer:"This is very interesting information.",note:"'information' es incontable, no lleva 'a'; y se usa 'interesting' (lo que causa interés).",errorProne:true}
+];
+const WF_LEARN_HTML =
+  '<div class="guRule"><div class="h">Familias de palabras</div><div class="b">Muchas palabras comparten raíz pero cambian de categoría gramatical: <code>decide (verbo) → decision (sustantivo) → decisive (adjetivo) → decisively (adverbio)</code>. Es uno de los tipos de pregunta más comunes en el Aptis y el Grammar & Vocabulary.</div></div>' +
+  '<div class="guRule"><div class="h">Cómo identificar qué forma hace falta</div><div class="b">Mira la posición en la frase: tras "a/an/the" o un adjetivo posesivo → sustantivo. Tras "be" o antes de un sustantivo → adjetivo. Modificando a un verbo → adverbio. Como acción principal de la frase → verbo.</div></div>' +
+  '<div class="guRule"><div class="h">Prefijos negativos</div><div class="b">No hay una regla fija: <code>un-</code> (unhappy, unfair), <code>in-</code> (incorrect, inconvenient), <code>im-</code> ante p/m (impossible, impatient), <code>il-</code> ante l (illegal, illogical), <code>ir-</code> ante r (irresponsible, irrelevant), <code>dis-</code> (disagree, dissatisfied). Hay que memorizar caso por caso.</div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -6306,6 +6363,12 @@ const GU_UNITS = {
     color:"#dc2626", pillBg:"#fee2e2", pillColor:"#991b1b",
     subtitle:"Vocabulario y ortografía: diferencias entre inglés británico y americano.",
     learnHtml: APA_LEARN_HTML, catLabel: APP_CAT_LABEL, bank: APA_BANK
+  },
+  "word-formation": {
+    id:"word-formation", name:"Word Formation", icon:"🧬",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Verbo, sustantivo, adjetivo, adverbio y prefijos negativos de la misma familia de palabras — un clásico del Aptis.",
+    learnHtml: WF_LEARN_HTML, catLabel: WF_CAT_LABEL, bank: WF_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
