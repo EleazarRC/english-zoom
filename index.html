@@ -4436,6 +4436,259 @@ const PHR9_LEARN_HTML =
   '<div class="guRule"><div class="h">2 · BACK = devolver / regresar</div><div class="b"><code>put back, take back, give back, pay back, get back, look back</code>.</div></div>' +
   '<div class="guRule"><div class="h">3 · get away with</div><div class="b">Salirse con la suya sin castigo: <code>He got away with it</code> = se salió con la suya.</div></div>';
 
+/* ================= CONTENIDO: -ING AND TO… ================= */
+const ING_CAT_LABEL = {uso:"USO", error:"FRASE CORRECTA"};
+
+const VI_BANK = [
+  {id:"vi-1",cat:"uso",blank:"I enjoy ___ to music in the evening.",options:["listening","to listen","listen"],answer:"listening",note:"enjoy + -ing."},
+  {id:"vi-2",cat:"uso",blank:"Please stop ___ that noise.",options:["making","to make","make"],answer:"making",note:"stop + -ing."},
+  {id:"vi-3",cat:"uso",blank:"Have you finished ___ your homework?",options:["doing","to do","do"],answer:"doing",note:"finish + -ing."},
+  {id:"vi-4",cat:"uso",blank:"Would you mind ___ the window?",options:["closing","to close","close"],answer:"closing",note:"mind + -ing."},
+  {id:"vi-5",cat:"uso",blank:"I suggest ___ earlier next time.",options:["leaving","to leave","leave"],answer:"leaving",note:"suggest + -ing."},
+  {id:"vi-6",cat:"uso",blank:"We should avoid ___ that mistake again.",options:["making","to make","make"],answer:"making",note:"avoid + -ing."},
+  {id:"vi-7",cat:"uso",blank:"She admitted ___ the money.",options:["stealing","to steal","steal"],answer:"stealing",note:"admit + -ing."},
+  {id:"vi-8",cat:"uso",blank:"He denied ___ anything about it.",options:["knowing","to know","know"],answer:"knowing",note:"deny + -ing."},
+  {id:"vi-9",cat:"uso",blank:"I can't imagine ___ in a big city.",options:["living","to live","live"],answer:"living",note:"imagine + -ing."},
+  {id:"vi-10",cat:"uso",blank:"I don't want to risk ___ my job.",options:["losing","to lose","lose"],answer:"losing",note:"risk + -ing."},
+  {id:"vi-11",cat:"uso",blank:"I can't help ___ every time I see that film.",options:["crying","to cry","cry"],answer:"crying",note:"can't help + -ing."},
+  {id:"vi-12",cat:"uso",blank:"They keep ___ me the same question.",options:["asking","to ask","ask"],answer:"asking",note:"keep (on) + -ing."},
+  {id:"vi-13",cat:"error",choose:true,options:["I enjoy to read novels.","I enjoy reading novels.","I enjoy read novels."],answer:"I enjoy reading novels.",note:"enjoy + -ing, nunca + to.",errorProne:true}
+];
+const VI_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Verbos que van seguidos de -ing</div><div class="b"><code>enjoy, stop, finish, mind, suggest, avoid, consider, admit, deny, imagine, risk, practise</code>.</div></div>' +
+  '<div class="guRule"><div class="h">2 · Expresiones fijas con -ing</div><div class="b"><code>can\'t help -ing</code> (no poder evitar), <code>keep (on) -ing</code> (seguir haciendo algo).</div></div>' +
+  '<div class="guRule"><div class="h">3 · La trampa</div><div class="b">En español muchas veces se usa infinitivo ("disfruto leer"), pero en inglés estos verbos SIEMPRE van con -ing: <code>I enjoy reading</code>, nunca "I enjoy to read".</div></div>';
+
+const VT_BANK = [
+  {id:"vt-1",cat:"uso",blank:"We decided ___ to the beach.",options:["to go","going","go"],answer:"to go",note:"decide + to."},
+  {id:"vt-2",cat:"uso",blank:"She agreed ___ us with the project.",options:["to help","helping","help"],answer:"to help",note:"agree + to."},
+  {id:"vt-3",cat:"uso",blank:"They promised ___ back before dark.",options:["to be","being","be"],answer:"to be",note:"promise + to."},
+  {id:"vt-4",cat:"uso",blank:"He offered ___ me to the station.",options:["to drive","driving","drive"],answer:"to drive",note:"offer + to."},
+  {id:"vt-5",cat:"uso",blank:"She refused ___ the door.",options:["to open","opening","open"],answer:"to open",note:"refuse + to."},
+  {id:"vt-6",cat:"uso",blank:"I hope ___ you again soon.",options:["to see","seeing","see"],answer:"to see",note:"hope + to."},
+  {id:"vt-7",cat:"uso",blank:"We've arranged ___ at 7 o'clock.",options:["to meet","meeting","meet"],answer:"to meet",note:"arrange + to."},
+  {id:"vt-8",cat:"uso",blank:"I finally managed ___ the door open.",options:["to force","forcing","force"],answer:"to force",note:"manage + to."},
+  {id:"vt-9",cat:"uso",blank:"We can't afford ___ a new car right now.",options:["to buy","buying","buy"],answer:"to buy",note:"afford + to."},
+  {id:"vt-10",cat:"uso",blank:"She's learning ___ Italian.",options:["to speak","speaking","speak"],answer:"to speak",note:"learn + to."},
+  {id:"vt-11",cat:"uso",blank:"He failed ___ his exam again.",options:["to pass","passing","pass"],answer:"to pass",note:"fail + to."},
+  {id:"vt-12",cat:"uso",blank:"It seems ___ a good idea.",options:["to be","being","be"],answer:"to be",note:"seem + to."},
+  {id:"vt-13",cat:"error",choose:true,options:["I decided going home.","I decided to go home.","I decided go home."],answer:"I decided to go home.",note:"decide + to, nunca + -ing.",errorProne:true}
+];
+const VT_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Verbos que van seguidos de to + infinitivo</div><div class="b"><code>decide, agree, promise, offer, refuse, hope, arrange, manage, afford, learn, fail, seem, plan, threaten</code>.</div></div>' +
+  '<div class="guRule"><div class="h">2 · Idea común</div><div class="b">Muchos de estos verbos expresan una intención o algo que aún no ha pasado: decidir, prometer, esperar, planear...</div></div>';
+
+const VOT_BANK = [
+  {id:"vot-1",cat:"uso",blank:"I want ___ this letter for me.",options:["you to post","that you post","you posting"],answer:"you to post",note:"want + objeto + to."},
+  {id:"vot-2",cat:"uso",blank:"She asked ___ the door.",options:["me to close","that I close","me closing"],answer:"me to close",note:"ask + objeto + to."},
+  {id:"vot-3",cat:"uso",blank:"He told ___ immediately.",options:["us to leave","that we leave","us leave"],answer:"us to leave",note:"tell + objeto + to."},
+  {id:"vot-4",cat:"uso",blank:"I'd like ___ this form, please.",options:["you to sign","that you sign","you signing"],answer:"you to sign",note:"would like + objeto + to."},
+  {id:"vot-5",cat:"uso",blank:"We expect ___ on time.",options:["them to arrive","that they arrive","them arriving"],answer:"them to arrive",note:"expect + objeto + to."},
+  {id:"vot-6",cat:"uso",blank:"They invited ___ to the wedding.",options:["us to come","that we come","us coming"],answer:"us to come",note:"invite + objeto + to."},
+  {id:"vot-7",cat:"uso",blank:"Please remind ___ the milk.",options:["me to buy","that I buy","me buying"],answer:"me to buy",note:"remind + objeto + to."},
+  {id:"vot-8",cat:"uso",blank:"The doctor warned ___ so much coffee.",options:["him not to drink","that he not drink","him not drinking"],answer:"him not to drink",note:"warn + objeto + not + to."},
+  {id:"vot-9",cat:"uso",blank:"She persuaded ___ with her.",options:["him to come","that he come","him coming"],answer:"him to come",note:"persuade + objeto + to."},
+  {id:"vot-10",cat:"uso",blank:"I'd advise ___ early.",options:["you to leave","that you leave","you leaving"],answer:"you to leave",note:"advise + objeto + to."},
+  {id:"vot-11",cat:"uso",blank:"My parents encouraged ___ music.",options:["me to study","that I study","me studying"],answer:"me to study",note:"encourage + objeto + to."},
+  {id:"vot-12",cat:"uso",blank:"They don't allow ___ here.",options:["us to smoke","that we smoke","us smoking"],answer:"us to smoke",note:"allow + objeto + to."},
+  {id:"vot-13",cat:"error",choose:true,options:["I want that you help me.","I want you to help me.","I want you helping me."],answer:"I want you to help me.",note:"want + objeto + to, nunca 'want that'.",errorProne:true}
+];
+const VOT_LEARN_HTML =
+  '<div class="guRule"><div class="h">1 · Patrón verbo + objeto + to</div><div class="b"><code>want, ask, tell, would like, expect, invite, remind, warn, persuade, advise, encourage, allow, force</code> + persona + to + infinitivo.</div></div>' +
+  '<div class="guRule"><div class="h">2 · La trampa del español</div><div class="b">En español decimos "quiero QUE tú vengas", pero en inglés NUNCA se usa "that" aquí: <code>I want you to come</code>, no "I want that you come".</div></div>';
+
+const IT1_BANK = [
+  {id:"it1-1",cat:"uso",blank:"I remember ___ this place when I was a child.",options:["visiting","to visit"],answer:"visiting",note:"remember + -ing = recordar algo que ya pasó."},
+  {id:"it1-2",cat:"uso",blank:"Please remember ___ the door when you leave.",options:["to lock","locking"],answer:"to lock",note:"remember + to = acordarse de hacer algo (todavía pendiente)."},
+  {id:"it1-3",cat:"uso",blank:"I regret ___ you that the flight is cancelled.",options:["to inform","informing"],answer:"to inform",note:"regret + to = lamentar decir algo ahora mismo."},
+  {id:"it1-4",cat:"uso",blank:"She regrets ___ so rude to him years ago.",options:["being","to be"],answer:"being",note:"regret + -ing = arrepentirse de algo pasado."},
+  {id:"it1-5",cat:"uso",blank:"I'll never forget ___ that mountain for the first time.",options:["seeing","to see"],answer:"seeing",note:"forget + -ing = no olvidar un recuerdo pasado."},
+  {id:"it1-6",cat:"uso",blank:"Don't forget ___ your keys before you leave.",options:["to take","taking"],answer:"to take",note:"forget + to = olvidarse de hacer algo pendiente."},
+  {id:"it1-7",cat:"uso",blank:"Did you remember ___ the lights off?",options:["to turn","turning"],answer:"to turn",note:"tarea pendiente → remember + to."},
+  {id:"it1-8",cat:"uso",blank:"I regret ___ harder at school.",options:["not studying","to not study"],answer:"not studying",note:"regret + -ing (negativo) = lamentar algo pasado."},
+  {id:"it1-9",cat:"error",choose:true,options:["I remember to meet him years ago.","I remember meeting him years ago.","I remember meet him years ago."],answer:"I remember meeting him years ago.",note:"recuerdo de algo pasado → -ing.",errorProne:true}
+];
+const IT1_LEARN_HTML =
+  '<div class="guRule"><div class="h">remember / forget</div><div class="b"><b>+ -ing</b> = recordar/olvidar algo que YA pasó (mirando atrás): <code>I remember visiting Paris</code>.<br><b>+ to</b> = acordarse/olvidarse de hacer algo TODAVÍA pendiente: <code>Remember to lock the door</code>.</div></div>' +
+  '<div class="guRule"><div class="h">regret</div><div class="b"><b>+ -ing</b> = arrepentirse de algo pasado: <code>I regret leaving my job</code>.<br><b>+ to</b> = lamentar decir algo ahora mismo (fórmula formal): <code>I regret to inform you...</code>.</div></div>';
+
+const IT2_BANK = [
+  {id:"it2-1",cat:"uso",blank:"Try ___ the window; maybe it's not locked.",options:["opening","to open"],answer:"opening",note:"try + -ing = probar una posible solución."},
+  {id:"it2-2",cat:"uso",blank:"I tried ___ him but he didn't answer.",options:["to call","calling"],answer:"to call",note:"try + to = esforzarse por hacer algo."},
+  {id:"it2-3",cat:"uso",blank:"The car needs ___ .",options:["washing","to wash"],answer:"washing",note:"need + -ing (sentido pasivo) = necesita ser lavado."},
+  {id:"it2-4",cat:"uso",blank:"I need ___ this letter today.",options:["to send","sending"],answer:"to send",note:"need + to (sentido activo) = necesito hacer algo."},
+  {id:"it2-5",cat:"uso",blank:"Can you help me ___ this box?",options:["carry","to carry"],answer:"carry",note:"help + objeto + base (también válido + to)."},
+  {id:"it2-6",cat:"uso",blank:"This grass needs ___ .",options:["cutting","to cut"],answer:"cutting",note:"need + -ing (pasivo) = necesita cortarse."},
+  {id:"it2-7",cat:"uso",blank:"If it doesn't work, try ___ it off and on again.",options:["turning","to turn"],answer:"turning",note:"try + -ing = probar una solución."},
+  {id:"it2-8",cat:"uso",blank:"I tried ___ the jar, but it wouldn't open.",options:["to open","opening"],answer:"to open",note:"try + to = intentar con esfuerzo."},
+  {id:"it2-9",cat:"uso",blank:"Does this shirt need ___ ?",options:["ironing","to iron"],answer:"ironing",note:"need + -ing (pasivo)."},
+  {id:"it2-10",cat:"error",choose:true,options:["These shoes need cleaning.","These shoes needs to clean.","These shoes need to cleaning."],answer:"These shoes need cleaning.",note:"need + -ing con sentido pasivo.",errorProne:true}
+];
+const IT2_LEARN_HTML =
+  '<div class="guRule"><div class="h">try</div><div class="b"><b>+ -ing</b> = experimentar, probar una posible solución: <code>Try restarting the computer</code>.<br><b>+ to</b> = intentar hacer algo con esfuerzo: <code>I tried to open the door</code>.</div></div>' +
+  '<div class="guRule"><div class="h">need + -ing (sentido pasivo)</div><div class="b">Cuando el sujeto RECIBE la acción: <code>The car needs washing</code> = el coche necesita SER lavado (= needs to be washed).</div></div>';
+
+const IT3_BANK = [
+  {id:"it3-1",cat:"uso",blank:"I like ___ tennis in general.",options:["playing","to play"],answer:"playing",note:"like + -ing = gusto habitual/general."},
+  {id:"it3-2",cat:"uso",blank:"I'd like ___ tennis this afternoon.",options:["to play","playing"],answer:"to play",note:"would like + to = deseo concreto en una ocasión."},
+  {id:"it3-3",cat:"uso",blank:"She loves ___ to music.",options:["listening","to listen"],answer:"listening",note:"love + -ing = gusto general."},
+  {id:"it3-4",cat:"uso",blank:"I'd love ___ you sometime.",options:["to meet","meeting"],answer:"to meet",note:"would love + to = deseo concreto."},
+  {id:"it3-5",cat:"uso",blank:"He hates ___ up early.",options:["getting","to get"],answer:"getting",note:"hate + -ing = disgusto general."},
+  {id:"it3-6",cat:"uso",blank:"I'd hate ___ you down.",options:["to let","letting"],answer:"to let",note:"would hate + to = situación concreta."},
+  {id:"it3-7",cat:"uso",blank:"Would you like ___ something to drink?",options:["to have","having"],answer:"to have",note:"would like + to."},
+  {id:"it3-8",cat:"uso",blank:"Do you like ___ in the rain?",options:["walking","to walk"],answer:"walking",note:"like + -ing en preguntas generales."},
+  {id:"it3-9",cat:"uso",blank:"I don't like ___ criticized in public.",options:["being","to be"],answer:"being",note:"like + -ing (voz pasiva)."},
+  {id:"it3-10",cat:"error",choose:true,options:["I would like going to the cinema tonight.","I would like to go to the cinema tonight.","I would like go to the cinema tonight."],answer:"I would like to go to the cinema tonight.",note:"would like + to, nunca + -ing.",errorProne:true}
+];
+const IT3_LEARN_HTML =
+  '<div class="guRule"><div class="h">like / love / hate (general)</div><div class="b">Gusto o disgusto habitual → normalmente <b>+ -ing</b>: <code>I like swimming</code>.</div></div>' +
+  '<div class="guRule"><div class="h">would like / would love / would hate (concreto)</div><div class="b">Deseo en una ocasión concreta → SIEMPRE <b>+ to</b>: <code>I\'d like to swim now</code>, nunca "I\'d like swimming now".</div></div>';
+
+const PREF_BANK = [
+  {id:"pref-1",cat:"uso",blank:"I prefer ___ tea to coffee.",options:["drinking","to drinking","drink"],answer:"drinking",note:"prefer + -ing + to + -ing (comparación general)."},
+  {id:"pref-2",cat:"uso",blank:"I'd prefer ___ at home tonight rather than go out.",options:["to stay","staying"],answer:"to stay",note:"would prefer + to."},
+  {id:"pref-3",cat:"uso",blank:"I'd rather ___ at home tonight.",options:["stay","to stay","staying"],answer:"stay",note:"would rather + base, sin 'to'."},
+  {id:"pref-4",cat:"uso",blank:"Would you rather ___ tea or coffee?",options:["have","to have","having"],answer:"have",note:"would rather + base."},
+  {id:"pref-5",cat:"uso",blank:"I'd rather walk ___ take the bus.",options:["than","that","to"],answer:"than",note:"would rather + base + THAN + base."},
+  {id:"pref-6",cat:"uso",blank:"She'd rather not ___ about it now.",options:["talk","to talk","talking"],answer:"talk",note:"negativa: would rather NOT + base."},
+  {id:"pref-7",cat:"uso",blank:"I prefer reading ___ watching TV.",options:["to","than","that"],answer:"to",note:"prefer + -ing + TO + -ing (no 'than')."},
+  {id:"pref-8",cat:"error",choose:true,options:["I'd rather to stay home.","I'd rather stay home.","I'd rather staying home."],answer:"I'd rather stay home.",note:"would rather + base, nunca + to ni + -ing.",errorProne:true},
+  {id:"pref-9",cat:"error",choose:true,options:["I prefer tea than coffee.","I prefer tea to coffee.","I prefer tea from coffee."],answer:"I prefer tea to coffee.",note:"prefer A TO B.",errorProne:true}
+];
+const PREF_LEARN_HTML =
+  '<div class="guRule"><div class="h">prefer</div><div class="b"><code>prefer A to B</code>: <code>I prefer tea to coffee</code>. Con verbos: <code>prefer -ing to -ing</code>, o <code>would prefer + to</code> para algo concreto.</div></div>' +
+  '<div class="guRule"><div class="h">would rather</div><div class="b">Siempre + base, SIN "to": <code>I\'d rather stay</code>. Comparar con <code>than</code>: <code>I\'d rather walk than drive</code>. Negativa: <code>I\'d rather not go</code>.</div></div>';
+
+const PI_BANK = [
+  {id:"pi-1",cat:"uso",blank:"I'm interested ___ learning Japanese.",options:["in","to","for"],answer:"in",note:"interested IN + -ing."},
+  {id:"pi-2",cat:"uso",blank:"She's good ___ solving problems.",options:["at","in","to"],answer:"at",note:"good AT + -ing."},
+  {id:"pi-3",cat:"uso",blank:"Thank you ___ helping me yesterday.",options:["for","to","of"],answer:"for",note:"thank you FOR + -ing."},
+  {id:"pi-4",cat:"uso",blank:"He left without ___ goodbye.",options:["saying","say","to say"],answer:"saying",note:"without + -ing."},
+  {id:"pi-5",cat:"uso",blank:"Instead of ___ , why don't we talk?",options:["arguing","argue","to argue"],answer:"arguing",note:"instead of + -ing."},
+  {id:"pi-6",cat:"uso",blank:"I'm thinking ___ changing my job.",options:["of","to","for"],answer:"of",note:"think OF + -ing."},
+  {id:"pi-7",cat:"uso",blank:"She apologised ___ being late.",options:["for","to","of"],answer:"for",note:"apologise FOR + -ing."},
+  {id:"pi-8",cat:"uso",blank:"Before ___ the exam, read the instructions.",options:["starting","start","to start"],answer:"starting",note:"before + -ing."},
+  {id:"pi-9",cat:"uso",blank:"After ___ dinner, we went for a walk.",options:["having","have","to have"],answer:"having",note:"after + -ing."},
+  {id:"pi-10",cat:"error",choose:true,options:["I'm interested in learn Spanish.","I'm interested to learn Spanish.","I'm interested in learning Spanish."],answer:"I'm interested in learning Spanish.",note:"tras preposición, siempre -ing.",errorProne:true}
+];
+const PI_LEARN_HTML =
+  '<div class="guRule"><div class="h">Regla de oro</div><div class="b">Después de CUALQUIER preposición (in, at, for, of, about, without, instead of, before, after...), el verbo va SIEMPRE en <b>-ing</b>, nunca en infinitivo.</div></div>' +
+  '<div class="guRule"><div class="h">Ejemplos frecuentes</div><div class="b"><code>interested in, good at, thank you for, without -ing, instead of -ing, think of -ing, before/after -ing</code>.</div></div>';
+
+const UTI_BANK = [
+  {id:"uti-1",cat:"uso",blank:"I'm used ___ up early; I've done it for years.",options:["to getting","to get","getting"],answer:"to getting",note:"be used to + -ing = estar acostumbrado."},
+  {id:"uti-2",cat:"uso",blank:"She's not used ___ such cold weather.",options:["to living in","to live in","living in"],answer:"to living in",note:"be used to + -ing."},
+  {id:"uti-3",cat:"uso",blank:"It took me a while to get used ___ the new system.",options:["to using","to use","using"],answer:"to using",note:"get used to + -ing = acostumbrarse (proceso)."},
+  {id:"uti-4",cat:"uso",blank:"I'll never get used ___ this noise.",options:["to hearing","to hear","hearing"],answer:"to hearing",note:"get used to + -ing."},
+  {id:"uti-5",cat:"uso",blank:"He used ___ in London, but now he lives in Paris.",options:["to live","to living","living"],answer:"to live",note:"OJO: 'used to + base' (hábito pasado), distinto de 'be used to'."},
+  {id:"uti-6",cat:"uso",blank:"Are you used ___ yet?",options:["to driving on the left","to drive on the left","driving on the left"],answer:"to driving on the left",note:"be used to + -ing."},
+  {id:"uti-7",cat:"error",choose:true,options:["I'm used to work at night.","I'm used to working at night.","I used to working at night."],answer:"I'm used to working at night.",note:"be used to + -ing (acostumbrado); no confundir con 'used to + base' (solía).",errorProne:true},
+  {id:"uti-8",cat:"error",choose:true,options:["She used to living in Rome.","She used to live in Rome.","She is used to live in Rome."],answer:"She used to live in Rome.",note:"used to + BASE = hábito pasado (solía vivir).",errorProne:true}
+];
+const UTI_LEARN_HTML =
+  '<div class="guRule"><div class="h">be used to + -ing</div><div class="b">Estar acostumbrado a algo (aquí "to" es preposición): <code>I\'m used to working at night</code>.</div></div>' +
+  '<div class="guRule"><div class="h">get used to + -ing</div><div class="b">Acostumbrarse (proceso, con el tiempo): <code>I got used to the noise</code>.</div></div>' +
+  '<div class="guRule"><div class="h">¡Cuidado! used to + BASE es otra cosa</div><div class="b"><code>used to + base</code> (sin -ing) habla de un hábito PASADO que ya no ocurre: <code>I used to live in Rome</code> (solía vivir, ya no vivo).</div></div>';
+
+const VPI_BANK = [
+  {id:"vpi-1",cat:"uso",blank:"He finally succeeded ___ his driving test.",options:["in passing","to pass","passing"],answer:"in passing",note:"succeed IN + -ing."},
+  {id:"vpi-2",cat:"uso",blank:"She insisted ___ the bill.",options:["on paying","to pay","paying"],answer:"on paying",note:"insist ON + -ing."},
+  {id:"vpi-3",cat:"uso",blank:"I don't feel ___ out tonight.",options:["like going","to go","going"],answer:"like going",note:"feel LIKE + -ing."},
+  {id:"vpi-4",cat:"uso",blank:"We're looking forward ___ you again.",options:["to seeing","to see","seeing"],answer:"to seeing",note:"look forward TO + -ing (aquí 'to' es preposición)."},
+  {id:"vpi-5",cat:"uso",blank:"He accused her ___ .",options:["of lying","to lie","lying"],answer:"of lying",note:"accuse somebody OF + -ing."},
+  {id:"vpi-6",cat:"uso",blank:"They stopped him ___ the building.",options:["from entering","to enter","entering"],answer:"from entering",note:"stop somebody FROM + -ing."},
+  {id:"vpi-7",cat:"uso",blank:"She apologised ___ so late.",options:["for being","to be","being"],answer:"for being",note:"apologise FOR + -ing."},
+  {id:"vpi-8",cat:"uso",blank:"I'm thinking ___ studying abroad.",options:["about","to","for"],answer:"about",note:"think ABOUT + -ing."},
+  {id:"vpi-9",cat:"error",choose:true,options:["I'm looking forward to see you.","I'm looking forward to seeing you.","I'm looking forward see you."],answer:"I'm looking forward to seeing you.",note:"look forward TO es preposición + -ing, no infinitivo.",errorProne:true},
+  {id:"vpi-10",cat:"error",choose:true,options:["He succeeded to pass the exam.","He succeeded in passing the exam.","He succeeded passing the exam."],answer:"He succeeded in passing the exam.",note:"succeed IN + -ing.",errorProne:true}
+];
+const VPI_LEARN_HTML =
+  '<div class="guRule"><div class="h">Verbo + preposición + -ing</div><div class="b"><code>succeed in, insist on, feel like, look forward to, accuse somebody of, stop somebody from, apologise for, think about</code> — todos van seguidos de -ing.</div></div>' +
+  '<div class="guRule"><div class="h">La trampa de "look forward to"</div><div class="b">Aquí "to" es preposición, no la marca de infinitivo: <code>I\'m looking forward to seeing you</code>, nunca "to see you".</div></div>';
+
+const NP_BANK = [
+  {id:"np-1",cat:"uso",blank:"There's no point ___ him; he never listens.",options:["asking","to ask","ask"],answer:"asking",note:"there's no point (in) + -ing."},
+  {id:"np-2",cat:"uso",blank:"This museum is really worth ___ .",options:["visiting","to visit","visit"],answer:"visiting",note:"worth + -ing."},
+  {id:"np-3",cat:"uso",blank:"It's no use ___ ; the shop is closed.",options:["complaining","to complain","complain"],answer:"complaining",note:"it's no use + -ing."},
+  {id:"np-4",cat:"uso",blank:"What's the point ___ if nobody listens?",options:["of talking","to talk","in talk"],answer:"of talking",note:"what's the point OF + -ing."},
+  {id:"np-5",cat:"uso",blank:"It's a waste of time ___ to him; he won't change.",options:["talking","to talk","talk"],answer:"talking",note:"waste of time + -ing."},
+  {id:"np-6",cat:"uso",blank:"There's no point ___ so much money on a car you rarely use.",options:["spending","to spend","spend"],answer:"spending",note:"there's no point (in) + -ing."},
+  {id:"np-7",cat:"error",choose:true,options:["This film is worth to see.","This film is worth seeing.","This film is worth see."],answer:"This film is worth seeing.",note:"worth + -ing, nunca + to.",errorProne:true},
+  {id:"np-8",cat:"error",choose:true,options:["There's no point to wait any longer.","There's no point waiting any longer.","There's no point wait any longer."],answer:"There's no point waiting any longer.",note:"no point (in) + -ing.",errorProne:true}
+];
+const NP_LEARN_HTML =
+  '<div class="guRule"><div class="h">Expresiones fijas + -ing</div><div class="b"><code>there\'s no point (in) -ing, it\'s worth -ing, it\'s no use -ing, what\'s the point of -ing, it\'s a waste of time -ing</code> — todas van con gerundio, nunca con infinitivo.</div></div>';
+
+const TFS_BANK = [
+  {id:"tfs-1",cat:"uso",blank:"I went to the shop ___ some milk.",options:["to buy","for buying","for buy"],answer:"to buy",note:"propósito con el mismo sujeto: to + infinitivo."},
+  {id:"tfs-2",cat:"uso",blank:"I went to the shop ___ milk.",options:["for","to","so that"],answer:"for",note:"for + sustantivo (propósito)."},
+  {id:"tfs-3",cat:"uso",blank:"She switched on the radio ___ the news.",options:["to hear","for hearing","for to hear"],answer:"to hear",note:"to + infinitivo (propósito, mismo sujeto)."},
+  {id:"tfs-4",cat:"uso",blank:"I gave her my address ___ she could write to me.",options:["so that","to","for"],answer:"so that",note:"so that + cláusula (sujetos distintos)."},
+  {id:"tfs-5",cat:"uso",blank:"He whispered ___ nobody could hear him.",options:["so that","to","for"],answer:"so that",note:"so that con un modal (could)."},
+  {id:"tfs-6",cat:"uso",blank:"We need a bigger table ___ all the guests.",options:["for","to","so that"],answer:"for",note:"for + sustantivo."},
+  {id:"tfs-7",cat:"uso",blank:"I'm saving money ___ a new car.",options:["for","to","so that"],answer:"for",note:"for + sustantivo."},
+  {id:"tfs-8",cat:"error",choose:true,options:["I called her for tell her the news.","I called her to tell her the news.","I called her for telling her the news."],answer:"I called her to tell her the news.",note:"propósito con el mismo sujeto → to + infinitivo, no 'for'.",errorProne:true}
+];
+const TFS_LEARN_HTML =
+  '<div class="guRule"><div class="h">to + infinitivo</div><div class="b">Para expresar propósito cuando el sujeto es el mismo: <code>I called to ask about the job</code>.</div></div>' +
+  '<div class="guRule"><div class="h">for + sustantivo</div><div class="b">Cuando el propósito se expresa con un sustantivo, no un verbo: <code>I went out for a walk</code>.</div></div>' +
+  '<div class="guRule"><div class="h">so that + cláusula</div><div class="b">Cuando el sujeto de la segunda parte es distinto, o hace falta un modal (can/could/will/would): <code>I lent him the book so that he could read it</code>.</div></div>';
+
+const ADJTO_BANK = [
+  {id:"adjto-1",cat:"uso",blank:"I was happy ___ the news.",options:["to hear","hearing","hear"],answer:"to hear",note:"adjetivo + to."},
+  {id:"adjto-2",cat:"uso",blank:"I'm sorry ___ you that the flight is delayed.",options:["to tell","telling","tell"],answer:"to tell",note:"adjetivo + to."},
+  {id:"adjto-3",cat:"uso",blank:"This exercise is easy ___ .",options:["to do","doing","do"],answer:"to do",note:"adjetivo + to (sentido pasivo: fácil de hacer)."},
+  {id:"adjto-4",cat:"uso",blank:"It was stupid ___ that door open.",options:["to leave","leaving","leave"],answer:"to leave",note:"adjetivo + to."},
+  {id:"adjto-5",cat:"uso",blank:"She was the first ___ .",options:["to arrive","arriving","arrive"],answer:"to arrive",note:"first/last/next + to."},
+  {id:"adjto-6",cat:"uso",blank:"I was surprised ___ him there.",options:["to see","seeing","see"],answer:"to see",note:"adjetivo + to."},
+  {id:"adjto-7",cat:"uso",blank:"It's very kind ___ me.",options:["of you to help","of you helping","for you to help"],answer:"of you to help",note:"it's + adjetivo + OF + alguien + to."},
+  {id:"adjto-8",cat:"error",choose:true,options:["I'm glad meeting you.","I'm glad to meet you.","I'm glad meet you."],answer:"I'm glad to meet you.",note:"adjetivo + to.",errorProne:true}
+];
+const ADJTO_LEARN_HTML =
+  '<div class="guRule"><div class="h">Adjetivo + to</div><div class="b"><code>happy, glad, sorry, surprised, easy, difficult, ready, stupid, kind</code> + to + infinitivo: <code>I was happy to help</code>.</div></div>' +
+  '<div class="guRule"><div class="h">first/last/next + to</div><div class="b"><code>She was the first to arrive</code>, <code>He was the last to leave</code>.</div></div>' +
+  '<div class="guRule"><div class="h">it\'s + adjetivo + of + alguien + to</div><div class="b"><code>It was kind of you to help</code> (valoración sobre la persona, no sobre la acción en general).</div></div>';
+
+const AFT_BANK = [
+  {id:"aft-1",cat:"uso",blank:"I was afraid ___ the dog in case it bit me.",options:["to touch","of touching"],answer:"to touch",note:"afraid TO do = decisión deliberada de no hacer algo por miedo."},
+  {id:"aft-2",cat:"uso",blank:"Be careful! I'm afraid ___ .",options:["of falling","to fall"],answer:"of falling",note:"afraid OF -ing = miedo de que algo malo pase, sin querer."},
+  {id:"aft-3",cat:"uso",blank:"He was afraid ___ , so he stayed silent.",options:["to speak","of speaking"],answer:"to speak",note:"decisión deliberada por miedo → afraid TO."},
+  {id:"aft-4",cat:"uso",blank:"I'm afraid ___ the vase; it's very fragile.",options:["of breaking","to break"],answer:"of breaking",note:"miedo de que ocurra algo accidentalmente → afraid OF -ing."},
+  {id:"aft-5",cat:"uso",blank:"He didn't want to complain — he was afraid ___ rude.",options:["of seeming","to seem"],answer:"of seeming",note:"afraid OF -ing = miedo de dar cierta impresión sin querer."},
+  {id:"aft-6",cat:"error",choose:true,options:["I'm afraid to falling.","I'm afraid of falling.","I'm afraid fall."],answer:"I'm afraid of falling.",note:"afraid OF + -ing.",errorProne:true},
+  {id:"aft-7",cat:"error",choose:true,options:["He was afraid speaking in public.","He was afraid to speak in public.","He was afraid of speak in public."],answer:"He was afraid to speak in public.",note:"decisión deliberada → afraid TO + base.",errorProne:true}
+];
+const AFT_LEARN_HTML =
+  '<div class="guRule"><div class="h">afraid to do</div><div class="b">Decides NO hacer algo porque te da miedo: <code>I was afraid to touch the dog</code> (elegiste no tocarlo).</div></div>' +
+  '<div class="guRule"><div class="h">afraid of -ing</div><div class="b">Miedo de que algo malo ocurra, normalmente sin que dependa de tu decisión: <code>I\'m afraid of falling</code> (temo caerme, no es algo que decidas).</div></div>';
+
+const SOD_BANK = [
+  {id:"sod-1",cat:"uso",blank:"I saw him ___ the room.",options:["leave","leaving"],answer:"leave",note:"base = vi toda la acción, de principio a fin."},
+  {id:"sod-2",cat:"uso",blank:"When I arrived, I saw him ___ on the phone.",options:["talking","talk"],answer:"talking",note:"-ing = la acción ya estaba en curso, solo vi una parte."},
+  {id:"sod-3",cat:"uso",blank:"I heard her ___ the song from start to finish.",options:["sing","singing"],answer:"sing",note:"base = escuché la canción entera."},
+  {id:"sod-4",cat:"uso",blank:"I could hear someone ___ next door.",options:["shouting","shout"],answer:"shouting",note:"-ing = acción en curso, sin especificar el final."},
+  {id:"sod-5",cat:"uso",blank:"We watched the sun ___ below the horizon.",options:["go down","going down"],answer:"go down",note:"base = vimos el proceso completo."},
+  {id:"sod-6",cat:"uso",blank:"I felt the ground ___ beneath me.",options:["shaking","shake"],answer:"shaking",note:"-ing = sensación en curso."},
+  {id:"sod-7",cat:"error",choose:true,options:["I saw her dance the whole performance.","I saw her dancing the whole performance.","I saw her danced the whole performance."],answer:"I saw her dance the whole performance.",note:"acción completa de principio a fin → base.",errorProne:true}
+];
+const SOD_LEARN_HTML =
+  '<div class="guRule"><div class="h">see/hear/watch/feel + objeto + BASE</div><div class="b">Viste/oíste TODA la acción, de principio a fin: <code>I saw him leave the room</code> (le vi salir, acción completa).</div></div>' +
+  '<div class="guRule"><div class="h">see/hear/watch/feel + objeto + -ING</div><div class="b">La acción ya estaba en curso, solo percibiste una parte: <code>I saw him talking on the phone</code> (no vi cuándo empezó ni terminó).</div></div>';
+
+const INGC_BANK = [
+  {id:"ingc-1",cat:"uso",blank:"He hurt his knee ___ football.",options:["playing","to play","play"],answer:"playing",note:"-ing clause = dos acciones simultáneas del mismo sujeto."},
+  {id:"ingc-2",cat:"uso",blank:"___ tired, she went to bed early.",options:["Feeling","Feel","To feel"],answer:"Feeling",note:"-ing clause al inicio de la frase para dar una razón."},
+  {id:"ingc-3",cat:"uso",blank:"I cut my finger ___ the vegetables.",options:["chopping","to chop","chop"],answer:"chopping",note:"-ing describe cómo ocurrió algo."},
+  {id:"ingc-4",cat:"uso",blank:"___ the letter, she started to cry.",options:["Reading","Read","To read"],answer:"Reading",note:"acción simultánea al inicio de la frase."},
+  {id:"ingc-5",cat:"uso",blank:"He left the room ___ a word.",options:["without saying","without say","without to say"],answer:"without saying",note:"preposición + -ing."},
+  {id:"ingc-6",cat:"uso",blank:"___ that no one was watching, he took the money.",options:["Thinking","Think","Thought"],answer:"Thinking",note:"-ing clause = razón que motiva la acción."},
+  {id:"ingc-7",cat:"error",choose:true,options:["Not knowing what to say, she stayed silent.","Not know what to say, she stayed silent.","Not to know what to say, she stayed silent."],answer:"Not knowing what to say, she stayed silent.",note:"negativa de -ing clause: NOT + -ing.",errorProne:true}
+];
+const INGC_LEARN_HTML =
+  '<div class="guRule"><div class="h">-ing clauses</div><div class="b">Se usan cuando dos cosas ocurren a la vez y las hace el mismo sujeto: <code>He hurt his knee playing football</code> (jugaba al fútbol Y se hizo daño, mismo sujeto y momento).</div></div>' +
+  '<div class="guRule"><div class="h">Al principio de la frase</div><div class="b">Da la razón o explica cómo pasó algo: <code>Feeling tired, she went to bed</code> = porque se sentía cansada.</div></div>' +
+  '<div class="guRule"><div class="h">Negativa</div><div class="b"><code>not</code> va antes del -ing: <code>Not knowing what to say...</code></div></div>';
+
 /* ================= REGISTRO DE UNIDADES DE GRAMÁTICA ================= */
 const GU_UNITS = {
   "present-continuous": {
@@ -5025,6 +5278,102 @@ const GU_UNITS = {
     color:"#4d7c0f", pillBg:"#ecfccb", pillColor:"#365314",
     subtitle:"AWAY para alejarse, BACK para devolver o regresar.",
     learnHtml: PHR9_LEARN_HTML, catLabel: PHR_CAT_LABEL, bank: PHR9_BANK
+  },
+  "verb-ing": {
+    id:"verb-ing", name:"Verb + -ing", icon:"🎯",
+    color:"#059669", pillBg:"#d1fae5", pillColor:"#065f46",
+    subtitle:"enjoy, stop, finish, mind, suggest, avoid... verbos que siempre van seguidos de gerundio.",
+    learnHtml: VI_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: VI_BANK
+  },
+  "verb-to": {
+    id:"verb-to", name:"Verb + to…", icon:"🧭",
+    color:"#0d9488", pillBg:"#ccfbf1", pillColor:"#115e59",
+    subtitle:"decide, agree, promise, offer, refuse... verbos que siempre van seguidos de infinitivo.",
+    learnHtml: VT_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: VT_BANK
+  },
+  "verb-obj-to": {
+    id:"verb-obj-to", name:"Verb (+ object) + to…", icon:"👉",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"want, ask, tell, would like... verbo + persona + to, sin 'that'.",
+    learnHtml: VOT_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: VOT_BANK
+  },
+  "ing-to-1": {
+    id:"ing-to-1", name:"Verb + -ing or to… 1", icon:"🔄",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"remember, forget, regret: el significado cambia según vaya con -ing o con to.",
+    learnHtml: IT1_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: IT1_BANK
+  },
+  "ing-to-2": {
+    id:"ing-to-2", name:"Verb + -ing or to… 2", icon:"🛠️",
+    color:"#65a30d", pillBg:"#ecfccb", pillColor:"#365314",
+    subtitle:"try, need, help: distintos matices según la forma verbal.",
+    learnHtml: IT2_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: IT2_BANK
+  },
+  "ing-to-3": {
+    id:"ing-to-3", name:"Verb + -ing or to… 3", icon:"💚",
+    color:"#db2777", pillBg:"#fce7f3", pillColor:"#9d174d",
+    subtitle:"like, love, hate (general) vs. would like/love/hate (concreto).",
+    learnHtml: IT3_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: IT3_BANK
+  },
+  "prefer": {
+    id:"prefer", name:"prefer and would rather", icon:"⚖️",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"prefer A to B, y would rather + base sin 'to'.",
+    learnHtml: PREF_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: PREF_BANK
+  },
+  "prep-ing": {
+    id:"prep-ing", name:"Preposition + -ing", icon:"🔌",
+    color:"#2563eb", pillBg:"#dbeafe", pillColor:"#1e3a8a",
+    subtitle:"Después de cualquier preposición, el verbo va siempre en -ing.",
+    learnHtml: PI_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: PI_BANK
+  },
+  "used-to-ing": {
+    id:"used-to-ing", name:"be/get used to…", icon:"🔁",
+    color:"#ca8a04", pillBg:"#fef9c3", pillColor:"#713f12",
+    subtitle:"Estar/acostumbrarse a algo (+ -ing), distinto de 'used to + base' (hábito pasado).",
+    learnHtml: UTI_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: UTI_BANK
+  },
+  "verb-prep-ing": {
+    id:"verb-prep-ing", name:"Verb + preposition + -ing", icon:"🧩",
+    color:"#475569", pillBg:"#f1f5f9", pillColor:"#1e293b",
+    subtitle:"succeed in, insist on, look forward to, accuse of... verbo + preposición + -ing.",
+    learnHtml: VPI_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: VPI_BANK
+  },
+  "no-point": {
+    id:"no-point", name:"there's no point in -ing, it's worth -ing", icon:"🚫",
+    color:"#dc2626", pillBg:"#fee2e2", pillColor:"#991b1b",
+    subtitle:"Expresiones fijas que siempre van seguidas de gerundio.",
+    learnHtml: NP_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: NP_BANK
+  },
+  "to-for-so-that": {
+    id:"to-for-so-that", name:"to…, for… and so that…", icon:"🎯",
+    color:"#0891b2", pillBg:"#cffafe", pillColor:"#155e75",
+    subtitle:"Tres formas de expresar propósito, según el sujeto y si hace falta un modal.",
+    learnHtml: TFS_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: TFS_BANK
+  },
+  "adj-to": {
+    id:"adj-to", name:"Adjective + to…", icon:"😊",
+    color:"#16a34a", pillBg:"#dcfce7", pillColor:"#14532d",
+    subtitle:"happy, sorry, easy, first/last/next + to + infinitivo.",
+    learnHtml: ADJTO_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: ADJTO_BANK
+  },
+  "afraid-to": {
+    id:"afraid-to", name:"afraid to do / afraid of -ing", icon:"😨",
+    color:"#db2777", pillBg:"#fce7f3", pillColor:"#9d174d",
+    subtitle:"Decisión deliberada por miedo (to) vs. miedo de que algo pase sin querer (of -ing).",
+    learnHtml: AFT_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: AFT_BANK
+  },
+  "see-somebody": {
+    id:"see-somebody", name:"see somebody do and see somebody doing", icon:"👀",
+    color:"#7c3aed", pillBg:"#ede9fe", pillColor:"#4c1d95",
+    subtitle:"Acción completa (base) vs. acción en curso, solo una parte (-ing).",
+    learnHtml: SOD_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: SOD_BANK
+  },
+  "ing-clauses": {
+    id:"ing-clauses", name:"-ing clauses", icon:"🔗",
+    color:"#059669", pillBg:"#d1fae5", pillColor:"#065f46",
+    subtitle:"Dos acciones del mismo sujeto a la vez: He hurt his knee playing football.",
+    learnHtml: INGC_LEARN_HTML, catLabel: ING_CAT_LABEL, bank: INGC_BANK
   }
 };
 Object.keys(GU_UNITS).forEach(id => {
